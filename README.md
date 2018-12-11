@@ -6,6 +6,8 @@
 
 Initial development will focus on administration of the device itself, with SSB-related administration being integrated at a later stage.
 
+_Note: This is a work-in-progress._
+
 ### Design Principles
 
 Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if strictly necessary).
