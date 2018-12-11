@@ -16,17 +16,17 @@ Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if str
 2. Write introductory documentation
 3. Setup dev-diary in the Scuttleverse
 4. Brainstorm interface requirements (feature list)
- - Pi-related data and interactivity
- - SSB-related data and interactivity
+   - Pi-related data and interactivity
+   - SSB-related data and interactivity
 5. Create UI spec document
- - Map features to views (text)
+   - Map features to views (text)
 6. Sketch interface mockups
 7. Generate UX flow diagrams
- - Iterate between steps 6 & 7
+   - Iterate between steps 6 & 7
 8. Setup dev environment
- - Simple web server to host static content (possibly [Rocket](https://rocket.rs/))
+   - Simple web server to host static content (possibly [Rocket](https://rocket.rs/))
 9. Begin coding views
- - Return to steps 6 & 7 where necessary
+   - Return to steps 6 & 7 where necessary
 10. Move towards alpha before seeking external input / testers
 
 ### Relevant Links
@@ -34,11 +34,11 @@ Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if str
 **Cypherlinks (Scuttlebutt)**
 
  - Project inception: ButtCloud SSBC Grant Proposal
-  - %HqwAsltORROCh4uyOq6iV+SsqU3OuNUevnq+5dwCqVI=.sha256
-  - [ssb-web viewer](http://viewer.scuttlebot.io/%25HqwAsltORROCh4uyOq6iV%2BSsqU3OuNUevnq%2B5dwCqVI%3D.sha256)
+   - %HqwAsltORROCh4uyOq6iV+SsqU3OuNUevnq+5dwCqVI=.sha256
+   - [ssb-web viewer](http://viewer.scuttlebot.io/%25HqwAsltORROCh4uyOq6iV%2BSsqU3OuNUevnq%2B5dwCqVI%3D.sha256)
  - Project reconception: PeachCloud as a hardware product
-  - %9NCyTf+oBxG0APlXRCKtrGZj3t+i+Kp3pKPN1gtFX2c=.sha256
-  - [ssb-web viewer](http://viewer.scuttlebot.io/%259NCyTf%2BoBxG0APlXRCKtrGZj3t%2Bi%2BKp3pKPN1gtFX2c%3D.sha256)
+   - %9NCyTf+oBxG0APlXRCKtrGZj3t+i+Kp3pKPN1gtFX2c=.sha256
+   - [ssb-web viewer](http://viewer.scuttlebot.io/%259NCyTf%2BoBxG0APlXRCKtrGZj3t%2Bi%2BKp3pKPN1gtFX2c%3D.sha256)
 
 **Legacy Web Links**
 
