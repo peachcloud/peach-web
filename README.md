@@ -65,4 +65,4 @@ Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if str
 
 ### Licensing
 
-TBC...
+AGPL-3.0
