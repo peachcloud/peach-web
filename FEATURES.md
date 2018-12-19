@@ -135,7 +135,7 @@ _First-pass at organizing features categorically_
     - Delete alerts
   - Plugins
     - List available plugins / extensions
-      - _E.g. ssb-web viewer, git-ssb viewer
+      - _E.g. ssb-web viewer, git-ssb viewer_
     - Activate a plugin
     - Deactivate a plugin
     - Define plugin settings
