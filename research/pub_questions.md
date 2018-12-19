@@ -34,6 +34,7 @@ _Note: list is incomplete and loosely grouped for now_
 
 - Public IP & port
   - How can I check / configure these details?
+  - Is it possible to proxy a pub to be able to listen to a port that is common with an HTTP server?
 - Connections
   - How many incoming & outgoing connections is my pub experiencing?
   - Who / where / what am I connected to?
