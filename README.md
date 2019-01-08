@@ -31,6 +31,12 @@ Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if str
    - Return to steps 6 & 7 where necessary
 10. Move towards alpha before seeking external input / testers
 
+### Development Environment
+
+In order to be flexible in supporting single-board computers beyond the Raspberry Pi alone, and to take full advantage of 64-bit support on ARMv8 devices, development for PeachCloud is being targeted at Debian ARM64.
+
+No official image has yet been released by Debian for the Raspberry Pi 3, though a preview image of Debian Buster is available [from their wiki](https://wiki.debian.org/RaspberryPi3). The major known issue with that preview image is broken wireless (the built-in wireless interface does not work). Fortunately, Michael Stapelberg has posted [an updated version of the preview image](https://people.debian.org/~stapelberg/2018/01/08/raspberry-pi-3) with WiFi that works out of the box.
+
 ### Relevant Links
 
 **Cypherlinks (Scuttlebutt)**
