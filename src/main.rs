@@ -1,8 +1,11 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
+extern crate websocket;
+extern crate get_if_addrs;
 
 use std::io;
+use std::thread;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::fs::OpenOptions;
@@ -11,11 +14,21 @@ use std::io::prelude::*;
 use rocket::response::NamedFile;
 use rocket::request::Form;
 
+use websocket::sync::Server;
+use websocket::{Message, OwnedMessage};
+
 // struct for handling wifi credentials
 #[derive(FromForm)]
 struct WiFi {
     ssid: String,
     pass: String,
+}
+
+fn get_ip() {
+    // List all of the machine's network interfaces
+    for iface in get_if_addrs::get_if_addrs().unwrap() {
+        println!("{:#?}", iface);
+    }
 }
 
 #[get("/")]
@@ -64,5 +77,62 @@ fn wifi_creds(wifi: Form<WiFi>) -> String {
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![index, files, wifi_creds]).launch();
+    
+    // spawn a separate thread for rocket to prevent blocking websockets
+    thread::spawn(|| {
+        rocket::ignite()
+            .mount("/", routes![index, files, wifi_creds])
+            .launch();
+    });
+
+    get_ip();
+
+    // Start listening for WebSocket connections
+	let ws_server = Server::bind("127.0.0.1:2794").unwrap();
+
+	for connection in ws_server.filter_map(Result::ok) {
+		// Spawn a new thread for each connection.
+		thread::spawn(move || {
+			if !connection
+				.protocols()
+				.contains(&"rust-websocket".to_string())
+			{
+				connection.reject().unwrap();
+				return;
+			}
+
+			let mut client = connection
+                .use_protocol("rust-websocket").accept().unwrap();
+
+			let ip = client.peer_addr().unwrap();
+
+			println!("Connection from {}", ip);
+
+			let message = Message::text("Websocket connected.");
+			client.send_message(&message).unwrap();
+
+			let (mut receiver, mut sender) = client.split().unwrap();
+
+			for message in receiver.incoming_messages() {
+				let message = message.unwrap();
+
+				match message {
+					OwnedMessage::Close(_) => {
+						let message = Message::close();
+						sender.send_message(&message).unwrap();
+						println!("Client {} disconnected", ip);
+						return;
+					}
+					OwnedMessage::Ping(data) => {
+						let message = Message::pong(data);
+						sender.send_message(&message).unwrap();
+					}
+					_ => {
+                        sender.send_message(&message).unwrap();
+                        println!("{:?}", message);
+                    }
+				}
+			}
+		});
+	}
 }
