@@ -10,16 +10,16 @@
 
 Configure service for creating `ap0` interface on boot:
 
-sudo cp peach-web/config/network/createap.sh /usr/bin/createap
-sudo cp peach-web/config/network/create-ap.service /etc/systemd/system/
-sudo systemctl enable create-ap.service
+sudo cp peach-web/config/network/createap.sh /usr/bin/createap  
+sudo cp peach-web/config/network/create-ap.service /etc/systemd/system/  
+sudo systemctl enable create-ap.service  
 
 Configure interface_checker to run every 5 minutes (as root):
 
-sudo cp peach-web/config/network/interface_checker.sh /usr/bin/interface_checker
-su
-crontab -e
-_Select a text editor_
-_Append the following line: _
-*/5 * * * * /usr/bin/interface_checker
-_Save and exit_
+sudo cp peach-web/config/network/interface_checker.sh /usr/bin/interface_checker  
+su  
+crontab -e  
+_Select a text editor_  
+_Append the following line: _  
+*/5 * * * * /usr/bin/interface_checker  
+_Save and exit_  
