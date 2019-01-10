@@ -24,11 +24,15 @@ struct WiFi {
     pass: String,
 }
 
-fn get_ip() {
-    // List all of the machine's network interfaces
-    for iface in get_if_addrs::get_if_addrs().unwrap() {
-        println!("{:#?}", iface);
-    }
+// retrieve ip address for specified interface
+fn get_ip(iface: String) -> String {
+    let ifaces = get_if_addrs::get_if_addrs().unwrap();
+    let net_iface : Vec<_> = ifaces
+        .iter()
+        .filter(|&i| i.name == iface)
+        .collect();
+    let ip = net_iface[0].ip().to_string();
+    ip
 }
 
 #[get("/")]
@@ -85,8 +89,6 @@ fn main() {
             .launch();
     });
 
-    get_ip();
-
     // Start listening for WebSocket connections
 	let ws_server = Server::bind("127.0.0.1:2794").unwrap();
 
@@ -108,7 +110,9 @@ fn main() {
 
 			println!("Connection from {}", ip);
 
-			let message = Message::text("Websocket connected.");
+            let wlan_ip = get_ip("wlp3s0".to_string());
+			let wlan_info = format!("wlp3s0: {}", wlan_ip);
+            let message = Message::text(wlan_info);
 			client.send_message(&message).unwrap();
 
 			let (mut receiver, mut sender) = client.split().unwrap();
