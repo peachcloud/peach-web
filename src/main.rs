@@ -25,14 +25,12 @@ struct WiFi {
 }
 
 // retrieve ip address for specified interface
-fn get_ip(iface: String) -> String {
+fn get_ip(iface: String) -> Option<String> {
     let ifaces = get_if_addrs::get_if_addrs().unwrap();
-    let net_iface : Vec<_> = ifaces
+    ifaces
         .iter()
-        .filter(|&i| i.name == iface)
-        .collect();
-    let ip = net_iface[0].ip().to_string();
-    ip
+        .find(|&i| i.name == iface)
+        .map(|iface| iface.ip().to_string())
 }
 
 #[get("/")]
@@ -61,15 +59,17 @@ fn wifi_creds(wifi: Form<WiFi>) -> String {
 
     // append wpa_passphrase output to wpa_supplicant.conf if successful
     if output.status.success() {
+        // open file in append mode
         let file = OpenOptions::new()
             .append(true)
             .open("/etc/wpa_supplicant/wpa_supplicant.conf");
         
         let _file = match file {
+            // if file exists & open succeeds, write wifi configuration
             Ok(mut f) => f.write(wpa_details),
-            Err(_) => {
-                panic!("There was a problem appending to the file")
-            }
+            // need to handle this better: create file if not found
+            //  and seed with 'ctrl_interace' & 'update_config' settings
+            Err(_) => panic!("There was a problem appending to the file")
         };
         // change: format as json response in production
         format!("{}", "WiFi credentials added. Attempting connection...")
@@ -106,12 +106,18 @@ fn main() {
 			let mut client = connection
                 .use_protocol("rust-websocket").accept().unwrap();
 
-			let ip = client.peer_addr().unwrap();
+			let client_ip = client.peer_addr().unwrap();
 
-			println!("Connection from {}", ip);
+			println!("Connection from {}", client_ip);
 
-            let wlan_ip = get_ip("wlp3s0".to_string());
-			let wlan_info = format!("wlp3s0: {}", wlan_ip);
+            let w_iface = "wlan0".to_string();
+            let wlan_ip = get_ip(w_iface);
+            let wlan_ip = match wlan_ip {
+                Some(ip) => ip,
+                None => "x.x.x.x".to_string(),
+            };
+
+            let wlan_info = format!("wlan0: {}", wlan_ip);
             let message = Message::text(wlan_info);
 			client.send_message(&message).unwrap();
 
@@ -124,7 +130,7 @@ fn main() {
 					OwnedMessage::Close(_) => {
 						let message = Message::close();
 						sender.send_message(&message).unwrap();
-						println!("Client {} disconnected", ip);
+						println!("Client {} disconnected", client_ip);
 						return;
 					}
 					OwnedMessage::Ping(data) => {
