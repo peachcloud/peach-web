@@ -90,7 +90,7 @@ fn main() {
     });
 
     // Start listening for WebSocket connections
-	let ws_server = Server::bind("127.0.0.1:2794").unwrap();
+	let ws_server = Server::bind("peach.local:2794").unwrap();
 
 	for connection in ws_server.filter_map(Result::ok) {
 		// Spawn a new thread for each connection.
@@ -110,14 +110,21 @@ fn main() {
 
 			println!("Connection from {}", client_ip);
 
-            let w_iface = "wlan0".to_string();
-            let wlan_ip = get_ip(w_iface);
+            // retrieve ip for wlan0 or set to x.x.x.x if not found
+            let wlan_ip = get_ip("wlan0".to_string());
             let wlan_ip = match wlan_ip {
                 Some(ip) => ip,
                 None => "x.x.x.x".to_string(),
             };
-
-            let wlan_info = format!("wlan0: {}", wlan_ip);
+            
+            // retrieve ip for ap0 or set to x.x.x.x if not found
+            let ap_ip = get_ip("ap0".to_string());
+            let ap_ip = match ap_ip {
+                Some(ip) => ip,
+                None => "x.x.x.x".to_string(),
+            };
+            
+            let iface_info = format!("ap0: {} | wlan0: {}", ap_ip, wlan_ip);
             let message = Message::text(wlan_info);
 			client.send_message(&message).unwrap();
 
