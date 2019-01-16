@@ -4,14 +4,16 @@
   <title>PeachCloud</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/tachyons.min.css">
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <script src="/js/forms.js"></script>
   <script src="/js/websockets.js"></script>
   <header class="pa4 bg-near-black">
     <img src="/images/peachCloudLogo.png" class="w3 fl pa2" /><h1 class="f3 pa2 fl near-white">Welcome to PeachCloud!</h1>
   </header>
   <body class="fl bg-near-black">
     <article class="pa4 black-80">
-      <form action="/wifi_credentials" method="post" accept-charset="utf-8">
-        <fieldset id="wifi_creds" class="ba b--transparent ph0 mh0">
+      <form id="wifiCreds">
+        <fieldset class="ba b--transparent ph0 mh0">
           <legend class="ph0 mh0 fw6 clip">Configure WiFi</legend>
           <div class="mt3">
             <label class="db fw4 lh-copy f6 near-white" for="ssid">SSID</label>

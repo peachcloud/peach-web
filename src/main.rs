@@ -1,6 +1,8 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
+#[macro_use] extern crate rocket_contrib;
+#[macro_use] extern crate serde_derive;
 extern crate websocket;
 extern crate get_if_addrs;
 
@@ -14,6 +16,8 @@ use std::io::prelude::*;
 use rocket::response::NamedFile;
 use rocket::request::Form;
 
+use rocket_contrib::json::Json;
+
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
 
@@ -24,6 +28,13 @@ struct WiFi {
     pass: String,
 }
 
+// struct for json config update responses
+#[derive(Serialize)]
+struct ConfigUpdate {
+    status: String,
+    msg: String,
+}
+
 // retrieve ip address for specified interface
 fn get_ip(iface: String) -> Option<String> {
     let ifaces = get_if_addrs::get_if_addrs().unwrap();
@@ -31,6 +42,13 @@ fn get_ip(iface: String) -> Option<String> {
         .iter()
         .find(|&i| i.name == iface)
         .map(|iface| iface.ip().to_string())
+}
+
+fn build_json_response(status: String, msg: String) -> ConfigUpdate {
+    ConfigUpdate {
+        status: status,
+        msg: msg,
+    }
 }
 
 #[get("/")]
@@ -44,7 +62,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 #[post("/wifi_credentials", data = "<wifi>")]
-fn wifi_creds(wifi: Form<WiFi>) -> String {
+fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
 
     // generate configuration based on provided ssid & password
     let output = Command::new("wpa_passphrase")
@@ -71,13 +89,17 @@ fn wifi_creds(wifi: Form<WiFi>) -> String {
             //  and seed with 'ctrl_interace' & 'update_config' settings
             Err(_) => panic!("There was a problem appending to the file")
         };
-        // change: format as json response in production
-        format!("{}", "WiFi credentials added. Attempting connection...")
+        // json response for successful update
+        let status : String = "Success".to_string();
+        let msg : String = "WiFi credentials added. Attempting connection."
+            .to_string();
+        Json(build_json_response(status, msg))
     } else {
-        // change: format as json response in production
-        format!("{}", "Failed to add WiFi credentials")
+        // json response for failed update
+        let status : String = "Fail".to_string();
+        let msg : String = "Failed to add WiFi credentials.".to_string();
+        Json(build_json_response(status, msg))
     }
-    // change: redirect to / (index)
 }
 
 fn main() {
@@ -90,7 +112,7 @@ fn main() {
     });
 
     // Start listening for WebSocket connections
-	let ws_server = Server::bind("peach.local:2794").unwrap();
+	let ws_server = Server::bind("127.0.0.1:2794").unwrap();
 
 	for connection in ws_server.filter_map(Result::ok) {
 		// Spawn a new thread for each connection.
@@ -125,7 +147,7 @@ fn main() {
             };
             
             let iface_info = format!("ap0: {} | wlan0: {}", ap_ip, wlan_ip);
-            let message = Message::text(wlan_info);
+            let message = Message::text(iface_info);
 			client.send_message(&message).unwrap();
 
 			let (mut receiver, mut sender) = client.split().unwrap();
