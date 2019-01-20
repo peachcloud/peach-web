@@ -89,6 +89,36 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
             //  and seed with 'ctrl_interace' & 'update_config' settings
             Err(_) => panic!("There was a problem appending to the file")
         };
+        
+        let if_down = Command::new("sudo")
+            .arg("/sbin/ifdown")
+            .arg("wlan0")
+            .output().unwrap_or_else(|e| {
+                panic!("Failed to execute ifdown command: {}", e)
+            });
+
+        if if_down.status.success() {
+            println!("wlan0 down");
+        } else { println!("wlan0 down failed"); };
+        
+        let if_up = Command::new("sudo")
+            .arg("/sbin/ifup")
+            .arg("wlan0")
+            .output().unwrap_or_else(|e| {
+                panic!("Failed to execute ifup command: {}", e)
+            });
+
+        if if_up.status.success() {
+            println!("wlan0 up");
+        } else { println!("wlan0 up failed"); };
+
+        let iface_checker = Command::new("sudo")
+            .arg("/bin/bash")
+            .arg("/home/glyph/interface_checker.sh")
+            .output().unwrap_or_else(|e| {
+                panic!("Failed to execute interface_checker command: {}", e)
+            });
+
         // json response for successful update
         let status : String = "Success".to_string();
         let msg : String = "WiFi credentials added. Attempting connection."
@@ -112,7 +142,7 @@ fn main() {
     });
 
     // Start listening for WebSocket connections
-	let ws_server = Server::bind("127.0.0.1:2794").unwrap();
+	let ws_server = Server::bind("peach.local:2794").unwrap();
 
 	for connection in ws_server.filter_map(Result::ok) {
 		// Spawn a new thread for each connection.

@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://127.0.0.1:2794", "rust-websocket");
+var socket = new WebSocket("ws://peach.local:2794", "rust-websocket");
 
 socket.onmessage = function (event) {
     var ip = document.getElementById("ip_addr");
