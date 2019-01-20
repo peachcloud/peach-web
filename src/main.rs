@@ -35,6 +35,13 @@ struct ConfigUpdate {
     msg: String,
 }
 
+// struct for json interface address responses
+#[derive(Serialize)]
+struct InterfaceAddresses {
+    ap0: String,
+    wlan0: String,
+}
+
 // retrieve ip address for specified interface
 fn get_ip(iface: String) -> Option<String> {
     let ifaces = get_if_addrs::get_if_addrs().unwrap();
@@ -51,6 +58,13 @@ fn build_json_response(status: String, msg: String) -> ConfigUpdate {
     }
 }
 
+fn json_ip_response(ap0: String, wlan0: String) -> InterfaceAddresses {
+    InterfaceAddresses {
+        ap0: ap0,
+        wlan0: wlan0,
+    }
+}
+
 #[get("/")]
 fn index() -> io::Result<NamedFile> {
     NamedFile::open("static/index.html")
@@ -59,6 +73,25 @@ fn index() -> io::Result<NamedFile> {
 #[get("/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
+}
+
+#[get("/ip")]
+fn return_ip() -> Json<InterfaceAddresses> {
+    // retrieve ip for wlan0 or set to x.x.x.x if not found
+    let wlan_ip = get_ip("wlan0".to_string());
+    let wlan_ip = match wlan_ip {
+        Some(ip) => ip,
+        None => "x.x.x.x".to_string(),
+    };
+    
+    // retrieve ip for ap0 or set to x.x.x.x if not found
+    let ap_ip = get_ip("ap0".to_string());
+    let ap_ip = match ap_ip {
+        Some(ip) => ip,
+        None => "x.x.x.x".to_string(),
+    };
+    
+    Json(json_ip_response(ap_ip, wlan_ip))
 }
 
 #[post("/wifi_credentials", data = "<wifi>")]
@@ -137,12 +170,12 @@ fn main() {
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
         rocket::ignite()
-            .mount("/", routes![index, files, wifi_creds])
+            .mount("/", routes![index, files, wifi_creds, return_ip])
             .launch();
     });
 
     // Start listening for WebSocket connections
-	let ws_server = Server::bind("peach.local:2794").unwrap();
+	let ws_server = Server::bind("0.0.0.0:2794").unwrap();
 
 	for connection in ws_server.filter_map(Result::ok) {
 		// Spawn a new thread for each connection.
@@ -162,22 +195,8 @@ fn main() {
 
 			println!("Connection from {}", client_ip);
 
-            // retrieve ip for wlan0 or set to x.x.x.x if not found
-            let wlan_ip = get_ip("wlan0".to_string());
-            let wlan_ip = match wlan_ip {
-                Some(ip) => ip,
-                None => "x.x.x.x".to_string(),
-            };
-            
-            // retrieve ip for ap0 or set to x.x.x.x if not found
-            let ap_ip = get_ip("ap0".to_string());
-            let ap_ip = match ap_ip {
-                Some(ip) => ip,
-                None => "x.x.x.x".to_string(),
-            };
-            
-            let iface_info = format!("ap0: {} | wlan0: {}", ap_ip, wlan_ip);
-            let message = Message::text(iface_info);
+            let msg_text = "Websocket successfully connected".to_string();
+            let message = Message::text(msg_text);
 			client.send_message(&message).unwrap();
 
 			let (mut receiver, mut sender) = client.split().unwrap();

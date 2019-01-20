@@ -1,9 +1,10 @@
 var socket = new WebSocket("ws://peach.local:2794", "rust-websocket");
 
 socket.onmessage = function (event) {
-    var ip = document.getElementById("ip_addr");
-    var text = document.createTextNode(event.data);
-    ip.appendChild(text);
+    //var ip = document.getElementById("ip_addr");
+    //var text = document.createTextNode(event.data);
+    //ip.appendChild(text);
+    console.log(event.data);
 };
 
 function send(element) {
