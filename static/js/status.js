@@ -8,4 +8,10 @@ window.onload = function () {
     var wlan0 = document.querySelector('#wlan0_addr');
     wlan0.innerText = "wlan0: " + data.wlan0;
   });
+
+  $.get("/ssid", function(data, status){
+    console.log(data);
+    var ssid = document.querySelector('#ssid_name');
+    ssid.innerText = "SSID: " + data.msg;
+  });
 };

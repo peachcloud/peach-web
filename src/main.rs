@@ -8,6 +8,7 @@ extern crate get_if_addrs;
 
 use std::io;
 use std::thread;
+use std::str;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::fs::OpenOptions;
@@ -30,7 +31,7 @@ struct WiFi {
 
 // struct for json config update responses
 #[derive(Serialize)]
-struct ConfigUpdate {
+struct JsonResponse {
     status: String,
     msg: String,
 }
@@ -51,8 +52,27 @@ fn get_ip(iface: String) -> Option<String> {
         .map(|iface| iface.ip().to_string())
 }
 
-fn build_json_response(status: String, msg: String) -> ConfigUpdate {
-    ConfigUpdate {
+// retrieve ssid of connected network
+fn get_ssid() -> Option<String> {
+    let ssid = Command::new("sudo")
+        .arg("iwgetid")
+        .arg("-r")
+        .output()
+        .expect("Failed to execute iwgetid command");
+    
+    if ssid.status.success() {
+        let ssid_name = match str::from_utf8(&*ssid.stdout) {
+            Ok(s) => s,
+            Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+        };
+        Some(ssid_name.to_string())
+    } else {
+        None
+    }
+}
+
+fn build_json_response(status: String, msg: String) -> JsonResponse {
+    JsonResponse {
         status: status,
         msg: msg,
     }
@@ -94,8 +114,23 @@ fn return_ip() -> Json<InterfaceAddresses> {
     Json(json_ip_response(ap_ip, wlan_ip))
 }
 
+#[get("/ssid")]
+fn return_ssid() -> Json<JsonResponse> {
+    // retrieve ssid for connected network
+    let ssid = get_ssid();
+    let ssid = match ssid {
+        Some(network) => network,
+        None => "Not currently connected".to_string(),
+    };
+    
+    let status : String = "Success".to_string();
+    let msg : String = ssid.to_string();
+    
+    Json(build_json_response(status, msg))
+}
+
 #[post("/wifi_credentials", data = "<wifi>")]
-fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
+fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
 
     // generate configuration based on provided ssid & password
     let output = Command::new("wpa_passphrase")
@@ -123,6 +158,7 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
             Err(_) => panic!("There was a problem appending to the file")
         };
         
+        // set the status of the wlan0 interface to DOWN
         let if_down = Command::new("sudo")
             .arg("/sbin/ifdown")
             .arg("wlan0")
@@ -134,6 +170,9 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
             println!("wlan0 down");
         } else { println!("wlan0 down failed"); };
         
+        // set the status of the wlan0 interface to UP
+        // (required to force interface to attempt connection using
+        //  newly added wifi credentials)
         let if_up = Command::new("sudo")
             .arg("/sbin/ifup")
             .arg("wlan0")
@@ -145,6 +184,7 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<ConfigUpdate> {
             println!("wlan0 up");
         } else { println!("wlan0 up failed"); };
 
+        // manually run the interface_checker to tear-down the ap
         let iface_checker = Command::new("sudo")
             .arg("/bin/bash")
             .arg("/home/glyph/interface_checker.sh")
@@ -170,7 +210,7 @@ fn main() {
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
         rocket::ignite()
-            .mount("/", routes![index, files, wifi_creds, return_ip])
+            .mount("/", routes![index, files, wifi_creds, return_ip, return_ssid])
             .launch();
     });
 
