@@ -1,5 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+#[cfg(test)] mod tests;
+
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
@@ -17,7 +19,7 @@ use std::io::prelude::*;
 use rocket::response::NamedFile;
 use rocket::request::Form;
 
-use rocket_contrib::json::Json;
+use rocket_contrib::json::{Json, JsonValue};
 
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
@@ -123,7 +125,7 @@ fn return_ssid() -> Json<JsonResponse> {
         None => "Not currently connected".to_string(),
     };
     
-    let status : String = "Success".to_string();
+    let status : String = "ok".to_string();
     let msg : String = ssid.to_string();
     
     Json(build_json_response(status, msg))
@@ -185,7 +187,7 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
         } else { println!("wlan0 up failed"); };
 
         // manually run the interface_checker to tear-down the ap
-        let iface_checker = Command::new("sudo")
+        let _iface_checker = Command::new("sudo")
             .arg("/bin/bash")
             .arg("/home/glyph/interface_checker.sh")
             .output().unwrap_or_else(|e| {
@@ -193,25 +195,44 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
             });
 
         // json response for successful update
-        let status : String = "Success".to_string();
+        let status : String = "ok".to_string();
         let msg : String = "WiFi credentials added. Attempting connection."
             .to_string();
         Json(build_json_response(status, msg))
     } else {
         // json response for failed update
-        let status : String = "Fail".to_string();
+        let status : String = "error".to_string();
         let msg : String = "Failed to add WiFi credentials.".to_string();
         Json(build_json_response(status, msg))
     }
+}
+
+#[catch(404)]
+fn not_found() -> JsonValue {
+    json!({
+        "status": "error",
+        "msg": "Resource was not found."
+    })
+}
+
+// create rocket instance & mount routes (makes testing easier)
+fn rocket() -> rocket::Rocket {
+    rocket::ignite()
+        .mount("/", routes![
+               index,
+               files,
+               wifi_creds,
+               return_ip,
+               return_ssid
+        ])
+        .register(catchers![not_found])
 }
 
 fn main() {
     
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
-        rocket::ignite()
-            .mount("/", routes![index, files, wifi_creds, return_ip, return_ssid])
-            .launch();
+        rocket().launch();
     });
 
     // Start listening for WebSocket connections
