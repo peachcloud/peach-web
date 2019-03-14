@@ -5,21 +5,21 @@
 #[macro_use] extern crate rocket;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
+#[macro_use] extern crate jsonrpc_client_core;
+extern crate jsonrpc_client_http;
 extern crate websocket;
 extern crate get_if_addrs;
 
 use std::io;
 use std::thread;
-use std::str;
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
-use std::fs::OpenOptions;
-use std::io::prelude::*;
 
 use rocket::response::NamedFile;
 use rocket::request::Form;
 
 use rocket_contrib::json::{Json, JsonValue};
+
+use jsonrpc_client_http::HttpTransport;
 
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
@@ -35,7 +35,7 @@ struct WiFi {
 #[derive(Serialize)]
 struct JsonResponse {
     status: String,
-    msg: String,
+    data: String,
 }
 
 // struct for json interface address responses
@@ -45,38 +45,33 @@ struct InterfaceAddresses {
     wlan0: String,
 }
 
-// retrieve ip address for specified interface
-fn get_ip(iface: String) -> Option<String> {
-    let ifaces = get_if_addrs::get_if_addrs().unwrap();
-    ifaces
-        .iter()
-        .find(|&i| i.name == iface)
-        .map(|iface| iface.ip().to_string())
-}
-
-// retrieve ssid of connected network
-fn get_ssid() -> Option<String> {
-    let ssid = Command::new("sudo")
-        .arg("iwgetid")
-        .arg("-r")
-        .output()
-        .expect("Failed to execute iwgetid command");
+// jsonrpc client
+jsonrpc_client!(pub struct PeachNetworkClient {
+    // returns the ip address for the given interface
+    pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
     
-    if ssid.status.success() {
-        let ssid_name = match str::from_utf8(&*ssid.stdout) {
-            Ok(s) => s,
-            Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-        };
-        Some(ssid_name.to_string())
-    } else {
-        None
-    }
-}
+    // returns the ssid for the connected wifi network
+    pub fn get_ssid(&mut self) -> RpcRequest<String>;
 
-fn build_json_response(status: String, msg: String) -> JsonResponse {
+    // generates wpa_passphrase for given creds and writes to
+    //  wpa_supplicant.conf
+    pub fn add_wifi(&mut self, ssid: String, pass: String) -> RpcRequest<String>;
+
+    // run ap / client-mode configuration script
+    pub fn if_checker(&mut self) -> RpcRequest<String>;
+
+    // take the given network interface down
+    pub fn if_down(&mut self, iface: String) -> RpcRequest<String>;
+
+    // bring the given network interface up
+    pub fn if_up(&mut self, iface: String) -> RpcRequest<String>;
+});
+
+
+fn build_json_response(status: String, data: String) -> JsonResponse {
     JsonResponse {
         status: status,
-        msg: msg,
+        data: data,
     }
 }
 
@@ -99,112 +94,86 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 #[get("/ip")]
 fn return_ip() -> Json<InterfaceAddresses> {
+    // create http transport for jsonrpc comms
+    let transport = HttpTransport::new().standalone().unwrap();
+    let transport_handle = transport
+        .handle("http://127.0.0.1:3030/")
+        .unwrap();
+    let mut client = PeachNetworkClient::new(transport_handle);
+    
     // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = get_ip("wlan0".to_string());
+    let wlan_ip = client.get_ip("wlan0".to_string()).call();
     let wlan_ip = match wlan_ip {
-        Some(ip) => ip,
-        None => "x.x.x.x".to_string(),
+        Ok(ip) => ip,
+        Err(_) => "x.x.x.x".to_string(),
     };
-    
+ 
     // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = get_ip("ap0".to_string());
+    let ap_ip = client.get_ip("ap0".to_string()).call();
     let ap_ip = match ap_ip {
-        Some(ip) => ip,
-        None => "x.x.x.x".to_string(),
+        Ok(ip) => ip,
+        Err(_) => "x.x.x.x".to_string(),
     };
-    
+   
     Json(json_ip_response(ap_ip, wlan_ip))
 }
 
 #[get("/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
+    // create http transport for jsonrpc comms
+    let transport = HttpTransport::new().standalone().unwrap();
+    let transport_handle = transport
+        .handle("http://127.0.0.1:3030/")
+        .unwrap();
+    let mut client = PeachNetworkClient::new(transport_handle);
+
     // retrieve ssid for connected network
-    let ssid = get_ssid();
+    let ssid = client.get_ssid().call();
     let ssid = match ssid {
-        Some(network) => network,
-        None => "Not currently connected".to_string(),
+        Ok(network) => network,
+        Err(_) => "Not currently connected".to_string(),
     };
     
     let status : String = "ok".to_string();
-    let msg : String = ssid.to_string();
+    let msg : String = ssid;
     
     Json(build_json_response(status, msg))
 }
 
 #[post("/wifi_credentials", data = "<wifi>")]
 fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
-
-    // generate configuration based on provided ssid & password
-    let output = Command::new("wpa_passphrase")
-        .arg(&wifi.ssid)
-        .arg(&wifi.pass)
-        .stdout(Stdio::piped())
-        .output().unwrap_or_else(|e| {
-            panic!("Failed to execute wpa_passphrase command: {}", e)
-    });
-
-    let wpa_details = &*(output.stdout);
-
-    // append wpa_passphrase output to wpa_supplicant.conf if successful
-    if output.status.success() {
-        // open file in append mode
-        let file = OpenOptions::new()
-            .append(true)
-            .open("/etc/wpa_supplicant/wpa_supplicant.conf");
-        
-        let _file = match file {
-            // if file exists & open succeeds, write wifi configuration
-            Ok(mut f) => f.write(wpa_details),
-            // need to handle this better: create file if not found
-            //  and seed with 'ctrl_interace' & 'update_config' settings
-            Err(_) => panic!("There was a problem appending to the file")
-        };
-        
-        // set the status of the wlan0 interface to DOWN
-        let if_down = Command::new("sudo")
-            .arg("/sbin/ifdown")
-            .arg("wlan0")
-            .output().unwrap_or_else(|e| {
-                panic!("Failed to execute ifdown command: {}", e)
-            });
-
-        if if_down.status.success() {
-            println!("wlan0 down");
-        } else { println!("wlan0 down failed"); };
-        
-        // set the status of the wlan0 interface to UP
-        // (required to force interface to attempt connection using
-        //  newly added wifi credentials)
-        let if_up = Command::new("sudo")
-            .arg("/sbin/ifup")
-            .arg("wlan0")
-            .output().unwrap_or_else(|e| {
-                panic!("Failed to execute ifup command: {}", e)
-            });
-
-        if if_up.status.success() {
-            println!("wlan0 up");
-        } else { println!("wlan0 up failed"); };
-
-        // manually run the interface_checker to tear-down the ap
-        let _iface_checker = Command::new("sudo")
-            .arg("/bin/bash")
-            .arg("/home/glyph/interface_checker.sh")
-            .output().unwrap_or_else(|e| {
-                panic!("Failed to execute interface_checker command: {}", e)
-            });
-
-        // json response for successful update
-        let status : String = "ok".to_string();
-        let msg : String = "WiFi credentials added. Attempting connection."
-            .to_string();
-        Json(build_json_response(status, msg))
-    } else {
-        // json response for failed update
-        let status : String = "error".to_string();
-        let msg : String = "Failed to add WiFi credentials.".to_string();
-        Json(build_json_response(status, msg))
-    }
+    // create http transport for jsonrpc comms
+    let transport = HttpTransport::new().standalone().unwrap();
+    let transport_handle = transport
+        .handle("http://127.0.0.1:3030/")
+        .unwrap();
+    let mut client = PeachNetworkClient::new(transport_handle);
+    
+    // generate and write wifi config to wpa_supplicant
+    let ssid : String = wifi.ssid.to_string();
+    let pass : String = wifi.pass.to_string();
+    // this passage is a little sketchy but it works
+    //  probably needs better handling of errors (ie. no unwraps)
+    //  will panic if ifdown, ifup or ifchecker commands fail for some reason
+    let add = client.add_wifi(ssid, pass).call();
+    match add {
+        Ok(_) => {
+            let _ifdown = client.if_down("wlan0".to_string()).call().unwrap();
+            let _ifup = client.if_up("wlan0".to_string()).call().unwrap();
+            let _ifchecker = client.if_checker().call().unwrap();
+            // json response for successful update
+            let status : String = "ok".to_string();
+            let msg : String = "WiFi credentials added. Attempting connection."
+                .to_string();
+            return Json(build_json_response(status, msg))
+        },
+        Err(_) => {
+            // json response for failed update
+            let status : String = "error".to_string();
+            let msg : String = "Failed to add WiFi credentials.".to_string();
+            return Json(build_json_response(status, msg))
+        },
+    };
 }
 
 #[catch(404)]
