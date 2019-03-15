@@ -48,7 +48,7 @@ struct InterfaceAddresses {
 struct JsonResponse {
     status: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    data: Option<String>,
+    data: Option<JsonValue>,
     #[serde(skip_serializing_if = "Option::is_none")]
     msg: Option<String>,
 }
@@ -75,7 +75,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn if_up(&mut self, iface: String) -> RpcRequest<String>;
 });
 
-fn build_json_response(status: String, data: Option<String>, msg: Option<String>) -> JsonResponse {
+fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
     JsonResponse {
         status: status,
         data: data,
@@ -114,13 +114,18 @@ fn return_ip() -> Json<JsonResponse> {
         Err(_) => "x.x.x.x".to_string(),
     };
 
-    let ips = InterfaceAddresses {
+    /*let ips = InterfaceAddresses {
         wlan0: wlan_ip,
         ap0: ap_ip,
-    };
+    };*/
+
+    let data = json!({
+        "wlan0": wlan_ip,
+        "ap0": ap_ip
+    });
 
     let status: String = "success".to_string();
-    let data = serde_json::to_string(&ips).unwrap();
+    //let data = serde_json::to_string(&ips).unwrap();
 
     Json(build_json_response(status, Some(data), None))
 }
@@ -140,7 +145,7 @@ fn return_ssid() -> Json<JsonResponse> {
     };
 
     let status: String = "success".to_string();
-    let data: String = ssid;
+    let data = json!(ssid);
 
     Json(build_json_response(status, Some(data), None))
 }
@@ -166,7 +171,7 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
             let _ifchecker = client.if_checker().call().unwrap();
             // json response for successful update
             let status: String = "success".to_string();
-            let data: String = "WiFi credentials added".to_string();
+            let data = json!("WiFi credentials added");
             return Json(build_json_response(status, Some(data), None));
         }
         Err(_) => {
