@@ -16,7 +16,7 @@ Clone this repo:
 
 Move into the repo and compile:
 
-`cd peach-web`
+`cd peach-web`  
 `cargo build`
 
 Run the tests:
@@ -29,7 +29,6 @@ Run the binary:
 
 _Note: Networking functionality required peach-network microservice to be running._
 
------
 
 ### JSON API
 
