@@ -8,34 +8,38 @@ Initial development will focus on administration of the device itself, with SSB-
 
 _Note: This is a work-in-progress._
 
-### Design Principles
+### Setup
 
-Minimal, low-tech & pretty. Aim for HTML-only, accept JS grudgingly (only if strictly necessary).
+Clone this repo:
 
-### Basic Project Outline
+`git clone https://github.com/peachcloud/peach-web.git`
 
-1. Setup sub-project repo
-2. Write introductory documentation
-3. Setup dev-diary in the Scuttleverse
-4. Brainstorm interface requirements (feature list)
-   - Pi-related data and interactivity
-   - SSB-related data and interactivity
-5. Create UI spec document
-   - Map features to views (text)
-6. Sketch interface mockups
-7. Generate UX flow diagrams
-   - Iterate between steps 6 & 7
-8. Setup dev environment
-   - Simple web server to host static content (possibly [Rocket](https://rocket.rs/))
-9. Begin coding views
-   - Return to steps 6 & 7 where necessary
-10. Move towards alpha before seeking external input / testers
+Move into the repo and compile:
 
-### Development Environment
+`cd peach-web`
+`cargo build`
 
-In order to be flexible in supporting single-board computers beyond the Raspberry Pi alone, and to take full advantage of 64-bit support on ARMv8 devices, development for PeachCloud is being targeted at Debian ARM64.
+Run the tests:
 
-No official image has yet been released by Debian for the Raspberry Pi 3, though a preview image of Debian Buster is available [from their wiki](https://wiki.debian.org/RaspberryPi3). The major known issue with that preview image is broken wireless (the built-in wireless interface does not work). Fortunately, Michael Stapelberg has posted [an updated version of the preview image](https://people.debian.org/~stapelberg/2018/01/08/raspberry-pi-3) with WiFi that works out of the box.
+`cargo test`
+
+Run the binary:
+
+`./target/debug/peach-web`
+
+_Note: Networking functionality required peach-network microservice to be running._
+
+-----
+
+### JSON API
+
+| Endpoint | Method | Parameters | Description |
+| --- | --- | --- | --- |
+| /ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
+| /ssid | GET | | Returns SSID for connected WiFi network |
+| /wifi_credentials | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+
+-----
 
 ### Relevant Links
 
@@ -47,6 +51,9 @@ No official image has yet been released by Debian for the Raspberry Pi 3, though
  - Project reconception: PeachCloud as a hardware product
    - %9NCyTf+oBxG0APlXRCKtrGZj3t+i+Kp3pKPN1gtFX2c=.sha256
    - [ssb-web viewer](http://viewer.scuttlebot.io/%259NCyTf%2BoBxG0APlXRCKtrGZj3t%2Bi%2BKp3pKPN1gtFX2c%3D.sha256)
+ - PeachCloud Web Interface: Dev Diary
+   - %mKUByRp4Gib6fqP1q2/dHg+ueSoR+Sj2Y0D7T0Np0D4=.sha256
+   - [ssb-web viewer](http://viewer.scuttlebot.io/%25mKUByRp4Gib6fqP1q2%2FdHg%2BueSoR%2BSj2Y0D7T0Np0D4%3D.sha256)
 
 **Legacy Web Links**
 

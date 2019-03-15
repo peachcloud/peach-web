@@ -1,14 +1,15 @@
 use std::fs::File;
 use std::io::Read;
 
+use rocket::http::{ContentType, Status};
 use rocket::local::Client;
-use rocket::http::{Status, ContentType};
 
 use super::rocket;
 
 // helper function to test correct retrieval and content of a file
-fn test_query_file<T> (path: &str, file: T, status: Status)
-    where T: Into<Option<&'static str>>
+fn test_query_file<T>(path: &str, file: T, status: Status)
+where
+    T: Into<Option<&'static str>>,
 {
     let client = Client::new(rocket()).unwrap();
     let mut response = client.get(path).dispatch();
@@ -34,7 +35,7 @@ fn read_file_content(path: &str) -> Vec<u8> {
 #[test]
 fn test_index_response() {
     let client = Client::new(rocket()).expect("valid rocket instance");
-    let mut response = client.get("/").dispatch();
+    let response = client.get("/").dispatch();
     assert_eq!(response.status(), Status::Ok);
 }
 
@@ -42,11 +43,7 @@ fn test_index_response() {
 fn test_index_html() {
     test_query_file("/", "static/index.html", Status::Ok);
     test_query_file("/?v=1", "static/index.html", Status::Ok);
-    test_query_file(
-        "/?this=should&be=ignored",
-        "static/index.html",
-        Status::Ok
-    );
+    test_query_file("/?this=should&be=ignored", "static/index.html", Status::Ok);
 }
 
 #[test]
@@ -54,17 +51,17 @@ fn test_nested_file() {
     test_query_file(
         "/images/placeholder.txt",
         "static/images/placeholder.txt",
-        Status::Ok
+        Status::Ok,
     );
     test_query_file(
         "/images/placeholder.txt?v=1",
         "static/images/placeholder.txt",
-        Status::Ok
+        Status::Ok,
     );
     test_query_file(
         "/images/placeholder.txt?v=1&a=b",
         "static/images/placeholder.txt",
-        Status::Ok
+        Status::Ok,
     );
 }
 
@@ -86,10 +83,12 @@ fn test_invalid_get_request() {
 
     // try to get a path that doesn't exist
     let mut res = client
-        .get("/message/99").header(ContentType::JSON).dispatch();
+        .get("/message/99")
+        .header(ContentType::JSON)
+        .dispatch();
     assert_eq!(res.status(), Status::NotFound);
 
     let body = res.body_string().unwrap();
     assert!(body.contains("error"));
-    assert!(body.contains("Resource was not found."));
+    assert!(body.contains("Resource was not found"));
 }

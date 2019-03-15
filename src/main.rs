@@ -1,21 +1,26 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[cfg(test)] mod tests;
+#[cfg(test)]
+mod tests;
 
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
-#[macro_use] extern crate serde_derive;
-#[macro_use] extern crate jsonrpc_client_core;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
+#[macro_use]
+extern crate serde_derive;
+#[macro_use]
+extern crate jsonrpc_client_core;
+extern crate get_if_addrs;
 extern crate jsonrpc_client_http;
 extern crate websocket;
-extern crate get_if_addrs;
 
 use std::io;
-use std::thread;
 use std::path::{Path, PathBuf};
+use std::thread;
 
-use rocket::response::NamedFile;
 use rocket::request::Form;
+use rocket::response::NamedFile;
 
 use rocket_contrib::json::{Json, JsonValue};
 
@@ -31,25 +36,28 @@ struct WiFi {
     pass: String,
 }
 
-// struct for json config update responses
-#[derive(Serialize)]
-struct JsonResponse {
-    status: String,
-    data: String,
-}
-
-// struct for json interface address responses
+// struct for interface address data
 #[derive(Serialize)]
 struct InterfaceAddresses {
     ap0: String,
     wlan0: String,
 }
 
+// struct for json response objects
+#[derive(Serialize)]
+struct JsonResponse {
+    status: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    data: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    msg: Option<String>,
+}
+
 // jsonrpc client
 jsonrpc_client!(pub struct PeachNetworkClient {
     // returns the ip address for the given interface
     pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
-    
+
     // returns the ssid for the connected wifi network
     pub fn get_ssid(&mut self) -> RpcRequest<String>;
 
@@ -67,18 +75,11 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn if_up(&mut self, iface: String) -> RpcRequest<String>;
 });
 
-
-fn build_json_response(status: String, data: String) -> JsonResponse {
+fn build_json_response(status: String, data: Option<String>, msg: Option<String>) -> JsonResponse {
     JsonResponse {
         status: status,
         data: data,
-    }
-}
-
-fn json_ip_response(ap0: String, wlan0: String) -> InterfaceAddresses {
-    InterfaceAddresses {
-        ap0: ap0,
-        wlan0: wlan0,
+        msg: msg,
     }
 }
 
@@ -93,38 +94,42 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 #[get("/ip")]
-fn return_ip() -> Json<InterfaceAddresses> {
+fn return_ip() -> Json<JsonResponse> {
     // create http transport for jsonrpc comms
     let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport
-        .handle("http://127.0.0.1:3030/")
-        .unwrap();
+    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
     let mut client = PeachNetworkClient::new(transport_handle);
-    
+
     // retrieve ip for wlan0 or set to x.x.x.x if not found
     let wlan_ip = client.get_ip("wlan0".to_string()).call();
     let wlan_ip = match wlan_ip {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
- 
+
     // retrieve ip for ap0 or set to x.x.x.x if not found
     let ap_ip = client.get_ip("ap0".to_string()).call();
     let ap_ip = match ap_ip {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
-   
-    Json(json_ip_response(ap_ip, wlan_ip))
+
+    let ips = InterfaceAddresses {
+        wlan0: wlan_ip,
+        ap0: ap_ip,
+    };
+
+    let status: String = "success".to_string();
+    let data = serde_json::to_string(&ips).unwrap();
+
+    Json(build_json_response(status, Some(data), None))
 }
 
 #[get("/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
     // create http transport for jsonrpc comms
     let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport
-        .handle("http://127.0.0.1:3030/")
-        .unwrap();
+    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
     let mut client = PeachNetworkClient::new(transport_handle);
 
     // retrieve ssid for connected network
@@ -133,25 +138,23 @@ fn return_ssid() -> Json<JsonResponse> {
         Ok(network) => network,
         Err(_) => "Not currently connected".to_string(),
     };
-    
-    let status : String = "ok".to_string();
-    let msg : String = ssid;
-    
-    Json(build_json_response(status, msg))
+
+    let status: String = "success".to_string();
+    let data: String = ssid;
+
+    Json(build_json_response(status, Some(data), None))
 }
 
 #[post("/wifi_credentials", data = "<wifi>")]
 fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // create http transport for jsonrpc comms
     let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport
-        .handle("http://127.0.0.1:3030/")
-        .unwrap();
+    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
     let mut client = PeachNetworkClient::new(transport_handle);
-    
+
     // generate and write wifi config to wpa_supplicant
-    let ssid : String = wifi.ssid.to_string();
-    let pass : String = wifi.pass.to_string();
+    let ssid: String = wifi.ssid.to_string();
+    let pass: String = wifi.pass.to_string();
     // this passage is a little sketchy but it works
     //  probably needs better handling of errors (ie. no unwraps)
     //  will panic if ifdown, ifup or ifchecker commands fail for some reason
@@ -162,17 +165,16 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
             let _ifup = client.if_up("wlan0".to_string()).call().unwrap();
             let _ifchecker = client.if_checker().call().unwrap();
             // json response for successful update
-            let status : String = "ok".to_string();
-            let msg : String = "WiFi credentials added. Attempting connection."
-                .to_string();
-            return Json(build_json_response(status, msg))
-        },
+            let status: String = "success".to_string();
+            let data: String = "WiFi credentials added".to_string();
+            return Json(build_json_response(status, Some(data), None));
+        }
         Err(_) => {
             // json response for failed update
-            let status : String = "error".to_string();
-            let msg : String = "Failed to add WiFi credentials.".to_string();
-            return Json(build_json_response(status, msg))
-        },
+            let status: String = "error".to_string();
+            let msg: String = "Failed to add WiFi credentials".to_string();
+            return Json(build_json_response(status, None, Some(msg)));
+        }
     };
 }
 
@@ -180,77 +182,75 @@ fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
 fn not_found() -> JsonValue {
     json!({
         "status": "error",
-        "msg": "Resource was not found."
+        "msg": "Resource was not found"
     })
 }
 
 // create rocket instance & mount routes (makes testing easier)
 fn rocket() -> rocket::Rocket {
     rocket::ignite()
-        .mount("/", routes![
-               index,
-               files,
-               wifi_creds,
-               return_ip,
-               return_ssid
-        ])
+        .mount(
+            "/",
+            routes![index, files, wifi_creds, return_ip, return_ssid],
+        )
         .register(catchers![not_found])
 }
 
 fn main() {
-    
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
         rocket().launch();
     });
 
     // Start listening for WebSocket connections
-	let ws_server = Server::bind("0.0.0.0:2794").unwrap();
+    let ws_server = Server::bind("0.0.0.0:2794").unwrap();
 
-	for connection in ws_server.filter_map(Result::ok) {
-		// Spawn a new thread for each connection.
-		thread::spawn(move || {
-			if !connection
-				.protocols()
-				.contains(&"rust-websocket".to_string())
-			{
-				connection.reject().unwrap();
-				return;
-			}
+    for connection in ws_server.filter_map(Result::ok) {
+        // Spawn a new thread for each connection.
+        thread::spawn(move || {
+            if !connection
+                .protocols()
+                .contains(&"rust-websocket".to_string())
+            {
+                connection.reject().unwrap();
+                return;
+            }
 
-			let mut client = connection
-                .use_protocol("rust-websocket").accept().unwrap();
+            let mut client = connection
+                .use_protocol("rust-websocket")
+                .accept()
+                .unwrap();
 
-			let client_ip = client.peer_addr().unwrap();
+            let client_ip = client.peer_addr().unwrap();
 
-			println!("Connection from {}", client_ip);
+            println!("Connection from {}", client_ip);
 
             let msg_text = "Websocket successfully connected".to_string();
             let message = Message::text(msg_text);
-			client.send_message(&message).unwrap();
+            client.send_message(&message).unwrap();
 
-			let (mut receiver, mut sender) = client.split().unwrap();
+            let (mut receiver, mut sender) = client.split().unwrap();
 
-			for message in receiver.incoming_messages() {
-				let message = message.unwrap();
+            for message in receiver.incoming_messages() {
+                let message = message.unwrap();
 
-				match message {
-					OwnedMessage::Close(_) => {
-						let message = Message::close();
-						sender.send_message(&message).unwrap();
-						println!("Client {} disconnected", client_ip);
-						return;
-					}
-					OwnedMessage::Ping(data) => {
-						let message = Message::pong(data);
-						sender.send_message(&message).unwrap();
-					}
-					_ => {
+                match message {
+                    OwnedMessage::Close(_) => {
+                        let message = Message::close();
+                        sender.send_message(&message).unwrap();
+                        println!("Client {} disconnected", client_ip);
+                        return;
+                    }
+                    OwnedMessage::Ping(data) => {
+                        let message = Message::pong(data);
+                        sender.send_message(&message).unwrap();
+                    }
+                    _ => {
                         sender.send_message(&message).unwrap();
                         println!("{:?}", message);
                     }
-				}
-			}
-		});
-	}
+                }
+            }
+        });
+    }
 }
