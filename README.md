@@ -27,7 +27,7 @@ Run the binary:
 
 `./target/debug/peach-web`
 
-_Note: Networking functionality required peach-network microservice to be running._
+_Note: Networking functionality requires peach-network microservice to be running._
 
 
 ### JSON API
