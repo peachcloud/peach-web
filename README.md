@@ -29,7 +29,6 @@ Run the binary:
 
 _Note: Networking functionality requires peach-network microservice to be running._
 
-
 ### JSON API
 
 | Endpoint | Method | Parameters | Description |
