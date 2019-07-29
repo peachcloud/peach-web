@@ -29,6 +29,8 @@ use jsonrpc_client_http::HttpTransport;
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
 
+use crate::network::*;
+
 // struct for handling wifi credentials
 #[derive(FromForm)]
 struct WiFi {
@@ -67,15 +69,13 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     // run ap / client-mode configuration script
     pub fn if_checker(&mut self) -> RpcRequest<String>;
-
-    // take the given network interface down
-    pub fn if_down(&mut self, iface: String) -> RpcRequest<String>;
-
-    // bring the given network interface up
-    pub fn if_up(&mut self, iface: String) -> RpcRequest<String>;
 });
 
-fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
+fn build_json_response(
+    status: String,
+    data: Option<JsonValue>,
+    msg: Option<String>,
+) -> JsonResponse {
     JsonResponse {
         status: status,
         data: data,
@@ -93,31 +93,10 @@ fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
 }
 
-#[get("/ip")]
-fn return_ip() -> Json<JsonResponse> {
-    // create http transport for jsonrpc comms
-    let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
-    let mut client = PeachNetworkClient::new(transport_handle);
-
-    // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = client.get_ip("wlan0".to_string()).call();
-    let wlan_ip = match wlan_ip {
-        Ok(ip) => ip,
-        Err(_) => "x.x.x.x".to_string(),
-    };
-
-    // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = client.get_ip("ap0".to_string()).call();
-    let ap_ip = match ap_ip {
-        Ok(ip) => ip,
-        Err(_) => "x.x.x.x".to_string(),
-    };
-
-    /*let ips = InterfaceAddresses {
-        wlan0: wlan_ip,
-        ap0: ap_ip,
-    };*/
+#[get("/api/v1/ip/<iface>")]
+fn return_ip(iface: String) -> Json<JsonResponse> {
+    // let ip = network_get_ip(&iface);
+    // let data = json!({iface: ip});
 
     let data = json!({
         "wlan0": wlan_ip,
@@ -221,10 +200,7 @@ fn main() {
                 return;
             }
 
-            let mut client = connection
-                .use_protocol("rust-websocket")
-                .accept()
-                .unwrap();
+            let mut client = connection.use_protocol("rust-websocket").accept().unwrap();
 
             let client_ip = client.peer_addr().unwrap();
 
