@@ -1,9 +1,0 @@
-[Unit]
-Description=Create AP interface & assign static IP
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/createap
-
-[Install]
-WantedBy=multi-user.target

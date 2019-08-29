@@ -5,16 +5,16 @@ authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 
 [dependencies]
-rocket = "0.4.0"
-websocket = "0.21.0"
-get_if_addrs = "0.5.3"
+rocket = "0.4"
+websocket = "0.21"
+get_if_addrs = "0.5"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
-jsonrpc-client-core = "0.5.0"
-jsonrpc-client-http = "0.5.0"
+jsonrpc-client-core = "0.5"
+jsonrpc-client-http = "0.5"
 
 [dependencies.rocket_contrib]
-version = "0.4.0"
+version = "0.4"
 default-features = false
 features = ["json"]

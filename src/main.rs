@@ -36,13 +36,6 @@ struct WiFi {
     pass: String,
 }
 
-// struct for interface address data
-#[derive(Serialize)]
-struct InterfaceAddresses {
-    ap0: String,
-    wlan0: String,
-}
-
 // struct for json response objects
 #[derive(Serialize)]
 struct JsonResponse {
@@ -113,11 +106,6 @@ fn return_ip() -> Json<JsonResponse> {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
-
-    /*let ips = InterfaceAddresses {
-        wlan0: wlan_ip,
-        ap0: ap_ip,
-    };*/
 
     let data = json!({
         "wlan0": wlan_ip,
@@ -207,6 +195,7 @@ fn main() {
         rocket().launch();
     });
 
+    // -> move to websocket.rs and call with server address:port
     // Start listening for WebSocket connections
     let ws_server = Server::bind("0.0.0.0:2794").unwrap();
 
@@ -228,6 +217,7 @@ fn main() {
 
             let client_ip = client.peer_addr().unwrap();
 
+            // -> replace with info!(format!("Connection from {}", client_ip));
             println!("Connection from {}", client_ip);
 
             let msg_text = "Websocket successfully connected".to_string();
