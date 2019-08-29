@@ -1,4 +1,5 @@
 //use serde::{Deserialize, Serialize};
+use rocket_contrib::json::JsonValue;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CpuStat {
@@ -24,6 +25,15 @@ pub struct DiskUsage {
     pub one_k_blocks_free: u64,
     pub used_percentage: u32,
     pub mountpoint: String,
+}
+
+#[derive(Serialize)]
+pub struct JsonResponse {
+    pub status: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<JsonValue>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub msg: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

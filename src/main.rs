@@ -1,11 +1,5 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-mod error;
-mod network;
-mod structs;
-#[cfg(test)]
-mod tests;
-
 #[macro_use]
 extern crate log;
 extern crate env_logger;
@@ -21,29 +15,24 @@ extern crate get_if_addrs;
 extern crate jsonrpc_client_http;
 extern crate websocket;
 
+mod error;
+mod network;
+mod structs;
+#[cfg(test)]
+mod tests;
+mod ws;
+
 use std::io;
 use std::path::{Path, PathBuf};
 use std::thread;
 
 use crate::network::*;
-use crate::structs::WiFi;
+use crate::structs::{JsonResponse, WiFi};
+use crate::ws::*;
 
-//use jsonrpc_client_http::HttpTransport;
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::{Json, JsonValue};
-use websocket::sync::Server;
-use websocket::{Message, OwnedMessage};
-
-// struct for json response objects
-#[derive(Serialize)]
-struct JsonResponse {
-    status: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    data: Option<JsonValue>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    msg: Option<String>,
-}
 
 fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
     JsonResponse {
@@ -103,9 +92,6 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
     let ssid: String = wifi.ssid.to_string();
     let pass: String = wifi.pass.to_string();
-    // this passage is a little sketchy but it works
-    //  probably needs better handling of errors (ie. no unwraps)
-    //  will panic if ifdown, ifup or ifchecker commands fail for some reason
     let add = network_add_wifi(ssid, pass);
     match add {
         Ok(_) => {
@@ -151,57 +137,10 @@ fn main() {
         rocket().launch();
     });
 
-    // -> move to websocket.rs and call with server address:port
     // Start listening for WebSocket connections
-    let ws_server = Server::bind("0.0.0.0:2794").unwrap();
-
-    for connection in ws_server.filter_map(Result::ok) {
-        // Spawn a new thread for each connection.
-        thread::spawn(move || {
-            if !connection
-                .protocols()
-                .contains(&"rust-websocket".to_string())
-            {
-                connection.reject().unwrap();
-                return;
-            }
-
-            let mut client = connection
-                .use_protocol("rust-websocket")
-                .accept()
-                .unwrap();
-
-            let client_ip = client.peer_addr().unwrap();
-
-            // -> replace with info!(format!("Connection from {}", client_ip));
-            println!("Connection from {}", client_ip);
-
-            let msg_text = "Websocket successfully connected".to_string();
-            let message = Message::text(msg_text);
-            client.send_message(&message).unwrap();
-
-            let (mut receiver, mut sender) = client.split().unwrap();
-
-            for message in receiver.incoming_messages() {
-                let message = message.unwrap();
-
-                match message {
-                    OwnedMessage::Close(_) => {
-                        let message = Message::close();
-                        sender.send_message(&message).unwrap();
-                        println!("Client {} disconnected", client_ip);
-                        return;
-                    }
-                    OwnedMessage::Ping(data) => {
-                        let message = Message::pong(data);
-                        sender.send_message(&message).unwrap();
-                    }
-                    _ => {
-                        sender.send_message(&message).unwrap();
-                        println!("{:?}", message);
-                    }
-                }
-            }
-        });
-    }
+    let ws_addr = "0.0.0.0:2794".to_string();
+    match websocket_server(ws_addr) {
+        Ok(_) => println!("All good"),
+        Err(_) => println!("Error starting the websocket server")
+    };
 }
