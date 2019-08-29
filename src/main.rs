@@ -1,8 +1,14 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+mod error;
+mod network;
+mod structs;
 #[cfg(test)]
 mod tests;
 
+#[macro_use]
+extern crate log;
+extern crate env_logger;
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -19,22 +25,15 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::thread;
 
+use crate::network::*;
+use crate::structs::WiFi;
+
+//use jsonrpc_client_http::HttpTransport;
 use rocket::request::Form;
 use rocket::response::NamedFile;
-
 use rocket_contrib::json::{Json, JsonValue};
-
-use jsonrpc_client_http::HttpTransport;
-
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
-
-// struct for handling wifi credentials
-#[derive(FromForm)]
-struct WiFi {
-    ssid: String,
-    pass: String,
-}
 
 // struct for json response objects
 #[derive(Serialize)]
@@ -45,28 +44,6 @@ struct JsonResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     msg: Option<String>,
 }
-
-// jsonrpc client
-jsonrpc_client!(pub struct PeachNetworkClient {
-    // returns the ip address for the given interface
-    pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
-
-    // returns the ssid for the connected wifi network
-    pub fn get_ssid(&mut self) -> RpcRequest<String>;
-
-    // generates wpa_passphrase for given creds and writes to
-    //  wpa_supplicant.conf
-    pub fn add_wifi(&mut self, ssid: String, pass: String) -> RpcRequest<String>;
-
-    // run ap / client-mode configuration script
-    pub fn if_checker(&mut self) -> RpcRequest<String>;
-
-    // take the given network interface down
-    pub fn if_down(&mut self, iface: String) -> RpcRequest<String>;
-
-    // bring the given network interface up
-    pub fn if_up(&mut self, iface: String) -> RpcRequest<String>;
-});
 
 fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
     JsonResponse {
@@ -88,75 +65,51 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 #[get("/ip")]
 fn return_ip() -> Json<JsonResponse> {
-    // create http transport for jsonrpc comms
-    let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
-    let mut client = PeachNetworkClient::new(transport_handle);
-
     // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = client.get_ip("wlan0".to_string()).call();
-    let wlan_ip = match wlan_ip {
+    let wlan_ip = match network_get_ip("wlan0".to_string()) {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
-
     // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = client.get_ip("ap0".to_string()).call();
-    let ap_ip = match ap_ip {
+    let ap_ip = match network_get_ip("ap0".to_string()) {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
-
     let data = json!({
         "wlan0": wlan_ip,
         "ap0": ap_ip
     });
 
     let status: String = "success".to_string();
-    //let data = serde_json::to_string(&ips).unwrap();
 
     Json(build_json_response(status, Some(data), None))
 }
 
 #[get("/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
-    // create http transport for jsonrpc comms
-    let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
-    let mut client = PeachNetworkClient::new(transport_handle);
-
     // retrieve ssid for connected network
-    let ssid = client.get_ssid().call();
-    let ssid = match ssid {
+    let ssid = match network_get_ssid("wlan0".to_string()) {
         Ok(network) => network,
         Err(_) => "Not currently connected".to_string(),
     };
-
     let status: String = "success".to_string();
     let data = json!(ssid);
 
     Json(build_json_response(status, Some(data), None))
 }
 
-#[post("/wifi_credentials", data = "<wifi>")]
-fn wifi_creds(wifi: Form<WiFi>) -> Json<JsonResponse> {
-    // create http transport for jsonrpc comms
-    let transport = HttpTransport::new().standalone().unwrap();
-    let transport_handle = transport.handle("http://127.0.0.1:3030/").unwrap();
-    let mut client = PeachNetworkClient::new(transport_handle);
-
+#[post("/add_wifi", data = "<wifi>")]
+fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
     let ssid: String = wifi.ssid.to_string();
     let pass: String = wifi.pass.to_string();
     // this passage is a little sketchy but it works
     //  probably needs better handling of errors (ie. no unwraps)
     //  will panic if ifdown, ifup or ifchecker commands fail for some reason
-    let add = client.add_wifi(ssid, pass).call();
+    let add = network_add_wifi(ssid, pass);
     match add {
         Ok(_) => {
-            let _ifdown = client.if_down("wlan0".to_string()).call().unwrap();
-            let _ifup = client.if_up("wlan0".to_string()).call().unwrap();
-            let _ifchecker = client.if_checker().call().unwrap();
+            network_reconnect_wifi("wlan0".to_string()).expect("Failed to reconnect the wlan0 interface");
             // json response for successful update
             let status: String = "success".to_string();
             let data = json!("WiFi credentials added");
@@ -184,12 +137,15 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, files, wifi_creds, return_ip, return_ssid],
+            routes![index, files, add_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
 }
 
 fn main() {
+    // initialize the logger
+    env_logger::init();
+
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
         rocket().launch();

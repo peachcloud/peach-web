@@ -14,7 +14,7 @@ _Note: This is a work-in-progress._
 | --- | --- | --- | --- |
 | /ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
 | /ssid | GET | | Returns SSID for connected WiFi network |
-| /wifi_credentials | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| /add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 
 ### Setup
 

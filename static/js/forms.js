@@ -2,7 +2,7 @@ $(document).on('submit', '#wifiCreds', function(event){
   event.preventDefault();
   var ssid = $("#ssid").val();
   var pass = $("#pass").val();
-  $.post("/wifi_credentials",
+  $.post("/add_wifi",
   {
     ssid: ssid,
     pass: pass
