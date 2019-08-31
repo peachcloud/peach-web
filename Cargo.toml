@@ -1,5 +1,5 @@
 [package]
-name = "peach-webapp"
+name = "peach-web"
 version = "0.1.0"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
