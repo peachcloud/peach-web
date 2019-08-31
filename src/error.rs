@@ -1,6 +1,10 @@
 extern crate jsonrpc_client_core;
 extern crate jsonrpc_client_http;
 
+use std::error;
+
+pub type BoxError = Box<dyn error::Error>;
+
 #[derive(Debug)]
 pub enum NetworkError {
     NetworkHttp(jsonrpc_client_http::Error),
