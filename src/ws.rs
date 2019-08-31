@@ -6,9 +6,9 @@ use websocket::{Message, OwnedMessage};
 
 pub fn websocket_server(address: String) -> io::Result<()> {
     // Start listening for WebSocket connections
-    //let ws_server = Server::bind("0.0.0.0:2794").unwrap();
     let ws_server = Server::bind(address)?;
 
+    info!("Listening for WebSocket connections.");
     for connection in ws_server.filter_map(Result::ok) {
         // Spawn a new thread for each connection.
         thread::spawn(move || {
@@ -27,10 +27,9 @@ pub fn websocket_server(address: String) -> io::Result<()> {
 
             let client_ip = client.peer_addr().unwrap();
 
-            // -> replace with info!(format!("Connection from {}", client_ip));
-            println!("Connection from {}", client_ip);
+            debug!("Websocket connection from {}.", client_ip);
 
-            let msg_text = "Websocket successfully connected".to_string();
+            let msg_text = "Websocket successfully connected.".to_string();
             let message = Message::text(msg_text);
             client.send_message(&message).unwrap();
 
@@ -41,18 +40,20 @@ pub fn websocket_server(address: String) -> io::Result<()> {
 
                 match message {
                     OwnedMessage::Close(_) => {
+                        debug!("Received close message.");
                         let message = Message::close();
                         sender.send_message(&message).unwrap();
-                        println!("Client {} disconnected", client_ip);
+                        debug!("Websocket client {} disconnected.", client_ip);
                         return;
                     }
                     OwnedMessage::Ping(data) => {
+                        debug!("Received ping message.");
                         let message = Message::pong(data);
                         sender.send_message(&message).unwrap();
                     }
                     _ => {
                         sender.send_message(&message).unwrap();
-                        println!("{:?}", message);
+                        debug!("Received unknown message: {:?}", message);
                     }
                 }
             }

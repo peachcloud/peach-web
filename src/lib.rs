@@ -2,7 +2,6 @@
 
 #[macro_use]
 extern crate log;
-extern crate env_logger;
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -57,13 +56,18 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     let add = network_add_wifi(ssid, pass);
     match add {
         Ok(_) => {
-            network_reconnect_wifi("wlan0".to_string()).expect("Failed to reconnect the wlan0 interface");
+            debug!("Added WiFi credentials.");
+            match network_reconnect_wifi("wlan0".to_string()) {
+                Ok(_) => debug!("Reconnected wlan0 interface."),
+                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
+            }
             // json response for successful update
             let status: String = "success".to_string();
             let data = json!("WiFi credentials added");
             return Json(build_json_response(status, Some(data), None));
         }
         Err(_) => {
+            debug!("Failed to add WiFi credentials.");
             // json response for failed update
             let status: String = "error".to_string();
             let msg: String = "Failed to add WiFi credentials".to_string();
@@ -136,19 +140,19 @@ fn rocket() -> rocket::Rocket {
 }
 
 pub fn run() -> Result<(), BoxError> {
-    // initialize the logger
-    env_logger::init();
+    info!("Starting up.");
 
     // spawn a separate thread for rocket to prevent blocking websockets
     thread::spawn(|| {
+        info!("Launching Rocket server.");
         rocket().launch();
     });
 
     // Start listening for WebSocket connections
     let ws_addr = "0.0.0.0:2794".to_string();
     match websocket_server(ws_addr) {
-        Ok(_) => println!("All good"),
-        Err(_) => println!("Error starting the websocket server")
+        Ok(_) => debug!("Websocket server terminated without error."),
+        Err(e) => error!("Error starting the websocket server: {}", e)
     };
 
     Ok(())
