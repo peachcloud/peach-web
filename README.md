@@ -20,6 +20,16 @@ _Note: This is a work-in-progress._
 
 ### Environment
 
+The web application deployment mode is configured with the `ROCKET_ENV` environment variable:
+
+`export ROCKET_ENV=stage`
+
+Other deployment modes are `dev` and `prod`. Read the [Rocket Environment Configurations docs](https://rocket.rs/v0.4/guide/configuration/#environment) for further information.
+
+The [Tera](https://tera.netlify.com/) template directory must be configured with the `ROCKET_TEMPLATE_DIR` environment variable:
+
+`export ROCKET_TEMPLATE_DIR=static/templates/`
+
 The WebSocket server port can be configured with `PEACH_WEB_WS` environment variable:
 
 `export PEACH_WEB_WS=2333`
