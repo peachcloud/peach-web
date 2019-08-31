@@ -21,9 +21,8 @@ mod structs;
 mod tests;
 mod ws;
 
-use std::io;
+use std::{env, io, thread};
 use std::path::{Path, PathBuf};
-use std::thread;
 
 use crate::error::BoxError;
 use crate::network::*;
@@ -148,8 +147,7 @@ pub fn run() -> Result<(), BoxError> {
         rocket().launch();
     });
 
-    // Start listening for WebSocket connections
-    let ws_addr = "0.0.0.0:2794".to_string();
+    let ws_addr = env::var("PEACH_WEB_WS").unwrap_or_else(|_| "0.0.0.0:5115".to_string());
     match websocket_server(ws_addr) {
         Ok(_) => debug!("Websocket server terminated without error."),
         Err(e) => error!("Error starting the websocket server: {}", e)
