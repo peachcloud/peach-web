@@ -63,14 +63,16 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             // json response for successful update
             let status: String = "success".to_string();
             let data = json!("WiFi credentials added");
-            return Json(build_json_response(status, Some(data), None));
+            
+            Json(build_json_response(status, Some(data), None));
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
             // json response for failed update
             let status: String = "error".to_string();
             let msg: String = "Failed to add WiFi credentials".to_string();
-            return Json(build_json_response(status, None, Some(msg)));
+            
+            Json(build_json_response(status, None, Some(msg)));
         }
     };
 }
@@ -114,9 +116,9 @@ fn return_ssid() -> Json<JsonResponse> {
 
 fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
     JsonResponse {
-        status: status,
-        data: data,
-        msg: msg,
+        status,
+        data,
+        msg,
     }
 }
 
