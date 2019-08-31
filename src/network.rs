@@ -3,9 +3,9 @@ extern crate jsonrpc_client_http;
 use std::env;
 
 use jsonrpc_client_http::HttpTransport;
+use snafu::ResultExt;
 
-// -> create this error.rs
-use crate::error::NetworkError;
+use crate::error::*;
 use crate::structs::Traffic;
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
@@ -13,16 +13,16 @@ use crate::structs::Traffic;
 ///
 pub fn network_activate_ap() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.activate_ap().call()?;
+    let response = client.activate_ap().call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -32,16 +32,16 @@ pub fn network_activate_ap() -> std::result::Result<String, NetworkError> {
 ///
 pub fn network_activate_client() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.activate_client().call()?;
+    let response = client.activate_client().call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -55,16 +55,16 @@ pub fn network_activate_client() -> std::result::Result<String, NetworkError> {
 ///
 pub fn network_add_wifi(ssid: String, pass: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.add_wifi(ssid, pass).call()?;
+    let response = client.add_wifi(ssid, pass).call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -78,16 +78,16 @@ pub fn network_add_wifi(ssid: String, pass: String) -> std::result::Result<Strin
 ///
 pub fn network_get_ip(iface: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.get_ip(iface).call()?;
+    let response = client.get_ip(iface).call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -101,16 +101,16 @@ pub fn network_get_ip(iface: String) -> std::result::Result<String, NetworkError
 ///
 pub fn network_get_rssi(iface: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.get_rssi(iface).call()?;
+    let response = client.get_rssi(iface).call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -124,16 +124,16 @@ pub fn network_get_rssi(iface: String) -> std::result::Result<String, NetworkErr
 ///
 pub fn network_get_ssid(iface: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.get_ssid(iface).call()?;
+    let response = client.get_ssid(iface).call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -143,16 +143,16 @@ pub fn network_get_ssid(iface: String) -> std::result::Result<String, NetworkErr
 ///
 pub fn network_get_state(iface: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.get_state(iface).call()?;
+    let response = client.get_state(iface).call().context(CallRpc)?;
 
     Ok(response)
 }
@@ -162,16 +162,16 @@ pub fn network_get_state(iface: String) -> std::result::Result<String, NetworkEr
 ///
 pub fn network_get_traffic(iface: String) -> std::result::Result<Traffic, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.get_traffic(iface).call()?;
+    let response = client.get_traffic(iface).call().context(CallRpc)?;
     let t: Traffic = serde_json::from_str(&response).unwrap();
 
     Ok(t)
@@ -186,16 +186,16 @@ pub fn network_get_traffic(iface: String) -> std::result::Result<Traffic, Networ
 ///
 pub fn network_reconnect_wifi(iface: String) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
-    let transport = HttpTransport::new().standalone()?;
+    let transport = HttpTransport::new().standalone().context(HttpTransport)?;
     let http_addr =
         env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
     let http_server = format!("http://{}", http_addr);
     debug!("Creating HTTP transport handle on {}.", http_server);
-    let transport_handle = transport.handle(&http_server)?;
+    let transport_handle = transport.handle(&http_server).context(HttpTransport)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
-    let response = client.reconnect_wifi(iface).call()?;
+    let response = client.reconnect_wifi(iface).call().context(CallRpc)?;
 
     Ok(response)
 }
