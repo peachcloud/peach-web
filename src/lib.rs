@@ -64,7 +64,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             let status: String = "success".to_string();
             let data = json!("WiFi credentials added");
             
-            Json(build_json_response(status, Some(data), None));
+            return Json(build_json_response(status, Some(data), None));
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
@@ -72,7 +72,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             let status: String = "error".to_string();
             let msg: String = "Failed to add WiFi credentials".to_string();
             
-            Json(build_json_response(status, None, Some(msg)));
+            return Json(build_json_response(status, None, Some(msg)));
         }
     };
 }
