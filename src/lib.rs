@@ -1,5 +1,9 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+extern crate get_if_addrs;
+#[macro_use]
+extern crate jsonrpc_client_core;
+extern crate jsonrpc_client_http;
 #[macro_use]
 extern crate log;
 #[macro_use]
@@ -8,10 +12,7 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-#[macro_use]
-extern crate jsonrpc_client_core;
-extern crate get_if_addrs;
-extern crate jsonrpc_client_http;
+extern crate tera;
 extern crate websocket;
 
 mod error;
@@ -26,18 +27,22 @@ use std::path::{Path, PathBuf};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{JsonResponse, WiFi};
+use crate::structs::{Context, JsonResponse, WiFi};
 use crate::ws::*;
 
 use rocket::request::Form;
 use rocket::response::NamedFile;
 use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
 #[get("/")]
-fn index() -> io::Result<NamedFile> {
-    NamedFile::open("static/index.html")
+fn index() -> Template {
+    // assign context through context_builder call
+    let context = Context::build();
+    Template::render("index", &context)
+    //NamedFile::open("static/index.html")
 }
 
 #[get("/<file..>")]
@@ -138,6 +143,7 @@ fn rocket() -> rocket::Rocket {
             routes![index, files, add_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
+        .attach(Template::fairing())
 }
 
 pub fn run() -> Result<(), BoxError> {

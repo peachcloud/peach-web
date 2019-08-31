@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <title>PeachCloud</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/tachyons.min.css">
+  <header class="pa4 bg-near-black">
+    <img src="peach-icon.png" class="w3 fl pa2" /><h1 class="f3 pa2 fl near-white">Welcome to PeachCloud!</h1>
+  </header>
+  <body class="fl bg-near-black">
+    <article class="pa4 black-80">
+      <form id="wifiCreds">
+        <fieldset class="ba b--transparent ph0 mh0">
+          <legend class="ph0 mh0 fw6 clip">Configure WiFi</legend>
+          <div class="mt3">
+            <label class="db fw4 lh-copy f6 near-white" for="ssid">SSID</label>
+            <input class="near-white pa2 input-reset ba bg-transparent w-100 measure" type="text" name="ssid"  id="ssid">
+          </div>
+          <div class="mt3">
+            <label class="db fw4 lh-copy f6 near-white" for="password">Password</label>
+            <input class="near-white b pa2 input-reset ba bg-transparent" type="password" name="pass"  id="pass">
+          </div>
+          <div class="mt3">
+            <input class="b ph3 pv2 input-reset ba b--near-white near-white bg-transparent grow pointer f6" type="submit" value="Submit">
+          </div>
+        </fieldset>
+      </form>
+    </article>
+  </body>
+  <footer class="bg-near-black">
+    <p class="pt5 pt6-l ph4 f5 near-white" id="ap0_ip">ap0: {{ ap_ip }} [ {{ ap_ssid }} ]</p>
+    <p class="ph4 f5 near-white" id="wlan0_ip">wlan0: {{ wlan_ip }} [ Connected to {{ wlan_ssid }} ]</p>
+  </footer>
+</html>

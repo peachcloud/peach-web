@@ -1,6 +1,44 @@
 //use serde::{Deserialize, Serialize};
 use rocket_contrib::json::JsonValue;
 
+use crate::network::*;
+
+#[derive(Debug, Serialize)]
+pub struct Context {
+    pub ap_ip: String,
+    pub ap_ssid: String,
+    pub wlan_ip: String,
+    pub wlan_ssid: String,
+}
+
+impl Context {
+    pub fn build() -> Context {
+        let ap_ip = match network_get_ip("ap0".to_string()) {
+            Ok(ip) => ip,
+            Err(_) => "x.x.x.x".to_string(),
+        };
+        let ap_ssid = match network_get_ssid("ap0".to_string()) {
+            Ok(ssid) => ssid,
+            Err(_) => "Not currently activated".to_string(),
+        };
+        let wlan_ip = match network_get_ip("wlan0".to_string()) {
+            Ok(ip) => ip,
+            Err(_) => "x.x.x.x".to_string(),
+        };
+        let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
+            Ok(ssid) => ssid,
+            Err(_) => "Not currently connected".to_string(),
+        };
+
+        Context {
+            ap_ip,
+            ap_ssid,
+            wlan_ip,
+            wlan_ssid,
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CpuStat {
     pub user: u64,
