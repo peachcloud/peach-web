@@ -1,7 +1,7 @@
 extern crate jsonrpc_client_core;
 extern crate jsonrpc_client_http;
 
-use std::error;
+use std::{error, io};
 
 use snafu::Snafu;
 
@@ -16,15 +16,10 @@ pub enum NetworkError {
     #[snafu(display("HTTP transport error: {}", source))]
     HttpTransport { source: jsonrpc_client_http::Error },
 }
-/*
-impl From<jsonrpc_client_http::Error> for NetworkError {
-    fn from(err: jsonrpc_client_http::Error) -> NetworkError {
-        NetworkError::NetworkHttp(err)
-    }
-}
 
-impl From<jsonrpc_client_core::Error> for NetworkError {
-    fn from(err: jsonrpc_client_core::Error) -> NetworkError {
-        NetworkError::NetworkClient(err)
-    }
-}*/
+#[derive(Debug, Snafu)]
+#[snafu(visibility(pub(crate)))]
+pub enum WebsocketError {
+    #[snafu(display("Failed to bind websocket server: {}", source))]
+    BindAddress { source: io::Error },
+}

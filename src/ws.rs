@@ -1,12 +1,15 @@
-use std::io;
+use std::result::Result;
 use std::thread;
 
+use snafu::ResultExt;
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
 
-pub fn websocket_server(address: String) -> io::Result<()> {
+use crate::error::*;
+
+pub fn websocket_server(address: String) -> Result<(), WebsocketError> {
     // Start listening for WebSocket connections
-    let ws_server = Server::bind(address)?;
+    let ws_server = Server::bind(address).context(BindAddress)?;
 
     info!("Listening for WebSocket connections.");
     for connection in ws_server.filter_map(Result::ok) {
