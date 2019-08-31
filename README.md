@@ -16,6 +16,20 @@ _Note: This is a work-in-progress._
 | /ssid | GET | | Returns SSID for connected WiFi network |
 | /add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 
+### Environment
+
+The WebSocket server port can be configured with `PEACH_WEB_WS` environment variable:
+
+`export PEACH_WEB_WS=2333`
+
+When not set, the value defaults to `5115`.
+
+Logging is made available with `env_logger`:
+
+`export RUST_LOG=info`
+
+Other logging levels include `debug`, `warn` and `error`.
+
 ### Setup
 
 Clone this repo:
