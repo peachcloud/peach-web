@@ -11,6 +11,7 @@ pub fn websocket_server(address: String) -> Result<(), WebsocketError> {
     // Start listening for WebSocket connections
     let ws_server = Server::bind(address).context(BindAddress)?;
 
+    // TODO: better error-handling in the connection threads
     info!("Listening for WebSocket connections.");
     for connection in ws_server.filter_map(Result::ok) {
         // Spawn a new thread for each connection.
@@ -19,14 +20,16 @@ pub fn websocket_server(address: String) -> Result<(), WebsocketError> {
                 .protocols()
                 .contains(&"rust-websocket".to_string())
             {
-                connection.reject().unwrap();
+                connection.reject().expect("Failed to send websocket rejection message");
                 return;
             }
 
             let mut client = connection
                 .use_protocol("rust-websocket")
                 .accept()
-                .unwrap();
+                // returns websocket::server::InvalidConnection with
+                //  error field
+                .expect("Failed to accept connection from client");
 
             let client_ip = client.peer_addr().unwrap();
 
