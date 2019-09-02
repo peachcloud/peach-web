@@ -22,12 +22,12 @@ mod structs;
 mod tests;
 mod ws;
 
-use std::{env, io, thread};
+use std::{env, thread};
 use std::path::{Path, PathBuf};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{Context, JsonResponse, WiFi};
+use crate::structs::{NetworkContext, JsonResponse, WiFi};
 use crate::ws::*;
 
 use rocket::request::Form;
@@ -40,7 +40,7 @@ use rocket_contrib::templates::Template;
 #[get("/")]
 fn index() -> Template {
     // assign context through context_builder call
-    let context = Context::build();
+    let context = NetworkContext::build();
     Template::render("index", &context)
     //NamedFile::open("static/index.html")
 }

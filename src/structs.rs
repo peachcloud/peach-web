@@ -4,15 +4,17 @@ use rocket_contrib::json::JsonValue;
 use crate::network::*;
 
 #[derive(Debug, Serialize)]
-pub struct Context {
+pub struct NetworkContext {
     pub ap_ip: String,
     pub ap_ssid: String,
+    pub ap_state: String,
     pub wlan_ip: String,
     pub wlan_ssid: String,
+    pub wlan_state: String,
 }
 
-impl Context {
-    pub fn build() -> Context {
+impl NetworkContext {
+    pub fn build() -> NetworkContext {
         let ap_ip = match network_get_ip("ap0".to_string()) {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
@@ -20,6 +22,10 @@ impl Context {
         let ap_ssid = match network_get_ssid("ap0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not currently activated".to_string(),
+        };
+        let ap_state = match network_get_state("ap0".to_string()) {
+            Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
         };
         let wlan_ip = match network_get_ip("wlan0".to_string()) {
             Ok(ip) => ip,
@@ -29,12 +35,18 @@ impl Context {
             Ok(ssid) => ssid,
             Err(_) => "Not currently connected".to_string(),
         };
+        let wlan_state = match network_get_state("wlan0".to_string()) {
+            Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
+        };
 
-        Context {
+        NetworkContext {
             ap_ip,
             ap_ssid,
+            ap_state,
             wlan_ip,
             wlan_ssid,
+            wlan_state,
         }
     }
 }

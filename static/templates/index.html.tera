@@ -28,7 +28,7 @@
     </article>
   </body>
   <footer class="bg-near-black">
-    <p class="pt5 pt6-l ph4 f5 near-white" id="ap0_ip">ap0: {{ ap_ip }} [ {{ ap_ssid }} ]</p>
-    <p class="ph4 f5 near-white" id="wlan0_ip">wlan0: {{ wlan_ip }} [ Connected to {{ wlan_ssid }} ]</p>
+    <p class="pt5 pt6-l ph4 f5 near-white" id="ap0">ap0 ({{ ap_state }}): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</p>
+    <p class="ph4 f5 near-white" id="wlan0">wlan0 ({{ wlan_state }}): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</p>
   </footer>
 </html>
