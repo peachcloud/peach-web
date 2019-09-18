@@ -41,8 +41,8 @@ use rocket_contrib::templates::Template;
 fn index() -> Template {
     // assign context through context_builder call
     let context = NetworkContext::build();
+    // template_dir is set in Rocket.toml
     Template::render("index", &context)
-    //NamedFile::open("static/index.html")
 }
 
 #[get("/<file..>")]
