@@ -6,7 +6,7 @@ use jsonrpc_client_http::HttpTransport;
 
 // -> create this error.rs
 use crate::error::NetworkError;
-use crate::structs::Traffic;
+use crate::structs::{Networks, Traffic};
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `activate_ap` method.
@@ -200,6 +200,23 @@ pub fn network_reconnect_wifi(iface: String) -> std::result::Result<String, Netw
     Ok(response)
 }
 
+pub fn network_scan_networks(iface: String) -> std::result::Result<Networks, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+
+    let response = client.scan_networks(iface).call()?;
+    let n: Networks = serde_json::from_str(&response).unwrap();
+
+    Ok(n)
+}
+
 jsonrpc_client!(pub struct PeachNetworkClient {
     /// Creates a JSON-RPC request to activate the access point.
     pub fn activate_ap(&mut self) -> RpcRequest<String>;
@@ -227,4 +244,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to get the network traffic for the given interface.
     pub fn get_traffic(&mut self, iface: String) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to list all networks in range of the given interface.
+    pub fn scan_networks(&mut self, iface: String) -> RpcRequest<String>;
 });

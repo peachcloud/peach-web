@@ -9,6 +9,7 @@ pub struct NetworkContext {
     pub ap_ssid: String,
     pub ap_state: String,
     pub wlan_ip: String,
+    pub wlan_scan: String,
     pub wlan_ssid: String,
     pub wlan_state: String,
 }
@@ -31,6 +32,10 @@ impl NetworkContext {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
+        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+            Ok(networks) => networks.list,
+            Err(_) => "No WiFi networks found".to_string(),
+        };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not currently connected".to_string(),
@@ -45,6 +50,7 @@ impl NetworkContext {
             ap_ssid,
             ap_state,
             wlan_ip,
+            wlan_scan,
             wlan_ssid,
             wlan_state,
         }
@@ -98,6 +104,11 @@ pub struct MemStat {
     pub total: u64,
     pub free: u64,
     pub used: u64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Networks {
+    pub list: String,
 }
 
 #[derive(Debug, Deserialize)]
