@@ -11,15 +11,18 @@
         <span class="pt5 pt6-l ph4 f5 near-white" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
         <span class="ph4 f5 near-white" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
       </div>
-      <img src="peach-icon.png" class="w3 fl pa2" /><h1 class="f3 pa2 fl near-white">Welcome to PeachCloud!</h1>
+      <div>
+        <img src="peach-icon.png" class="w3 fl pa2"></img>
+        <h1 class="near-white">Welcome to PeachCloud!</h1>
+      </div>
     </div>
     <!-- BODY -->
     <div class="flex justify-between bg-near-black">
-      <div class="outline w-25 pa3">
+      <div class="outline w-20 pa3">
         <code>1</code>
-        <p>Menu goes here</p>
+        <p>Navigation goes here</p>
       </div>
-      <div class="outline w-25 pa3">
+      <div class="outline w-50 pa3">
         <code>2</code>
         <p>Important information goes here</p>
       </div>
