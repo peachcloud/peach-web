@@ -4,13 +4,15 @@
   <title>PeachCloud</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/tachyons.min.css">
-  <header class="pa4 bg-near-black">
+  <!-- HEADER -->
+  <div class="pa4 bg-near-black">
     <div class="fr">
       <span class="pt5 pt6-l ph4 f5 near-white" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
       <span class="ph4 f5 near-white" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
     </div>
     <img src="peach-icon.png" class="w3 fl pa2" /><h1 class="f3 pa2 fl near-white">Welcome to PeachCloud!</h1>
-  </header>
+  </div>
+  <!-- BODY -->
   <body class="flex justify-between bg-near-black">
     <div class="outline w-25 pa3">
       <code>1</code>
@@ -42,8 +44,9 @@
         </form>
       </article>
     </div>
-  </body>
-  <footer class="bg-near-black">
+  </div>
+  <!-- FOOTER -->
+  <div class="bg-near-black">
     <span class="ph4 f5 near-white" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</span>
-  </footer>
+  </div>
 </html>
