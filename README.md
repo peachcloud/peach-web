@@ -14,9 +14,9 @@ _Note: This is a work-in-progress._
 
 | Endpoint | Method | Parameters | Description |
 | --- | --- | --- | --- |
-| /ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
-| /ssid | GET | | Returns SSID for connected WiFi network |
-| /add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| /api/ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
+| /api/ssid | GET | | Returns SSID for connected WiFi network |
+| /api/add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 
 ### Environment
 

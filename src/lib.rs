@@ -52,7 +52,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 // API ROUTES
 
-#[post("/add_wifi", data = "<wifi>")]
+#[post("/api/add_wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
     let ssid: String = wifi.ssid.to_string();
@@ -82,7 +82,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     };
 }
 
-#[get("/ip")]
+#[get("/api/ip")]
 fn return_ip() -> Json<JsonResponse> {
     // retrieve ip for wlan0 or set to x.x.x.x if not found
     let wlan_ip = match network_get_ip("wlan0".to_string()) {
@@ -104,7 +104,7 @@ fn return_ip() -> Json<JsonResponse> {
     Json(build_json_response(status, Some(data), None))
 }
 
-#[get("/ssid")]
+#[get("/api/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
     // retrieve ssid for connected network
     let ssid = match network_get_ssid("wlan0".to_string()) {
