@@ -4,45 +4,40 @@
   <title>PeachCloud</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/tachyons.min.css">
-  <body class="bg-near-black">
+  <body class="near-white bg-near-black">
     <!-- HEADER -->
-    <div class="pa4 bg-near-black">
-      <div class="fr">
-        <span class="pt5 pt6-l ph4 f5 near-white" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
-        <span class="ph4 f5 near-white" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
+    <div>
+      <div>
+        <img src="peach-icon.png" class="ph3 w3"></img>
+        <span class="fr pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
+        <span class="fr pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
       </div>
       <div>
-        <img src="peach-icon.png" class="w3 fl pa2"></img>
-        <h1 class="near-white">Welcome to PeachCloud!</h1>
+        <h1 class="ph3">Welcome to PeachCloud!</h1>
       </div>
     </div>
     <!-- BODY -->
-    <div class="flex justify-between bg-near-black">
+    <div class="flex justify-between">
       <div class="outline w-20 pa3">
-        <code>1</code>
-        <p>Navigation goes here</p>
       </div>
       <div class="outline w-50 pa3">
-        <code>2</code>
-        <p>Important information goes here</p>
+        <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
       </div>
       <div class="outline w-25 pa3">
-        <code>3</code>
-        <p>Handy actions go here</p>
-        <article class="pa4 black-80">
+        <article class="pa2 black-80">
           <form id="wifiCreds">
-            <fieldset class="ba b--transparent ph0 mh0">
+            <fieldset class="ba b--transparent near-white ph0 mh0">
               <legend class="ph0 mh0 fw6 clip">Configure WiFi</legend>
               <div class="mt3">
-                <label class="db fw4 lh-copy f6 near-white" for="ssid">SSID</label>
-                <input class="near-white pa2 input-reset ba bg-transparent w-100 measure" type="text" name="ssid"  id="ssid">
+                <label class="db fw4 lh-copy f6" for="ssid">SSID</label>
+                <input class="pa2 input-reset ba bg-transparent w-100 measure" type="text" name="ssid"  id="ssid">
               </div>
               <div class="mt3">
-                <label class="db fw4 lh-copy f6 near-white" for="password">Password</label>
-                <input class="near-white b pa2 input-reset ba bg-transparent" type="password" name="pass"  id="pass">
+                <label class="db fw4 lh-copy f6" for="password">Password</label>
+                <input class="b pa2 input-reset ba bg-transparent" type="password" name="pass"  id="pass">
               </div>
               <div class="mt3">
-                <input class="b ph3 pv2 input-reset ba b--near-white near-white bg-transparent grow pointer f6" type="submit" value="Submit">
+                <input class="b ph3 pv2 input-reset near-white ba b--near-white bg-transparent grow pointer f6" type="submit" value="Submit">
               </div>
             </fieldset>
           </form>
@@ -50,8 +45,7 @@
       </div>
     </div>
     <!-- FOOTER -->
-    <div class="bg-near-black">
-      <span class="ph4 f5 near-white" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</span>
+    <div>
     </div>
   </body>
 </html>
