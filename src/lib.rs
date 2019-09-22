@@ -30,17 +30,26 @@ use crate::network::*;
 use crate::structs::{NetworkContext, JsonResponse, WiFi};
 use crate::ws::*;
 
-use rocket::request::Form;
-use rocket::response::NamedFile;
+use rocket::request::{Form, FlashMessage};
+use rocket::response::{Flash, NamedFile, Redirect};
 use rocket_contrib::json::{Json, JsonValue};
 use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
 #[get("/")]
-fn index() -> Template {
+fn index(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
-    let context = NetworkContext::build();
+    let mut context = NetworkContext::build();
+    // check to see if there is a flash message to be displayed
+    match flash {
+        Some(flash) => {
+            // add flash message contents to the context object
+            context.flash_name = Some(flash.name().to_string());
+            context.flash_msg = Some(flash.msg().to_string());
+        },
+        _ => (),
+    };
     // template_dir is set in Rocket.toml
     Template::render("index", &context)
 }
@@ -51,6 +60,30 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 }
 
 // API ROUTES
+
+#[post("/api/activate_ap")] 
+fn activate_ap() -> Flash<Redirect> {
+    // activate the wireless access point
+    debug!("Activating WiFi access point.");
+    // TODO: do we really want to redirect here?
+    // redirect will fail if AP is not up yet
+    // might be better not to have a flash message and
+    // allow manual refresh instead (maybe with in-page button)
+    match network_activate_ap() {
+        Ok(_) => Flash::success(Redirect::to("/"), "Activated WiFi client mode."),
+        Err(_) => Flash::error(Redirect::to("/"), "Failed to activate WiFi client mode."),
+    }
+}
+
+#[post("/api/activate_client")] 
+fn activate_client() -> Flash<Redirect> {
+    // activate the wireless client
+    debug!("Activating WiFi client mode.");
+    match network_activate_client() {
+        Ok(_) => Flash::success(Redirect::to("/"), "Activated WiFi client mode."),
+        Err(_) => Flash::error(Redirect::to("/"), "Failed to activate WiFi client mode."),
+    }
+}
 
 #[post("/api/add_wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
@@ -140,7 +173,7 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, files, add_wifi, return_ip, return_ssid],
+            routes![index, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
         .attach(Template::fairing())

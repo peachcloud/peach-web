@@ -8,6 +8,8 @@
 
 Initial development will focus on administration of the device itself, with SSB-related administration being integrated at a later stage.
 
+The peach-web stack currently consists of [Rocket](https://rocket.rs/) (Rust web framework), [Tera](https://tera.netlify.com/docs/installation/) (Rust template engine inspired by Jinja2 and the Django template language) and [Tachyons](https://tachyons.io/) (functional CSS library for humans).
+
 _Note: This is a work-in-progress._
 
 ### JSON API
