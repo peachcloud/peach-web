@@ -28,38 +28,42 @@
       </div>
     </div>
     <!-- BODY -->
-    <div class="flex justify-between">
-      <!-- Left Panel -->
-      <div class="outline w-20 pa3">
-      </div>
-      <!-- Middle Panel -->
-      <div class="outline w-50 pa3">
-        <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
-      </div>
-      <!-- Right Panel -->
-      <div class="outline w-25 pa3">
-        <!-- connect to WiFi form -->
-        {% block connect_wifi_form %}{% endblock connect_wifi_form %}
-        <!-- activate WiFi access point -->
-        <form action="/api/activate_ap" method="post">
-          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black" name="activate_ap">Activate WiFi Access Point</button>
-        </form>
-        <!-- activate WiFi client mode -->
-        <form action="/api/activate_client" method="post">
-          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black" name="activate_client">Activate WiFi Client Mode</button>
-        </form>
-        <!-- connect to WiFi network -->
-        <form action="/connect_to_wifi" method="get">
-          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black">Connect to WiFi Network</button>
-        </form>
-	<!-- display flash message(s) -->
-        {% if flash_name %}
-          {% if flash_name == "error" %}
-            <p>{{ flash_msg }}</p>
-          {% elif flash_name == "success" %}
-            <p>{{ flash_msg }}</p>
+    <div class="mw9 center ph3-ns">
+      <div class="flex flex-wrap center">
+        <!-- Left Panel -->
+        <div class="order-1 w-100 w-20-ns center ba ma2 pa3">
+        </div>
+        <!-- Middle Panel -->
+        <div class="order-3 order-2-ns w-100 w-50-ns center ba ma2 pa3">
+          <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
+        </div>
+        <!-- Right Panel -->
+        <div class="order-2 order-3-ns w-100 w-25-ns center ba ma2 pa3">
+          <!-- connect to WiFi form -->
+          {% block connect_wifi_form %}{% endblock connect_wifi_form %}
+	  <div id="action_buttons" class="tc">
+            <!-- activate WiFi access point -->
+            <form action="/api/activate_ap" method="post">
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black" name="activate_ap">Activate WiFi Access Point</button>
+            </form>
+            <!-- activate WiFi client mode -->
+            <form action="/api/activate_client" method="post">
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black" name="activate_client">Activate WiFi Client Mode</button>
+            </form>
+            <!-- connect to WiFi network -->
+            <form action="/connect_to_wifi" method="get">
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black">Connect to WiFi Network</button>
+            </form>
+	  </div>
+          <!-- display flash message(s) -->
+          {% if flash_name %}
+            {% if flash_name == "error" %}
+              <p>{{ flash_msg }}</p>
+            {% elif flash_name == "success" %}
+              <p>{{ flash_msg }}</p>
+            {% endif %}
           {% endif %}
-        {% endif %}
+        </div>
       </div>
     </div>
     <!-- FOOTER -->
