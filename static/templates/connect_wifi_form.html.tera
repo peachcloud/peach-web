@@ -1,0 +1,25 @@
+{% extends "index" %}
+
+{% block connect_wifi_form %}
+{% if connect_wifi == true %}
+  <!-- add WiFi network credentials -->
+  <article class="pa2 black-80">
+    <form id="wifiCreds">
+      <fieldset class="ba b--transparent ph0 mh0">
+        <legend class="ph0 mh0 fw6">Connect to WiFi</legend>
+        <div class="mt3">
+          <label class="dark-gray db fw4 lh-copy f6" for="ssid">Network name (SSID)</label>
+          <input class="pa2 input-reset ba bg-washed-yellow w-100 measure" type="text" name="ssid" id="ssid">
+        </div>
+        <div class="mt3">
+          <label class="dark-gray db fw4 lh-copy f6" for="password">Password</label>
+          <input class="b pa2 input-reset ba bg-washed-yellow" type="password" name="pass" id="pass">
+        </div>
+        <div class="mt3">
+          <input class="b ph3 pv2 input-reset mid-gray ba b--mid-gray bg-washed-yellow grow pointer f6" type="submit" value="Submit">
+        </div>
+      </fieldset>
+    </form>
+  </article>
+{% endif %}
+{% endblock connect_wifi_form %}
