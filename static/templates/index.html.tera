@@ -7,34 +7,60 @@
   <body class="near-black bg-washed-green">
     <!-- HEADER -->
     <div>
-      <div>
+      <div class="pt2 mt2">
         <!-- PeachCloud icon -->
 	<a href="/" title="PeachCloud Home"><img src="peach-icon.png" class="ph3 w3"></img></a>
 	<!-- network status information -->
 	<!-- set styling based on interface status -->
         {% if ap_state == "up" %}
-	  <span class="bg-washed-yellow pa2 ba br2 b--green fr f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
+	  <div class="v-top mw4 bg-washed-yellow pa2 ba br2 b--green f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
         {% else %}
-	  <span class="fr pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
+          <div class="v-top tc mw6 pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
         {% endif %}
         {% if wlan_state == "up" %}
-          <span class="bg-washed-yellow pa2 ba br2 b--green fr f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
+          <div class="v-top tc mw6 bg-washed-yellow pa2 ba br2 b--green f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
         {% else %}
-          <span class="fr pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
+          <div class="v-top w-100 pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
         {% endif %}
-      </div>
-      <div>
-        <h1 class="mid-gray ph3">Welcome to PeachCloud!</h1>
       </div>
     </div>
     <!-- BODY -->
     <div class="mw9 center ph3-ns">
       <div class="flex flex-wrap center">
         <!-- Left Panel -->
-        <div class="order-1 w-100 w-20-ns center ba ma2 pa3">
+        <div class="order-1 w-100 w-20-ns center ma2">
+          <!-- home -->
+          <form action="/home" method="get">
+            <button class="mb2 pa2 ba b--dark-gray w-100 bg-washed-yellow f6 link pointer dim dib black">Home</button>
+          </form>
+          <!-- profile -->
+          <form action="/profile" method="get">
+            <button class="mb2 pa2 ba b--dark-gray w-100 bg-washed-red f6 link pointer dim dib black">Profile</button>
+          </form>
+          <!-- peers -->
+          <form action="/peers" method="get">
+            <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Peers</button>
+          </form>
+          <!-- invites -->
+          <form action="/invites" method="get">
+            <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Invites</button>
+          </form>
+          <!-- status -->
+          <form action="/status" method="get">
+            <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Status</button>
+          </form>
+          <!-- configuration -->
+          <form action="/configuration" method="get">
+            <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Configuration</button>
+          </form>
+          <!-- guide -->
+          <form action="/guide" method="get">
+            <button class="pa2 w-100 ba b--dark-gray bg-washed-red f6 link pointer dim dib black">Guide</button>
+          </form>
         </div>
         <!-- Middle Panel -->
-        <div class="order-3 order-2-ns w-100 w-50-ns center ba ma2 pa3">
+        <div class="bg-washed-yellow order-3 order-2-ns w-100 w-50-ns center ba ma2 pa3">
+          <h1 class="mid-gray ph3">Welcome to PeachCloud!</h1>
           <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
         </div>
         <!-- Right Panel -->
@@ -44,15 +70,15 @@
 	  <div id="action_buttons" class="tc">
             <!-- activate WiFi access point -->
             <form action="/api/activate_ap" method="post">
-              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black" name="activate_ap">Activate WiFi Access Point</button>
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb3 dib black" name="activate_ap">Activate WiFi Access Point</button>
             </form>
             <!-- activate WiFi client mode -->
             <form action="/api/activate_client" method="post">
-              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black" name="activate_client">Activate WiFi Client Mode</button>
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb3 dib black" name="activate_client">Activate WiFi Client Mode</button>
             </form>
             <!-- connect to WiFi network -->
             <form action="/connect_to_wifi" method="get">
-              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb2 dib black">Connect to WiFi Network</button>
+              <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb3 dib black">Connect to WiFi Network</button>
             </form>
 	  </div>
           <!-- display flash message(s) -->
