@@ -4,23 +4,45 @@
   <title>PeachCloud</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/tachyons.min.css">
-  <body class="near-black bg-washed-green">
+  <body class="vh-100 near-black bg-washed-green">
     <!-- HEADER -->
     <div>
       <div class="pt2 mt2">
         <!-- PeachCloud icon -->
-        <a href="/" title="PeachCloud Home"><img src="peach-icon.png" class="ph3 w3"></img></a>
+        <a href="/" title="PeachCloud Home"><img src="icons/peach-icon.png" class="ph3 w3"></img></a>
       </div>
     </div>
-    <!-- BODY -->
+    <!-- MAIN -->
     <div class="mw9 center ph3-ns">
       <div class="flex flex-wrap center">
         <!-- Left Panel -->
-        <div class="order-1 w-100 w-20-ns center ma2">
-          <!-- home -->
-          <form action="/home" method="get">
+	<!-- primary nav for small screens -->
+	<div class="db dn-ns order-1 w-100 center">
+          <nav role="navigation">
+            <select class="fr pa2 bg-washed-red ba">
+              <option><a href="/">Home</a></option>
+              <option><a href="/profile">Profile</a></option>
+              <option><a href="/peers">Peers</a></option>
+              <option><a href="/invites">Invites</a></option>
+              <option><a href="/status">Status</a></option>
+              <option><a href="/configuration">Configuration</a></option>
+              <option><a href="/guide">Guide</a></option>
+            </select>
+          </nav>
+        </div>
+	<!-- primary nav for medium and large screens -->
+        <div class="dn db-ns order-1 w-100 w-20-ns center ma2">
+        {% if current_url == "home" %}
+          <!-- home (selected) -->
+          <form action="/" method="get">
             <button class="mb2 pa2 ba b--dark-gray w-100 bg-washed-yellow f6 link pointer dim dib black">Home</button>
           </form>
+        {% else %}
+          <!-- home (unselected) -->
+          <form action="/" method="get">
+            <button class="mb2 pa2 ba b--dark-gray w-100 bg-washed-red f6 link pointer dim dib black">Home</button>
+          </form>
+        {% endif %}
           <!-- profile -->
           <form action="/profile" method="get">
             <button class="mb2 pa2 ba b--dark-gray w-100 bg-washed-red f6 link pointer dim dib black">Profile</button>
@@ -37,10 +59,17 @@
           <form action="/status" method="get">
             <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Status</button>
           </form>
-          <!-- configuration -->
+        {% if current_url == "configuration" %}
+          <!-- configuration (selected) -->
+          <form action="/configuration" method="get">
+            <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-yellow f6 link pointer dim dib black">Configuration</button>
+          </form>
+        {% else %}
+          <!-- configuration (unselected) -->
           <form action="/configuration" method="get">
             <button class="mb2 pa2 ba w-100 b--dark-gray bg-washed-red f6 link pointer dim dib black">Configuration</button>
           </form>
+        {% endif %}
           <!-- guide -->
           <form action="/guide" method="get">
             <button class="pa2 w-100 ba b--dark-gray bg-washed-red f6 link pointer dim dib black">Guide</button>
@@ -95,6 +124,10 @@
         {% else %}
           <div class="w-100 w-40-ns tc mv2 pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
         {% endif %}
+      </div>
+      <!-- scuttlebutt hermes icon -->
+      <div class="mt3-ns">
+        <a href="https://www.scuttlebutt.nz/" title="Secure Scuttlebutt Webpage"><img src="icons/hermies.png" class="ph3 w3"></img></a>
       </div>
     </div>
   </body>

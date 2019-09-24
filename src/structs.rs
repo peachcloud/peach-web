@@ -15,6 +15,7 @@ pub struct NetworkContext {
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub connect_wifi: bool,
+    pub current_url: String,
 }
 
 impl NetworkContext {
@@ -59,6 +60,7 @@ impl NetworkContext {
             flash_name : None,
             flash_msg : None,
             connect_wifi : false,
+            current_url : "home".to_string(),
         }
     }
 }

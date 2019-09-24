@@ -41,6 +41,7 @@ use rocket_contrib::templates::Template;
 fn index(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
+    context.current_url = "home".to_string();
     context.connect_wifi = false;
     // check to see if there is a flash message to be displayed
     match flash {
@@ -60,6 +61,16 @@ fn connect_wifi() -> Template {
     let mut context = NetworkContext::build();
     // set flag to display Connect to WiFi form
     context.connect_wifi = true;
+    context.flash_name = None;
+    context.flash_msg = None;
+    Template::render("connect_wifi_form", &context)
+}
+
+#[get("/configuration")]
+fn configuration() -> Template {
+    let mut context = NetworkContext::build();
+    // set flag for current url (maybe there's an in-built tera way...)
+    context.current_url = "configuration".to_string();
     context.flash_name = None;
     context.flash_msg = None;
     Template::render("connect_wifi_form", &context)
@@ -184,7 +195,7 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, files, activate_ap, activate_client, add_wifi, connect_wifi, return_ip, return_ssid],
+            routes![index, files, activate_ap, activate_client, add_wifi, configuration, connect_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
         .attach(Template::fairing())
