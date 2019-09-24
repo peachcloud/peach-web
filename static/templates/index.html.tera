@@ -9,19 +9,7 @@
     <div>
       <div class="pt2 mt2">
         <!-- PeachCloud icon -->
-	<a href="/" title="PeachCloud Home"><img src="peach-icon.png" class="ph3 w3"></img></a>
-	<!-- network status information -->
-	<!-- set styling based on interface status -->
-        {% if ap_state == "up" %}
-	  <div class="v-top mw4 bg-washed-yellow pa2 ba br2 b--green f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
-        {% else %}
-          <div class="v-top tc mw6 pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
-        {% endif %}
-        {% if wlan_state == "up" %}
-          <div class="v-top tc mw6 bg-washed-yellow pa2 ba br2 b--green f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
-        {% else %}
-          <div class="v-top w-100 pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
-        {% endif %}
+        <a href="/" title="PeachCloud Home"><img src="peach-icon.png" class="ph3 w3"></img></a>
       </div>
     </div>
     <!-- BODY -->
@@ -59,12 +47,12 @@
           </form>
         </div>
         <!-- Middle Panel -->
-        <div class="bg-washed-yellow order-3 order-2-ns w-100 w-50-ns center ba ma2 pa3">
+        <div class="bg-washed-yellow order-2 w-100 w-50-ns center ba ma2 pa3">
           <h1 class="mid-gray ph3">Welcome to PeachCloud!</h1>
           <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
         </div>
         <!-- Right Panel -->
-        <div class="order-2 order-3-ns w-100 w-25-ns center ba ma2 pa3">
+        <div class="order-3 w-100 w-25-ns center ba ma2 pa3">
           <!-- connect to WiFi form -->
           {% block connect_wifi_form %}{% endblock connect_wifi_form %}
 	  <div id="action_buttons" class="tc">
@@ -94,6 +82,20 @@
     </div>
     <!-- FOOTER -->
     <div>
+      <!-- network status information -->
+      <div class="flex flex-wrap justify-center">
+        <!-- set styling based on interface status -->
+        {% if ap_state == "up" %}
+          <div class="w-100 w-40-ns tc bg-washed-yellow mv2 pa2 ba br2 b--green f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
+        {% else %}
+          <div class="w-100 w-40-ns tc mv2 pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</div>
+        {% endif %}
+        {% if wlan_state == "up" %}
+          <div class="w-100 w-40-ns tc bg-washed-yellow mv2 pa2 ba br2 b--green f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
+        {% else %}
+          <div class="w-100 w-40-ns tc mv2 pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</div>
+        {% endif %}
+      </div>
     </div>
   </body>
 </html>
