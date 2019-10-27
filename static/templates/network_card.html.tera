@@ -37,7 +37,11 @@
             <!-- SWITCH GRID -->
             <div class="card-grid" style="position: relative;">
                 <!-- LEFT SWITCH ICON -->
-                <img id="wifiIcon" class="icon-inactive switch-icon-left" style="width: 50%" title="WiFi Client Mode" src="icons/wifi.svg">
+                {% if wlan_state == "up" %}
+                    <img id="wifiIcon" class="icon-active switch-icon-left" style="width: 50%" title="WiFi Client Mode" src="icons/wifi.svg">
+                {% else %}
+                    <img id="wifiIcon" class="icon-inactive switch-icon-left" style="width: 50%" title="WiFi Client Mode" src="icons/wifi.svg">
+                {% endif %}
                 <!-- ROUNDED SWITCH -->
                 <div class="center">
                     <label class="switch">
@@ -46,7 +50,11 @@
                     </label>
                 </div>
                 <!-- RIGHT SWITCH ICON -->
-                <img id="routerIcon" class="icon-active switch-icon-right" style="width: 50%" title="Access Point Mode" src="icons/router.svg">
+                {% if ap_state == "up" %}
+                    <img id="routerIcon" class="icon-active switch-icon-right" style="width: 50%" title="Access Point Mode" src="icons/router.svg">
+                {% else %}
+                    <img id="routerIcon" class="icon-inactive switch-icon-right" style="width: 50%" title="Access Point Mode" src="icons/router.svg">
+                {% endif %}
             </div>
             </br>
             </br>
