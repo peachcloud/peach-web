@@ -51,7 +51,7 @@ fn index(flash: Option<FlashMessage>) -> Template {
         _ => (),
     };
     // template_dir is set in Rocket.toml
-    Template::render("index", &context)
+    Template::render("network_card", &context)
 }
 
 #[get("/<file..>")]
