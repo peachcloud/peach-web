@@ -12,12 +12,12 @@
         <script src="js/network.js"></script>
     </head>
     <body style="background-color: var(--near-black);">
-        <!-- CARD -->
+        <!-- NETWORK CARD -->
         <div class="card center">
             </br>
             <div class="center" style="width: 60%;">
                 <div class="center circle circle-success" title="PeachCloud network mode and status">
-                <!-- ICON -->
+                <!-- NETWORK STATUS ICON -->
                 {% if ap_state == "up" %}
                     <img id="statusIcon" class="circle-icon" style="position: absolute; width: 50%" src="icons/router.svg">
                 {% elif wlan_state == "up" %}
@@ -25,9 +25,8 @@
                 {% endif %}
                 </div>
             </div>
-            <!-- check wifi state -->
             {% if ap_state == "up" %}
-                <h3 id="ssid" class="center font-near-black" title="SSID">{{ ap_ssid }}</h3>
+                <h3 id="ssid" class="center font-near-black" title="SSID">peach</h3>
                 <p id="ip" class="center font-near-black" title="IP address of the PeachCloud device">{{ ap_ip }}</p>
             {% elif wlan_state == "up" %}
                 <h3 id="ssid" class="center font-near-black" title="SSID">{{ wlan_ssid }}</h3>
