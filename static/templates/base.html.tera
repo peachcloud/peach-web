@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <title>PeachCloud: Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/tachyons.min.css">
+  <header class="pa4 bg-near-black">
+    <img src="peach-icon.png" class="w3 fl pa2" />
+  </header>
+  <body class="fl bg-near-black">
+    <article class="pa4 black-80">
+    </article>
+  </body>
+  <footer class="bg-near-black">
+  </footer>
+</html>

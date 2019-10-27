@@ -84,7 +84,7 @@
         <div class="order-3 w-100 w-25-ns center ba ma2 pa3">
           <!-- connect to WiFi form -->
           {% block connect_wifi_form %}{% endblock connect_wifi_form %}
-	  <div id="action_buttons" class="tc">
+          <div id="action_buttons" class="tc">
             <!-- activate WiFi access point -->
             <form action="/api/activate_ap" method="post">
               <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb3 dib black" name="activate_ap">Activate WiFi Access Point</button>
@@ -97,7 +97,6 @@
             <form action="/connect_to_wifi" method="get">
               <button class="shadow-4 bg-washed-red f6 link pointer dim ba ph3 pv2 mb3 dib black">Connect to WiFi Network</button>
             </form>
-	  </div>
           <!-- display flash message(s) -->
           {% if flash_name %}
             {% if flash_name == "error" %}

@@ -1,0 +1,45 @@
+notes.
+
+ - build a simple home view
+   - leaves of the tree: overview of system at a glance
+
+ - dinosaur is not happy with the current design or approach
+   - no minified css
+   - no inline styling
+   - no tables + forms design
+   - recommends atomic design
+
+next:
+
+ - sketch some simple atoms
+ - translate sketches into figma mock-ups
+ - share mock-ups with dinosaur
+ - render radial mock-up 
+ - create a pattern library
+   - label
+   - input
+   - button
+
+ - atoms
+   - "atoms demonstrate all your base styles at a glance, which can be a helpful reference to keep coming back to as you develop and maintain your design system"
+ - molecules
+   - "relatively simple groups of UI elements functioning together as a unit"
+   - e.g. label + input + button
+ - organisms
+   - "relatively complex UI components composed of groups of molecules and/or atoms and/or other organisms"
+   - e.g. header organism composed of a search form molecule, logo atom, and primary navigation molecule
+ - templates
+   - "page-level objects that place components into a layout and articulate the design’s underlying content structure"
+   - e.g. homepage template
+   - focus on the page’s underlying content structure rather than the page’s final content
+ - pages
+   - "specific instances of templates that show what a UI looks like with real representative content in place"
+
+ - "think of the stages of atomic design as a mental model that allows us to concurrently create final UIs and their underlying design systems"
+ - establish a general aesthetic direction and then design some patterns to experiment with the application of that aesthetic direction
+   - allow team to explore freely, iterate quickly, and get feedback sooner
+ - "designs should be quickly translated into the final environment [(the browser)] and iterated on there"
+
+[ refactoring ui ]
+
+ - an app is a collection of features

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <title>PeachCloud</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/tachyons.min.css">
+  <body class="near-black bg-washed-green">
+    <!-- HEADER -->
+    <div>
+      <div>
+        <!-- PeachCloud icon -->
+	<a href="/" title="PeachCloud Home"><img src="peach-icon.png" class="ph3 w3"></img></a>
+	<!-- network status information -->
+	<!-- set styling based on interface status -->
+        {% if ap_state == "up" %}
+	  <span class="bg-washed-yellow pa2 ba br2 b--green fr f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
+        {% else %}
+	  <span class="fr pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
+        {% endif %}
+        {% if wlan_state == "up" %}
+          <span class="bg-washed-yellow pa2 ba br2 b--green fr f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
+        {% else %}
+          <span class="fr pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
+        {% endif %}
+      </div>
+      <div>
+        <h1 class="mid-gray ph3">Welcome to PeachCloud!</h1>
+      </div>
+    </div>
+    <!-- BODY -->
+    <div class="flex justify-between">
+      <!-- Left Panel -->
+      <div class="outline w-20 pa3">
+      </div>
+      <!-- Middle Panel -->
+      <div class="outline w-50 pa3">
+        <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
+      </div>
+      <!-- Right Panel -->
+      <div class="outline w-25 pa3">
+        <!-- connect to WiFi form -->
+        {% block connect_wifi_form %}{% endblock connect_wifi_form %}
+        <!-- activate WiFi access point -->
+        <form action="/api/activate_ap" method="post">
+          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black" name="activate_ap">Activate WiFi Access Point</button>
+        </form>
+        <!-- activate WiFi client mode -->
+        <form action="/api/activate_client" method="post">
+          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black" name="activate_client">Activate WiFi Client Mode</button>
+        </form>
+        <!-- connect to WiFi network -->
+        <form action="/connect_to_wifi" method="get">
+          <button class="bg-washed-red f6 link dim ba ph3 pv2 mb2 dib black">Connect to WiFi Network</button>
+        </form>
+	<!-- display flash message(s) -->
+        {% if flash_name %}
+          {% if flash_name == "error" %}
+            <p>{{ flash_msg }}</p>
+          {% elif flash_name == "success" %}
+            <p>{{ flash_msg }}</p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    <!-- FOOTER -->
+    <div>
+    </div>
+  </body>
+</html>
