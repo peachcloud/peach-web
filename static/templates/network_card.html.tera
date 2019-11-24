@@ -16,19 +16,20 @@
         <div class="card">
             <br>
             <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
-                <!-- NETWORK STATUS ICON -->
-                <!-- icon with label molecule -->
+                <!-- NETWORK STATUS -->
                 <!-- left column -->
+                <!-- network mode icon with label -->
                 <div class="grid-column-1">
                     {% if ap_state == "up" %}
-                    <img class="center icon" src="icons/router.svg">
-                    <label class="center label-small" title="Access Point Status">ONLINE</label>
+                    <img id="netModeIcon" class="center icon" src="icons/router.svg">
+                    <label id="netModeLabel" class="center label-small" title="Access Point Status">ONLINE</label>
                     {% elif wlan_state == "up" %}
-                    <img class="center icon" src="icons/wifi.svg">
-                    <label class="center label-small" title="WiFi Client Point Status">ONLINE</label>
+                    <img id="netModeIcon" class="center icon" src="icons/wifi.svg">
+                    <label id="netModeLabel" class="center label-small" title="WiFi Client Point Status">ONLINE</label>
                     {% endif %}
                 </div>
                 <!-- right column -->
+                <!-- network mode, ssid & ip with labels -->
                 <div class="grid-column-2">
                     {% if ap_state == "up" %}
                     <label class="label-small" title="Network Mode">MODE</label>
@@ -49,9 +50,9 @@
             </div>
             <br>
             {% if ap_state == "up" %}
-            <button class="button center">Connect to WiFi</button>
+            <button class="button center" id="connectWifi">Connect to WiFi</button>
             {% elif wlan_state == "up" %}
-            <button class="button center">Deploy Access Point</button>
+            <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
             {% endif %}
             <button class="button center">List WiFi Networks</button>
             <br>
@@ -78,74 +79,5 @@
             </div>
             <br>
         </div>
-        <!-- ---------- old code below ----------- -->
-        <!--
-        <!-- NETWORK CARD -->
-        <div class="card center">
-            </br>
-            <div class="center" style="width: 60%;">
-                <div class="center circle circle-success" title="PeachCloud network mode and status">
-                <!-- NETWORK STATUS ICON -->
-                {% if ap_state == "up" %}
-                    <img id="statusIcon" class="circle-icon" style="position: absolute; width: 50%" src="icons/router.svg">
-                {% elif wlan_state == "up" %}
-                    <img id="statusIcon" class="circle-icon" style="position: absolute; width: 50%" src="icons/wifi.svg">
-                {% endif %}
-                </div>
-            </div>
-            {% if ap_state == "up" %}
-                <h3 id="ssid" class="center font-near-black" title="SSID">peach</h3>
-                <p id="ip" class="center font-near-black" title="IP address of the PeachCloud device">{{ ap_ip }}</p>
-            {% elif wlan_state == "up" %}
-                <h3 id="ssid" class="center font-near-black" title="SSID">{{ wlan_ssid }}</h3>
-                <p id="ip" class="center font-near-black" title="IP address of the PeachCloud device">{{ wlan_ip }}</p>
-            {% endif %}                
-            </br>
-            <!-- SWITCH GRID -->
-            <div class="card-grid" style="position: relative;">
-                <!-- LEFT SWITCH ICON -->
-                {% if wlan_state == "up" %}
-                    <img id="wifiIcon" class="icon-active switch-icon-left" style="width: 50%" title="WiFi Client Mode" src="icons/wifi.svg">
-                {% else %}
-                    <img id="wifiIcon" class="icon-inactive switch-icon-left" style="width: 50%" title="WiFi Client Mode" src="icons/wifi.svg">
-                {% endif %}
-                <!-- ROUNDED SWITCH -->
-                <div class="center">
-                    <label class="switch">
-                        <input id="wifiToggle" type="checkbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <!-- RIGHT SWITCH ICON -->
-                {% if ap_state == "up" %}
-                    <img id="routerIcon" class="icon-active switch-icon-right" style="width: 50%" title="Access Point Mode" src="icons/router.svg">
-                {% else %}
-                    <img id="routerIcon" class="icon-inactive switch-icon-right" style="width: 50%" title="Access Point Mode" src="icons/router.svg">
-                {% endif %}
-            </div>
-            </br>
-            </br>
-            <!-- CARD GRID -->
-            <!-- row of icons representing network statistics -->
-            <div class="card-grid">
-                <img class="grid-icon-1 icon" title="Devices" src="icons/devices.svg">
-                <img class="grid-icon-2 icon" title="Download" src="icons/down-arrow.svg">
-                <img class="grid-icon-3 icon" title="Upload" src="icons/up-arrow.svg">
-            </div>
-            <!-- row of values representing current network state -->
-            <div class="card-grid">
-                <label class="grid-label-1 label-medium" title="Number of connected devices">6</label>
-                <label class="grid-label-2 label-medium" title="Data download total in MB">21.7</label>
-                <label class="grid-label-3 label-medium" title="Data upload total in MB">3.4</label>
-            </div>
-            <!-- row of labels for each network statistic column -->
-            <div class="card-grid">
-                <label class="grid-label-1 label-small">DEVICES</label>
-                <label class="grid-label-2 label-small">DOWNLOAD</label>
-                <label class="grid-label-3 label-small">UPLOAD</label>
-            </div>
-            </br>
-        </div>
-        </br> -->
     </body>
 </html>
