@@ -13,7 +13,7 @@
     <body style="background-color: var(--near-black);">
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
-        <div class="card">
+        <div class="card center">
             <br>
             <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
                 <!-- NETWORK STATUS -->

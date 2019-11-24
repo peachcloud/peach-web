@@ -5,7 +5,7 @@ Contains all JavaScript interactions with the peach-network microservice
 */
 
 // AP - Client Mode Switching
-document.addEventListener('DOMContentLoaded'), function(event) {
+document.addEventListener('DOMContentLoaded', function(event) {
     document.getElementById('deployAccessPoint').addEventListener('click', function() {
         console.log('Activating AP Mode');
         fetch("/api/activate_ap", {
