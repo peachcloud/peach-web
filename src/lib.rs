@@ -37,8 +37,8 @@ use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
-#[get("/")]
-fn index(flash: Option<FlashMessage>) -> Template {
+#[get("/network")]
+fn network_card(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to be displayed
@@ -173,7 +173,7 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
+            routes![network_card, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
         .attach(Template::fairing())

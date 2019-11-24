@@ -6,12 +6,80 @@
         <title>PeachCloud: Network</title>
         <meta name="description" content="PeachCloud Network">
         <meta name="author" content="glyph">
-        <link rel="stylesheet" href="css/peach_ui.css">
+        <link rel="stylesheet" href="css/peachcloud.css">
         <style>@import url("css/_variables.css");</style>
-        <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/network.js"></script>
     </head>
     <body style="background-color: var(--near-black);">
+        <!-- NETWORK CARD -->
+        <!-- NETWORK INFO BOX -->
+        <div class="card">
+            <br>
+            <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
+                <!-- NETWORK STATUS ICON -->
+                <!-- icon with label molecule -->
+                <!-- left column -->
+                <div class="grid-column-1">
+                    {% if ap_state == "up" %}
+                    <img class="center icon" src="icons/router.svg">
+                    <label class="center label-small" title="Access Point Status">ONLINE</label>
+                    {% elif wlan_state == "up" %}
+                    <img class="center icon" src="icons/wifi.svg">
+                    <label class="center label-small" title="WiFi Client Point Status">ONLINE</label>
+                    {% endif %}
+                </div>
+                <!-- right column -->
+                <div class="grid-column-2">
+                    {% if ap_state == "up" %}
+                    <label class="label-small" title="Network Mode">MODE</label>
+                    <p class="card-text" title="Network Mode">Access Point</p>
+                    <label class="label-small" title="Access Point SSID">SSID</label>
+                    <p class="card-text" title="SSID">peach</p>
+                    <label class="label-small" title="Access Point IP Address">IP</label>
+                    <p class="card-text" title="IP">11.11.11.10</p>
+                    {% elif wlan_state == "up" %}
+                    <label class="label-small" title="Network Mode">MODE</label>
+                    <p class="card-text" title="Network Mode">WiFi Client</p>
+                    <label class="label-small" title="WiFi SSID">SSID</label>
+                    <p class="card-text" title="SSID">{{ wlan_ssid }}</p>
+                    <label class="label-small" title="WiFi Client IP Address">IP</label>
+                    <p class="card-text" title="IP">{{ wlan_ip }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            {% if ap_state == "up" %}
+            <button class="button center">Connect to WiFi</button>
+            {% elif wlan_state == "up" %}
+            <button class="button center">Deploy Access Point</button>
+            {% endif %}
+            <button class="button center">List WiFi Networks</button>
+            <br>
+            <!-- CARD GRID -->
+            <div style="padding-left: 5px; padding-right: 5px;">
+                <!-- row of icons representing network statistics -->
+                <div class="card-grid-three">
+                    <img class="grid-three-icon-1 icon" title="Devices" src="icons/devices.svg">
+                    <img class="grid-three-icon-2 icon" title="Download" src="icons/down-arrow.svg">
+                    <img class="grid-three-icon-3 icon" title="Upload" src="icons/up-arrow.svg">
+                </div>
+                <!-- row of values representing current network state -->
+                <div class="card-grid-three">
+                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
+                    <label class="grid-three-label-2 label-medium" title="Data download total in MB">21.7</label>
+                    <label class="grid-three-label-3 label-medium" title="Data upload total in MB">3.4</label>
+                </div>
+                <!-- row of labels for each network statistic column -->
+                <div class="card-grid-three">
+                    <label class="grid-three-label-1 label-small">DEVICES</label>
+                    <label class="grid-three-label-2 label-small">DOWNLOAD</label>
+                    <label class="grid-three-label-3 label-small">UPLOAD</label>
+                </div>
+            </div>
+            <br>
+        </div>
+        <!-- ---------- old code below ----------- -->
+        <!--
         <!-- NETWORK CARD -->
         <div class="card center">
             </br>
@@ -78,6 +146,6 @@
             </div>
             </br>
         </div>
-        </br>
+        </br> -->
     </body>
 </html>
