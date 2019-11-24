@@ -6,39 +6,45 @@ Contains all JavaScript interactions with the peach-network microservice
 
 // AP - Client Mode Switching
 document.addEventListener('DOMContentLoaded', function(event) {
-    document.getElementById('deployAccessPoint').addEventListener('click', function() {
-        console.log('Activating AP Mode');
-        fetch("/api/activate_ap", {
-            method: "post",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-        })
-        .then( (response) => {
-            console.log(response);i
-            let i = document.getElementById("netModeIcon");
-            i.src = "icons/router.svg";
-            i.className = "center icon-inactive";
-            i.value = "OFFLINE";
+    var deployAP = document.getElementById('deployAccessPoint');
+    if (deployAP) {
+        deployAP.addEventListener('click', function() {
+            console.log('Activating AP Mode');
+            fetch("/api/activate_ap", {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then( (response) => {
+                console.log(response);i
+                let i = document.getElementById("netModeIcon");
+                i.src = "icons/router.svg";
+                i.className = "center icon-inactive";
+                i.value = "OFFLINE";
+            });
         });
-    });
+    };
 
-    document.getElementById('connectWifi').addEventListener('click', function() {
-        console.log('Activating WiFi Client Mode');
-        fetch("/api/activate_client", {
-            method: "post",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-        })
-        .then( (response) => {
-            console.log(response);
-            let i = document.getElementById("netModeIcon");
-            i.src = "icons/wifi.svg";
-            i.className = "center icon-inactive";
-            i.value = "OFFLINE";
+    var connectWifi = document.getElementById('connectWifi');
+    if (connectWifi) {
+        connectWifi.addEventListener('click', function() {
+            console.log('Activating WiFi Client Mode');
+            fetch("/api/activate_client", {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then( (response) => {
+                console.log(response);
+                let i = document.getElementById("netModeIcon");
+                i.src = "icons/wifi.svg";
+                i.className = "center icon-inactive";
+                i.value = "OFFLINE";
+            });
         });
-    });
+    };
 });
