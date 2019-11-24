@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
     if (deployAP) {
         deployAP.addEventListener('click', function() {
             console.log('Activating AP Mode');
+            // update network mode and status (icon & label)
+            let i = document.getElementById("netModeIcon");
+            i.src = "icons/router.svg";
+            i.className = "center icon-inactive";
+            i.value = "OFFLINE";
+            // send activate_ap POST request
             fetch("/api/activate_ap", {
                 method: "post",
                 headers: {
@@ -18,11 +24,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 },
             })
             .then( (response) => {
-                console.log(response);i
-                let i = document.getElementById("netModeIcon");
-                i.src = "icons/router.svg";
-                i.className = "center icon-inactive";
-                i.value = "OFFLINE";
+                console.log(response);
             });
         });
     };
@@ -31,6 +33,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
     if (connectWifi) {
         connectWifi.addEventListener('click', function() {
             console.log('Activating WiFi Client Mode');
+            // update network mode and status (icon & label)
+            let i = document.getElementById("netModeIcon");
+            i.src = "icons/wifi.svg";
+            i.className = "center icon-inactive";
+            i.value = "OFFLINE";
+            // send activate_client POST request
             fetch("/api/activate_client", {
                 method: "post",
                 headers: {
@@ -40,10 +48,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
             })
             .then( (response) => {
                 console.log(response);
-                let i = document.getElementById("netModeIcon");
-                i.src = "icons/wifi.svg";
-                i.className = "center icon-inactive";
-                i.value = "OFFLINE";
             });
         });
     };
