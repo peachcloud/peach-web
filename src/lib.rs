@@ -54,6 +54,23 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
     Template::render("network_card", &context)
 }
 
+#[get("/network/list_networks")]
+fn network_list(flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkContext::build();
+    // check to see if there is a flash message to be displayed
+    match flash {
+        Some(flash) => {
+            // add flash message contents to the context object
+            context.flash_name = Some(flash.name().to_string());
+            context.flash_msg = Some(flash.msg().to_string());
+        },
+        _ => (),
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_list", &context)
+}
+
 #[get("/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
@@ -173,7 +190,7 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![network_card, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
+            routes![network_card, network_list, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
         )
         .register(catchers![not_found])
         .attach(Template::fairing())

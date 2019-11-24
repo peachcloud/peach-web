@@ -6,9 +6,9 @@
         <title>PeachCloud: Network</title>
         <meta name="description" content="PeachCloud Network">
         <meta name="author" content="glyph">
-        <link rel="stylesheet" href="css/peachcloud.css">
-        <style>@import url("css/_variables.css");</style>
-        <script src="js/network.js"></script>
+        <link rel="stylesheet" href="/css/peachcloud.css">
+        <style>@import url("/css/_variables.css");</style>
+        <script src="/js/network.js"></script>
     </head>
     <body style="background-color: var(--near-black);">
         <!-- NETWORK CARD -->
@@ -54,7 +54,9 @@
             {% elif wlan_state == "up" %}
             <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
             {% endif %}
-            <button class="button center">List WiFi Networks</button>
+            <a class="link" href="/network/list_networks">
+                <button class="button center">List WiFi Networks</button>
+            </a>
             <br>
             <!-- CARD GRID -->
             <div style="padding-left: 5px; padding-right: 5px;">

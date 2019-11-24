@@ -56,7 +56,7 @@ body {
 .card {
     background-color: var(--near-white);
     border-radius: var(--border-radius-4);
-    max-width: var(--max-width-5);
+    width: 400px;
     position: relative;
 }
 
@@ -95,7 +95,6 @@ body {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
 }
 
 .center-vert {
@@ -382,6 +381,14 @@ body {
 }
 
 /*
+ * LINKS
+ */
+
+.link {
+    text-decoration: none;
+}
+
+/*
  * LISTS
  */
 
@@ -393,6 +400,11 @@ body {
     border-radius: var(--border-radius-2);
     list-style-type: none;
     font-family: var(--sans-serif);
+}
+
+.list-container {
+    padding: 1em;
+    width: 90%;
 }
 
 .list-item {
