@@ -409,7 +409,6 @@ body {
 
 .list-item {
     padding: 1rem;
-    border: 1px solid var(--light-silver);
     border-bottom-style: solid;
     border-bottom-width: 1px;
 }
