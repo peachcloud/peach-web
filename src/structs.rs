@@ -37,7 +37,9 @@ impl NetworkContext {
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             //Ok(networks) => networks.list,
             Ok(response) => {
-                let r: Vec<&str> = response.split(',').collect();
+                let len = response.len();
+                let trimmed_list = response.get(1..len-1).unwrap();
+                let r: Vec<&str> = trimmed_list.split(',').collect();
                 let mut networks: Vec<String> = Vec::new();
                 for network in r {
                     networks.push(network.to_string());
