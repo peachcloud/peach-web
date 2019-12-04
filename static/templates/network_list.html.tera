@@ -16,9 +16,13 @@
             <div class="center list-container">
                 <h1 class="bold title-medium">WiFi Networks</h1>
                 <ul class="list">
-                {% for network in wlan_scan %}
-                    <li class="list-item">{{ network }}</li>
-                {% endfor %}
+                {% if wlan_scan %}
+                    {% for network in wlan_scan %}
+                        <li class="list-item">{{ network }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-item">No networks found</li>
+                {% endif %}
                 </ul>
             </div>
         </div>
