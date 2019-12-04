@@ -22,15 +22,15 @@ mod structs;
 mod tests;
 mod ws;
 
-use std::{env, thread};
 use std::path::{Path, PathBuf};
+use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{NetworkContext, JsonResponse, WiFi};
+use crate::structs::{JsonResponse, NetworkContext, WiFi};
 use crate::ws::*;
 
-use rocket::request::{Form, FlashMessage};
+use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, NamedFile, Redirect};
 use rocket_contrib::json::{Json, JsonValue};
 use rocket_contrib::templates::Template;
@@ -47,7 +47,7 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
             // add flash message contents to the context object
             context.flash_name = Some(flash.name().to_string());
             context.flash_msg = Some(flash.msg().to_string());
-        },
+        }
         _ => (),
     };
     // template_dir is set in Rocket.toml
@@ -64,7 +64,7 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
             // add flash message contents to the context object
             context.flash_name = Some(flash.name().to_string());
             context.flash_msg = Some(flash.msg().to_string());
-        },
+        }
         _ => (),
     };
     // template_dir is set in Rocket.toml
@@ -78,7 +78,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 // API ROUTES
 
-#[post("/api/activate_ap")] 
+#[post("/api/activate_ap")]
 fn activate_ap() -> Flash<Redirect> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
@@ -92,7 +92,7 @@ fn activate_ap() -> Flash<Redirect> {
     }
 }
 
-#[post("/api/activate_client")] 
+#[post("/api/activate_client")]
 fn activate_client() -> Flash<Redirect> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
@@ -118,7 +118,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             // json response for successful update
             let status: String = "success".to_string();
             let data = json!("WiFi credentials added");
-            
+
             return Json(build_json_response(status, Some(data), None));
         }
         Err(_) => {
@@ -126,7 +126,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             // json response for failed update
             let status: String = "error".to_string();
             let msg: String = "Failed to add WiFi credentials".to_string();
-            
+
             return Json(build_json_response(status, None, Some(msg)));
         }
     };
@@ -169,12 +169,12 @@ fn return_ssid() -> Json<JsonResponse> {
 
 // HELPER FUNCTIONS
 
-fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
-    JsonResponse {
-        status,
-        data,
-        msg,
-    }
+fn build_json_response(
+    status: String,
+    data: Option<JsonValue>,
+    msg: Option<String>,
+) -> JsonResponse {
+    JsonResponse { status, data, msg }
 }
 
 #[catch(404)]
@@ -190,7 +190,16 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![network_card, network_list, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
+            routes![
+                network_card,
+                network_list,
+                files,
+                activate_ap,
+                activate_client,
+                add_wifi,
+                return_ip,
+                return_ssid
+            ],
         )
         .register(catchers![not_found])
         .attach(Template::fairing())
@@ -208,7 +217,7 @@ pub fn run() -> Result<(), BoxError> {
     let ws_addr = env::var("PEACH_WEB_WS").unwrap_or_else(|_| "0.0.0.0:5115".to_string());
     match websocket_server(ws_addr) {
         Ok(_) => debug!("Websocket server terminated without error."),
-        Err(e) => error!("Error starting the websocket server: {}", e)
+        Err(e) => error!("Error starting the websocket server: {}", e),
     };
 
     Ok(())

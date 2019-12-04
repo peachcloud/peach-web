@@ -35,7 +35,8 @@ impl NetworkContext {
             Err(_) => "x.x.x.x".to_string(),
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
-            Ok(networks) => networks.list,
+            //Ok(networks) => networks.list,
+            Ok(response) => response,
             Err(_) => "No WiFi networks found".to_string(),
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
@@ -55,8 +56,8 @@ impl NetworkContext {
             wlan_scan,
             wlan_ssid,
             wlan_state,
-            flash_name : None,
-            flash_msg : None,
+            flash_name: None,
+            flash_msg: None,
         }
     }
 }
@@ -112,7 +113,7 @@ pub struct MemStat {
 
 #[derive(Debug, Deserialize)]
 pub struct Networks {
-    pub list: String,
+    pub list: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
