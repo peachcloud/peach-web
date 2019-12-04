@@ -200,7 +200,7 @@ pub fn network_reconnect_wifi(iface: String) -> std::result::Result<String, Netw
     Ok(response)
 }
 
-pub fn network_scan_networks(iface: String) -> std::result::Result<String, NetworkError> {
+pub fn network_scan_networks(iface: String) -> std::result::Result<Networks, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -213,10 +213,10 @@ pub fn network_scan_networks(iface: String) -> std::result::Result<String, Netwo
 
     let response = client.scan_networks(iface).call()?;
     //let n: Networks = serde_json::from_str(&response).unwrap();
-    //let n: Networks = serde_json::from_str(&response)?;
+    let n: Networks = serde_json::from_str(&response)?;
 
-    //Ok(n)
-    Ok(response)
+    Ok(n)
+    //Ok(response)
 }
 
 jsonrpc_client!(pub struct PeachNetworkClient {

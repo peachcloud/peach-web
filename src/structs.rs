@@ -9,7 +9,8 @@ pub struct NetworkContext {
     pub ap_ssid: String,
     pub ap_state: String,
     pub wlan_ip: String,
-    pub wlan_scan: Option<Vec<String>>,
+    //pub wlan_scan: Option<Vec<String>>,
+    pub wlan_scan: Option<Networks>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub flash_name: Option<String>,
@@ -35,16 +36,21 @@ impl NetworkContext {
             Err(_) => "x.x.x.x".to_string(),
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
-            //Ok(networks) => networks.list,
             Ok(response) => {
-                let len = response.len();
+                // response comes in this form: ["Home", "deli"]
+                /*let len = response.len();
                 let trimmed_list = response.get(1..len-1).unwrap();
                 let r: Vec<&str> = trimmed_list.split(',').collect();
                 let mut networks: Vec<String> = Vec::new();
                 for network in r {
                     networks.push(network.to_string());
+                }*/
+                if response.list.len() == 0 {
+                    None
+                } else {
+                    Some(response)
                 }
-                Some(networks)
+                //Some(networks)
             },
             Err(_) => None
             //"No WiFi networks found".to_string(),
@@ -121,7 +127,7 @@ pub struct MemStat {
     pub used: u64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Networks {
     pub list: Vec<String>,
 }
