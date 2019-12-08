@@ -39,7 +39,7 @@ impl NetworkContext {
                 // response comes in this form: ["Home", "deli"]
                 let len = response.len();
                 // remove square brackets from response String
-                let trimmed_list = response.get(1..len-1).unwrap();
+                let trimmed_list = response.get(1..len - 1).unwrap();
                 // separate the list of ssids
                 let r: Vec<&str> = trimmed_list.split(',').collect();
                 let mut networks: Vec<String> = Vec::new();
@@ -47,11 +47,10 @@ impl NetworkContext {
                     let ssid = network.trim_matches('"');
                     networks.push(ssid.to_string());
                 }
-                
+
                 Some(networks)
-            },
-            Err(_) => None
-            //"No WiFi networks found".to_string(),
+            }
+            Err(_) => None, //"No WiFi networks found".to_string(),
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
