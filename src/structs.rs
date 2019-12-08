@@ -45,7 +45,8 @@ impl NetworkContext {
                 let r: Vec<&str> = trimmed_list.split(',').collect();
                 let mut networks: Vec<String> = Vec::new();
                 for network in r {
-                    networks.push(network.to_string());
+                    let trimmed_network: String = network.trim_matches('"').to_string();
+                    networks.push(trimmed_network);
                 }
                 Some(networks)
             },
