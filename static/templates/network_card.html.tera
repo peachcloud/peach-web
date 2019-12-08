@@ -20,38 +20,35 @@
                 <!-- left column -->
                 <!-- network mode icon with label -->
                 <div class="grid-column-1">
-                    {% if ap_state == "up" %}
+                {% if ap_state == "up" %}
                     <img id="netModeIcon" class="center icon icon-active" src="icons/router.svg">
                     <label id="netModeLabel" class="center label-small" title="Access Point Status">ONLINE</label>
-                    {% elif ap_state == "down" %}
-                    <img id="netModeIcon" class="center icon icon-inactive" src="icons/router.svg">
-                    <label id="netModeLabel" class="center label-small font-light-gray" title="Access Point Status">OFFLINE</label>
-                    {% elif wlan_state == "up" %}
+                {% elif wlan_state == "up" %}
                     <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg">
                     <label id="netModeLabel" class="center label-small" title="WiFi Client Point Status">ONLINE</label>
-                    {% else %}
+                {% elif wlan_state == "down" %}
                     <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg">
                     <label id="netModeLabel" class="center label-small font-light-gray" title="WiFi Client Point Status">OFFLINE</label>
-                  {% endif %}
+                {% endif %}
                 </div>
                 <!-- right column -->
                 <!-- network mode, ssid & ip with labels -->
                 <div class="grid-column-2">
-                    {% if ap_state == "up" or ap_state == "down" %}
+                {% if ap_state == "up" %}
                     <label class="label-small" title="Network Mode">MODE</label>
                     <p class="card-text" title="Network Mode">Access Point</p>
                     <label class="label-small" title="Access Point SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ ap_ssid }}</p>
                     <label class="label-small" title="Access Point IP Address">IP</label>
                     <p class="card-text" title="IP">{{ ap_ip }}</p>
-                    {% elif wlan_state == "up" or wlan_state == "down" %}
+                {% elif wlan_state == "up" or wlan_state == "down" %}
                     <label class="label-small" title="Network Mode">MODE</label>
                     <p class="card-text" title="Network Mode">WiFi Client</p>
                     <label class="label-small" title="WiFi SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ wlan_ssid }}</p>
                     <label class="label-small" title="WiFi Client IP Address">IP</label>
                     <p class="card-text" title="IP">{{ wlan_ip }}</p>
-                    {% endif %}
+                {% endif %}
                 </div>
             </div>
             <br>

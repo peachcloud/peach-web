@@ -213,10 +213,6 @@ pub fn network_scan_networks(iface: String) -> std::result::Result<String, Netwo
     let response = client.scan_networks(iface).call()?;
 
     Ok(response)
-    //let n: Networks = serde_json::from_str(&response).unwrap();
-    //let n: Networks = serde_json::from_str(&response)?;
-
-    //Ok(n)
 }
 
 jsonrpc_client!(pub struct PeachNetworkClient {

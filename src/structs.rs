@@ -10,7 +10,6 @@ pub struct NetworkContext {
     pub ap_state: String,
     pub wlan_ip: String,
     pub wlan_scan: Option<Vec<String>>,
-    //pub wlan_scan: Option<Networks>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub flash_name: Option<String>,
@@ -45,9 +44,10 @@ impl NetworkContext {
                 let r: Vec<&str> = trimmed_list.split(',').collect();
                 let mut networks: Vec<String> = Vec::new();
                 for network in r {
-                    let trimmed_network: String = network.trim_matches('"').to_string();
-                    networks.push(trimmed_network);
+                    let ssid = network.trim_matches('"');
+                    networks.push(ssid.to_string());
                 }
+                
                 Some(networks)
             },
             Err(_) => None
