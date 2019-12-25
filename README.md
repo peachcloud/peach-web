@@ -2,23 +2,25 @@
 
 [![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web)
 
-## Web Admin Interface for PeachCloud
+## Web Server for PeachCloud
 
-**peach-web** provides a web interface for monitoring and interacting with the PeachCloud device. This will allow administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins.
+**peach-web** provides a web server for serving static assets (including all client code) and a JSON API.
 
 Initial development will focus on administration of the device itself, with SSB-related administration being integrated at a later stage.
 
-The peach-web stack currently consists of [Rocket](https://rocket.rs/) (Rust web framework), [Tera](https://tera.netlify.com/docs/installation/) (Rust template engine inspired by Jinja2 and the Django template language) and [Tachyons](https://tachyons.io/) (functional CSS library for humans).
+The peach-web stack currently consists of [Rocket](https://rocket.rs/) (Rust web framework).
 
 _Note: This is a work-in-progress._
 
 ### JSON API
 
+All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the table below to keep the table compact.
+
 | Endpoint | Method | Parameters | Description |
 | --- | --- | --- | --- |
-| /api/ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
-| /api/ssid | GET | | Returns SSID for connected WiFi network |
-| /api/add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| network/ip | GET | | Returns IP address values for wlan0 & ap0 interfaces |
+| network/ssid | GET | | Returns SSID for connected WiFi network |
+| network/add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 
 ### Environment
 
@@ -27,10 +29,6 @@ The web application deployment mode is configured with the `ROCKET_ENV` environm
 `export ROCKET_ENV=stage`
 
 Other deployment modes are `dev` and `prod`. Read the [Rocket Environment Configurations docs](https://rocket.rs/v0.4/guide/configuration/#environment) for further information.
-
-The [Tera](https://tera.netlify.com/) template directory must be configured with the `ROCKET_TEMPLATE_DIR` environment variable:
-
-`export ROCKET_TEMPLATE_DIR=static/templates/`
 
 The WebSocket server port can be configured with `PEACH_WEB_WS` environment variable:
 

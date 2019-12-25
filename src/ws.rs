@@ -20,10 +20,7 @@ pub fn websocket_server(address: String) -> io::Result<()> {
                 return;
             }
 
-            let mut client = connection
-                .use_protocol("rust-websocket")
-                .accept()
-                .unwrap();
+            let mut client = connection.use_protocol("rust-websocket").accept().unwrap();
 
             let client_ip = client.peer_addr().unwrap();
 

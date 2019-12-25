@@ -55,8 +55,8 @@ impl NetworkContext {
             wlan_scan,
             wlan_ssid,
             wlan_state,
-            flash_name : None,
-            flash_msg : None,
+            flash_name: None,
+            flash_msg: None,
         }
     }
 }

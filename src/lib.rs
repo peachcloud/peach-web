@@ -12,7 +12,6 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-extern crate tera;
 extern crate websocket;
 
 mod error;
@@ -22,36 +21,23 @@ mod structs;
 mod tests;
 mod ws;
 
-use std::{env, thread};
 use std::path::{Path, PathBuf};
+use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{NetworkContext, JsonResponse, WiFi};
+use crate::structs::{JsonResponse, WiFi};
 use crate::ws::*;
 
-use rocket::request::{Form, FlashMessage};
-use rocket::response::{Flash, NamedFile, Redirect};
+use rocket::request::Form;
+use rocket::response::NamedFile;
 use rocket_contrib::json::{Json, JsonValue};
-use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
 #[get("/")]
-fn index(flash: Option<FlashMessage>) -> Template {
-    // assign context through context_builder call
-    let mut context = NetworkContext::build();
-    // check to see if there is a flash message to be displayed
-    match flash {
-        Some(flash) => {
-            // add flash message contents to the context object
-            context.flash_name = Some(flash.name().to_string());
-            context.flash_msg = Some(flash.msg().to_string());
-        },
-        _ => (),
-    };
-    // template_dir is set in Rocket.toml
-    Template::render("index", &context)
+fn index() -> &'static str {
+    "PeachCloud"
 }
 
 #[get("/<file..>")]
@@ -61,35 +47,45 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 // API ROUTES
 
-#[post("/api/activate_ap")] 
-fn activate_ap() -> Flash<Redirect> {
+#[post("/api/v1/network/activate_ap")]
+fn activate_ap() -> Json<JsonResponse> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
-    // TODO: do we really want to redirect here?
-    // redirect will fail if AP is not up yet
-    // might be better not to have a flash message and
-    // allow manual refresh instead (maybe with in-page button)
     match network_activate_ap() {
-        Ok(_) => Flash::success(Redirect::to("/"), "Activated WiFi client mode."),
-        Err(_) => Flash::error(Redirect::to("/"), "Failed to activate WiFi client mode."),
+        Ok(_) => {
+            let status = "success".to_string();
+            Json(build_json_response(status, None, None))
+        }
+        Err(_) => {
+            let status = "error".to_string();
+            let msg = "Failed to activate WiFi access point.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
     }
 }
 
-#[post("/api/activate_client")] 
-fn activate_client() -> Flash<Redirect> {
+#[post("/api/v1/network/activate_client")]
+fn activate_client() -> Json<JsonResponse> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
     match network_activate_client() {
-        Ok(_) => Flash::success(Redirect::to("/"), "Activated WiFi client mode."),
-        Err(_) => Flash::error(Redirect::to("/"), "Failed to activate WiFi client mode."),
+        Ok(_) => {
+            let status = "success".to_string();
+            Json(build_json_response(status, None, None))
+        }
+        Err(_) => {
+            let status = "error".to_string();
+            let msg = "Failed to activate WiFi client mode.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
     }
 }
 
-#[post("/api/add_wifi", data = "<wifi>")]
+#[post("/api/v1/network/wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
-    let ssid: String = wifi.ssid.to_string();
-    let pass: String = wifi.pass.to_string();
+    let ssid = wifi.ssid.to_string();
+    let pass = wifi.pass.to_string();
     let add = network_add_wifi(ssid, pass);
     match add {
         Ok(_) => {
@@ -99,23 +95,23 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
                 Err(_) => warn!("Failed to reconnect the wlan0 interface."),
             }
             // json response for successful update
-            let status: String = "success".to_string();
-            let data = json!("WiFi credentials added");
-            
-            return Json(build_json_response(status, Some(data), None));
+            let status = "success".to_string();
+            let data = json!("WiFi credentials added.");
+
+            Json(build_json_response(status, Some(data), None))
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
             // json response for failed update
-            let status: String = "error".to_string();
-            let msg: String = "Failed to add WiFi credentials".to_string();
-            
-            return Json(build_json_response(status, None, Some(msg)));
+            let status = "error".to_string();
+            let msg = "Failed to add WiFi credentials.".to_string();
+
+            Json(build_json_response(status, None, Some(msg)))
         }
-    };
+    }
 }
 
-#[get("/api/ip")]
+#[get("/api/v1/network/ip")]
 fn return_ip() -> Json<JsonResponse> {
     // retrieve ip for wlan0 or set to x.x.x.x if not found
     let wlan_ip = match network_get_ip("wlan0".to_string()) {
@@ -132,32 +128,36 @@ fn return_ip() -> Json<JsonResponse> {
         "ap0": ap_ip
     });
 
-    let status: String = "success".to_string();
+    let status = "success".to_string();
 
     Json(build_json_response(status, Some(data), None))
 }
 
-#[get("/api/ssid")]
+#[get("/api/v1/network/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
     // retrieve ssid for connected network
-    let ssid = match network_get_ssid("wlan0".to_string()) {
-        Ok(network) => network,
-        Err(_) => "Not currently connected".to_string(),
-    };
-    let status: String = "success".to_string();
-    let data = json!(ssid);
-
-    Json(build_json_response(status, Some(data), None))
+    match network_get_ssid("wlan0".to_string()) {
+        Ok(network) => {
+            let status = "success".to_string();
+            let data = json!(network);
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            let status = "success".to_string();
+            let msg = "Not currently connected to an access point.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
 }
 
 // HELPER FUNCTIONS
 
-fn build_json_response(status: String, data: Option<JsonValue>, msg: Option<String>) -> JsonResponse {
-    JsonResponse {
-        status,
-        data,
-        msg,
-    }
+fn build_json_response(
+    status: String,
+    data: Option<JsonValue>,
+    msg: Option<String>,
+) -> JsonResponse {
+    JsonResponse { status, data, msg }
 }
 
 #[catch(404)]
@@ -173,10 +173,17 @@ fn rocket() -> rocket::Rocket {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, files, activate_ap, activate_client, add_wifi, return_ip, return_ssid],
+            routes![
+                index,
+                files,
+                activate_ap,
+                activate_client,
+                add_wifi,
+                return_ip,
+                return_ssid
+            ],
         )
         .register(catchers![not_found])
-        .attach(Template::fairing())
 }
 
 pub fn run() -> Result<(), BoxError> {
@@ -191,7 +198,7 @@ pub fn run() -> Result<(), BoxError> {
     let ws_addr = env::var("PEACH_WEB_WS").unwrap_or_else(|_| "0.0.0.0:5115".to_string());
     match websocket_server(ws_addr) {
         Ok(_) => debug!("Websocket server terminated without error."),
-        Err(e) => error!("Error starting the websocket server: {}", e)
+        Err(e) => error!("Error starting the websocket server: {}", e),
     };
 
     Ok(())
