@@ -4,14 +4,15 @@
  * peachcloud.css
  *
  * Index
+ * - ALIGNMENT
  * - BODY
  * - BUTTONS
  * - CARDS
- * - ALIGNMENT
  * - CIRCLES
  * - DEGREES
  * - GRIDS
  * - FONTS
+ * - FORMS (incl. inputs)
  * - ICONS
  * - LABELS
  * - RADIAL MENU
@@ -19,6 +20,26 @@
  * - PARAGRAPHS
  *
 \* ------------------------------ */
+
+/*
+ * ALIGNMENT
+ */
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.center-vert {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
 
 /*
  * BODY
@@ -42,10 +63,10 @@ body {
     padding: 10px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: var(--font-size-5);
     font-family: var(--sans-serif);
-    width: 80%;
+    width: 200px;
+    margin-top: 5px;
     margin-bottom: 5px;
 }
 
@@ -56,8 +77,15 @@ body {
 .card {
     background-color: var(--near-white);
     border-radius: var(--border-radius-4);
-    width: 400px;
+    max-width: var(--max-width-5);
     position: relative;
+    box-shadow: var(--box-shadow-3);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-grid {
+    padding: 1rem;
 }
 
 .card-grid-three {
@@ -77,30 +105,16 @@ body {
     align-items: center;
     justify-content: center;
     justify-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
     width: 100%;
 }
 
 .card-text {
     margin: 0;
     font-size: var(--font-size-5);
-}
-
-/*
- * ALIGNMENT
- */
-
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.center-vert {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    padding-bottom: 3px;
+    padding-right: 1rem;
 }
 
 /*
@@ -328,6 +342,19 @@ body {
 }
 
 /*
+ * FORMS (incl. inputs)
+ */
+
+.form {
+    padding: 1.5rem;
+}
+
+.input {
+    margin-top: 5px;
+    margin-bottom: 1rem;
+}
+
+/*
  * ICONS
  */
 
@@ -370,6 +397,7 @@ body {
     color: var(--gray);
     font-family: var(--sans-serif);
     font-size: var(--font-size-7);
+    display: block;
 }
 
 .label-medium {
@@ -404,13 +432,35 @@ body {
 
 .list-container {
     padding: 1em;
-    width: 90%;
 }
 
 .list-item {
+    display: grid;
     padding: 1rem;
+    border-bottom-color: var(--light-silver);
     border-bottom-style: solid;
     border-bottom-width: 1px;
+}
+
+.list-icon {
+    align-self: center;
+    justify-self: right;
+    grid-column: 2;
+    grid-row: 1/3;
+}
+
+.list-text {
+    justify-self: left;
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    font-size: var(--font-size-5);
+}
+
+.list-label {
+    justify-self: left;
+    grid-column: 1;
+    grid-row: 2;
 }
 
 /*
@@ -418,28 +468,27 @@ body {
  */
 
 .nav-bar {
-    background-color: var(--near-black);
-    display: flex;
-    justify-content: flex-end;
+    background-color: var(--moon-gray);
     width: 100%;
     height: 2em;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .nav-icon {
     width: auto;
     height: 90%;
-    align-self: center;
+    cursor: pointer;
 }
 
 .nav-icon-left {
-    margin-right: auto;
-    padding-left: 5px;
+    float: left;
+    padding-left: 10px;
 }
 
 .nav-icon-right {
-    padding-right: 5px;
+    float: right;
+    padding-right: 10px;
 }
 
 /*
@@ -582,4 +631,5 @@ input:checked + .slider:before {
 
 p {
     font-family: var(--sans-serif);
+    overflow-wrap: anywhere;
 }

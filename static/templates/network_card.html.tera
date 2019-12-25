@@ -53,13 +53,16 @@
             </div>
             <br>
             {% if ap_state == "up" or ap_state == "down" %}
-            <button class="button center" id="connectWifi">Connect to WiFi</button>
+            <button class="button center" id="connectWifi">Enable WiFi</button>
+            <a class="link" href="/network/add_network">
+                <button class="button center">Add WiFi Network</button>
+            </a>
             {% elif wlan_state == "up" or wlan_state == "down" %}
             <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
-            {% endif %}
             <a class="link" href="/network/list_networks">
                 <button class="button center">List WiFi Networks</button>
             </a>
+            {% endif %}
             <br>
             <!-- CARD GRID -->
             <div style="padding-left: 5px; padding-right: 5px;">
