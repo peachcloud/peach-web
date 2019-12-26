@@ -52,6 +52,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  /api/v1/network/ip
 //  /api/v1/network/rssi
 //  /api/v1/network/ssid
+//  /api/v1/network/state
 //  /api/v1/network/status
 //  /api/v1/network/wifi
 
@@ -145,6 +146,28 @@ fn return_ssid() -> Json<JsonResponse> {
     }
 }
 
+#[get("/api/v1/network/state")]
+fn return_state() -> Json<JsonResponse> {
+    // retrieve state of wlan0 or set to x.x.x.x if not found
+    let wlan_state = match network_get_state("wlan0".to_string()) {
+        Ok(state) => state,
+        Err(_) => "unavailable".to_string(),
+    };
+    // retrieve state for ap0 or set to x.x.x.x if not found
+    let ap_state = match network_get_state("ap0".to_string()) {
+        Ok(state) => state,
+        Err(_) => "unavailable".to_string(),
+    };
+    let data = json!({
+        "wlan0": wlan_state,
+        "ap0": ap_state
+    });
+
+    let status = "success".to_string();
+
+    Json(build_json_response(status, Some(data), None))
+}
+
 #[get("/api/v1/network/status")]
 fn return_status() -> Json<JsonResponse> {
     // retrieve status info for wlan0 interface
@@ -223,6 +246,7 @@ fn rocket() -> rocket::Rocket {
                 return_ip,
                 return_rssi,
                 return_ssid,
+                return_state,
                 return_status,
                 add_wifi
             ],
