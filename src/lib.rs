@@ -47,6 +47,14 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 // API ROUTES
 
+//  /api/v1/network/activate_ap
+//  /api/v1/network/activate_client
+//  /api/v1/network/ip
+//  /api/v1/network/rssi
+//  /api/v1/network/ssid
+//  /api/v1/network/status
+//  /api/v1/network/wifi
+
 #[post("/api/v1/network/activate_ap")]
 fn activate_ap() -> Json<JsonResponse> {
     // activate the wireless access point
@@ -76,6 +84,79 @@ fn activate_client() -> Json<JsonResponse> {
         Err(_) => {
             let status = "error".to_string();
             let msg = "Failed to activate WiFi client mode.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[get("/api/v1/network/ip")]
+fn return_ip() -> Json<JsonResponse> {
+    // retrieve ip for wlan0 or set to x.x.x.x if not found
+    let wlan_ip = match network_get_ip("wlan0".to_string()) {
+        Ok(ip) => ip,
+        Err(_) => "x.x.x.x".to_string(),
+    };
+    // retrieve ip for ap0 or set to x.x.x.x if not found
+    let ap_ip = match network_get_ip("ap0".to_string()) {
+        Ok(ip) => ip,
+        Err(_) => "x.x.x.x".to_string(),
+    };
+    let data = json!({
+        "wlan0": wlan_ip,
+        "ap0": ap_ip
+    });
+
+    let status = "success".to_string();
+
+    Json(build_json_response(status, Some(data), None))
+}
+
+#[get("/api/v1/network/rssi")]
+fn return_rssi() -> Json<JsonResponse> {
+    // retrieve rssi for connected network
+    match network_get_rssi("wlan0".to_string()) {
+        Ok(rssi) => {
+            let status = "success".to_string();
+            let data = json!(rssi);
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            let status = "success".to_string();
+            let msg = "Not currently connected to an access point.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[get("/api/v1/network/ssid")]
+fn return_ssid() -> Json<JsonResponse> {
+    // retrieve ssid for connected network
+    match network_get_ssid("wlan0".to_string()) {
+        Ok(network) => {
+            let status = "success".to_string();
+            let data = json!(network);
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            let status = "success".to_string();
+            let msg = "Not currently connected to an access point.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[get("/api/v1/network/status")]
+fn return_status() -> Json<JsonResponse> {
+    // retrieve status info for wlan0 interface
+    match network_get_status("wlan0".to_string()) {
+        Ok(network) => {
+            let status = "success".to_string();
+            let data = json!(network);
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            let status = "success".to_string();
+            let msg = "Not currently connected to an access point.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }
@@ -111,45 +192,6 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     }
 }
 
-#[get("/api/v1/network/ip")]
-fn return_ip() -> Json<JsonResponse> {
-    // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = match network_get_ip("wlan0".to_string()) {
-        Ok(ip) => ip,
-        Err(_) => "x.x.x.x".to_string(),
-    };
-    // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = match network_get_ip("ap0".to_string()) {
-        Ok(ip) => ip,
-        Err(_) => "x.x.x.x".to_string(),
-    };
-    let data = json!({
-        "wlan0": wlan_ip,
-        "ap0": ap_ip
-    });
-
-    let status = "success".to_string();
-
-    Json(build_json_response(status, Some(data), None))
-}
-
-#[get("/api/v1/network/ssid")]
-fn return_ssid() -> Json<JsonResponse> {
-    // retrieve ssid for connected network
-    match network_get_ssid("wlan0".to_string()) {
-        Ok(network) => {
-            let status = "success".to_string();
-            let data = json!(network);
-            Json(build_json_response(status, Some(data), None))
-        }
-        Err(_) => {
-            let status = "success".to_string();
-            let msg = "Not currently connected to an access point.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-    }
-}
-
 // HELPER FUNCTIONS
 
 fn build_json_response(
@@ -178,9 +220,11 @@ fn rocket() -> rocket::Rocket {
                 files,
                 activate_ap,
                 activate_client,
-                add_wifi,
                 return_ip,
-                return_ssid
+                return_rssi,
+                return_ssid,
+                return_status,
+                add_wifi
             ],
         )
         .register(catchers![not_found])
