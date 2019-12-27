@@ -56,7 +56,24 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
         _ => (),
     };
     // template_dir is set in Rocket.toml
-    Template::render("network_grid", &context)
+    Template::render("network_card", &context)
+}
+
+#[get("/network/list")]
+fn network_list(flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkContext::build();
+    // check to see if there is a flash message to display
+    match flash {
+        Some(flash) => {
+            // add flash message contents to the context object
+            context.flash_name = Some(flash.name().to_string());
+            context.flash_msg = Some(flash.msg().to_string());
+        }
+        _ => (),
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_list", &context)
 }
 
 #[get("/<file..>")]
@@ -66,14 +83,14 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 
 // API ROUTES
 
-//  /api/v1/network/activate_ap
-//  /api/v1/network/activate_client
-//  /api/v1/network/ip
-//  /api/v1/network/rssi
-//  /api/v1/network/ssid
-//  /api/v1/network/state
-//  /api/v1/network/status
-//  /api/v1/network/wifi
+//  [POST]       /api/v1/network/activate_ap
+//  [POST]       /api/v1/network/activate_client
+//  [GET]        /api/v1/network/ip
+//  [GET]        /api/v1/network/rssi
+//  [GET]        /api/v1/network/ssid
+//  [GET]        /api/v1/network/state
+//  [GET]        /api/v1/network/status
+//  [GET, POST]  /api/v1/network/wifi
 
 #[post("/api/v1/network/activate_ap")]
 fn activate_ap() -> Json<JsonResponse> {
@@ -278,6 +295,7 @@ fn rocket() -> rocket::Rocket {
                 index,
                 files,
                 network_card,
+                network_list,
                 activate_ap,
                 activate_client,
                 return_ip,

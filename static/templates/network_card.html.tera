@@ -47,7 +47,7 @@
             </a>
             {% else %}
             <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
-            <a class="link" href="/network/list_networks">
+            <a class="link" href="/network/list">
                 <button class="button center">List WiFi Networks</button>
             </a>
             {% endif %}
