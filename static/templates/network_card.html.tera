@@ -1,0 +1,78 @@
+{% extends "nav" %}
+
+{% block network_card %}
+        <!-- NETWORK CARD -->
+        <!-- NETWORK INFO BOX -->
+        <div class="card" style="width: 300px;">
+            <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
+                <!-- NETWORK STATUS -->
+                <!-- left column -->
+                <!-- network mode icon with label -->
+                <div class="grid-column-1">
+                {% if ap_state == "up" %}
+                    <img id="netModeIcon" class="center icon icon-active" src="icons/router.svg">
+                    <label id="netModeLabel" class="center label-small" title="Access Point Status">ONLINE</label>
+                {% elif wlan_state == "up" %}
+                    <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg">
+                    <label id="netModeLabel" class="center label-small" title="WiFi Client Point Status">ONLINE</label>
+                {% else %}
+                    <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg">
+                    <label id="netModeLabel" class="center label-small font-light-gray" title="WiFi Client Point Status">OFFLINE</label>
+                {% endif %}
+                </div>
+                <!-- right column -->
+                <!-- network mode, ssid & ip with labels -->
+                <div class="grid-column-2">
+                {% if ap_state == "up" %}
+                    <label class="label-small" title="Network Mode">MODE</label>
+                    <p class="card-text" title="Network Mode">Access Point</p>
+                    <label class="label-small" title="Access Point SSID">SSID</label>
+                    <p class="card-text" title="SSID">{{ ap_ssid }}</p>
+                    <label class="label-small" title="Access Point IP Address">IP</label>
+                    <p class="card-text" title="IP">{{ ap_ip }}</p>
+                {% else %}
+                    <label class="label-small" title="Network Mode">MODE</label>
+                    <p class="card-text" title="Network Mode">WiFi Client</p>
+                    <label class="label-small" title="WiFi SSID">SSID</label>
+                    <p class="card-text" title="SSID">{{ wlan_ssid }}</p>
+                    <label class="label-small" title="WiFi Client IP Address">IP</label>
+                    <p class="card-text" title="IP">{{ wlan_ip }}</p>
+                {% endif %}
+                </div>
+            </div>
+            {% if ap_state == "up" %}
+            <button class="button center" id="connectWifi">Enable WiFi</button>
+            <a class="link" href="/network/add_network">
+                <button class="button center">Add WiFi Network</button>
+            </a>
+            {% else %}
+            <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
+            <a class="link" href="/network/list_networks">
+                <button class="button center">List WiFi Networks</button>
+            </a>
+            {% endif %}
+            <br>
+            <!-- CARD GRID -->
+            <div style="padding-left: 5px; padding-right: 5px;">
+                <!-- row of icons representing network statistics -->
+                <div class="card-grid-three">
+                    <img class="grid-three-icon-1 icon" title="Devices" src="icons/devices.svg">
+                    <img class="grid-three-icon-2 icon" title="Download" src="icons/down-arrow.svg">
+                    <img class="grid-three-icon-3 icon" title="Upload" src="icons/up-arrow.svg">
+                </div>
+                <!-- row of values representing current network state -->
+                <div class="card-grid-three">
+                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
+                    <label class="grid-three-label-2 label-medium" title="Data download total in MB">21.7</label>
+                    <label class="grid-three-label-3 label-medium" title="Data upload total in MB">3.4</label>
+                </div>
+                <!-- row of labels for each network statistic column -->
+                <div class="card-grid-three">
+                    <label class="grid-three-label-1 label-small">DEVICES</label>
+                    <label class="grid-three-label-2 label-small">DOWNLOAD</label>
+                    <label class="grid-three-label-3 label-small">UPLOAD</label>
+                </div>
+            </div>
+            <br>
+        </div>
+{% endblock %}

@@ -12,6 +12,7 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
+extern crate tera;
 extern crate websocket;
 
 mod error;
@@ -26,18 +27,36 @@ use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{JsonResponse, WiFi};
+use crate::structs::{JsonResponse, NetworkContext, WiFi};
 use crate::ws::*;
 
-use rocket::request::Form;
+use rocket::request::{FlashMessage, Form};
 use rocket::response::NamedFile;
 use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
 #[get("/")]
 fn index() -> &'static str {
     "PeachCloud"
+}
+
+#[get("/network")]
+fn network_card(flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkContext::build();
+    // check to see if there is a flash message to display
+    match flash {
+        Some(flash) => {
+            // add flash message contents to the context object
+            context.flash_name = Some(flash.name().to_string());
+            context.flash_msg = Some(flash.msg().to_string());
+        }
+        _ => (),
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_grid", &context)
 }
 
 #[get("/<file..>")]
@@ -185,6 +204,23 @@ fn return_status() -> Json<JsonResponse> {
     }
 }
 
+#[get("/api/v1/network/wifi")]
+fn scan_networks() -> Json<JsonResponse> {
+    // retrieve scan results for access-points within range of wlan0
+    match network_scan_networks("wlan0".to_string()) {
+        Ok(networks) => {
+            let status = "success".to_string();
+            let data = json!(networks);
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            let status = "success".to_string();
+            let msg = "Unable to scan for networks. Interface may be deactivated.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 #[post("/api/v1/network/wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
@@ -241,6 +277,7 @@ fn rocket() -> rocket::Rocket {
             routes![
                 index,
                 files,
+                network_card,
                 activate_ap,
                 activate_client,
                 return_ip,
@@ -248,10 +285,12 @@ fn rocket() -> rocket::Rocket {
                 return_ssid,
                 return_state,
                 return_status,
+                scan_networks,
                 add_wifi
             ],
         )
         .register(catchers![not_found])
+        .attach(Template::fairing())
 }
 
 pub fn run() -> Result<(), BoxError> {

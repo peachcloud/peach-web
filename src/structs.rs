@@ -9,9 +9,11 @@ pub struct NetworkContext {
     pub ap_ssid: String,
     pub ap_state: String,
     pub wlan_ip: String,
+    pub wlan_rssi: String,
     pub wlan_scan: String,
     pub wlan_ssid: String,
     pub wlan_state: String,
+    pub wlan_status: String,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
 }
@@ -34,16 +36,24 @@ impl NetworkContext {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
+        let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
+            Ok(rssi) => rssi,
+            Err(_) => "Not currently connected".to_string(),
+        };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(networks) => networks.list,
             Err(_) => "No WiFi networks found".to_string(),
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
-            Err(_) => "Not currently connected".to_string(),
+            Err(_) => "Not connected".to_string(),
         };
         let wlan_state = match network_get_state("wlan0".to_string()) {
             Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+        let wlan_status = match network_get_status("wlan0".to_string()) {
+            Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
 
@@ -52,9 +62,11 @@ impl NetworkContext {
             ap_ssid,
             ap_state,
             wlan_ip,
+            wlan_rssi,
             wlan_scan,
             wlan_ssid,
             wlan_state,
+            wlan_status,
             flash_name: None,
             flash_msg: None,
         }
@@ -110,7 +122,7 @@ pub struct MemStat {
     pub used: u64,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Networks {
     pub list: String,
 }

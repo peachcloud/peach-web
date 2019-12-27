@@ -1,0 +1,16 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>PeachCloud: Network</title>
+        <meta name="description" content="PeachCloud Network">
+        <meta name="author" content="glyph">
+        <link rel="stylesheet" href="/css/peachcloud.css">
+        <style>@import url("/css/_variables.css");</style>
+        <script src="/js/network.js"></script>
+    </head>
+    <body style="background-color: var(--moon-gray);">
+        {% block nav %}{% endblock %}
+    </body>
+</html>
