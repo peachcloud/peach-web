@@ -23,7 +23,8 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | network/ssid | GET | | Returns SSID for connected WiFi network |
 | network/state | GET | | Returns state of wlan0 & ap0 interfaces |
 | network/status | GET | | Returns status object for connected WiFi network |
-| network/add_wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| network/wifi | GET | | Returns scan results for in-range access-points |
+| network/wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 
 ### Environment
 
