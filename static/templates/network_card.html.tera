@@ -3,7 +3,7 @@
 {% block network_card %}
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
-        <div class="card" style="width: 300px;">
+        <div class="card">
             <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
                 <!-- NETWORK STATUS -->
                 <!-- left column -->

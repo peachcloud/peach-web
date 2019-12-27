@@ -40,7 +40,7 @@ impl NetworkContext {
             Ok(rssi) => rssi,
             Err(_) => "Not currently connected".to_string(),
         };
-        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+        let wlan_scan = match network_scan_networks("wlp3s0".to_string()) {
             Ok(response) => {
                 // response comes in this form: ["Home", "deli"]
                 let len = response.len();
