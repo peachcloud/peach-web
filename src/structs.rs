@@ -10,7 +10,7 @@ pub struct NetworkContext {
     pub ap_state: String,
     pub wlan_ip: String,
     pub wlan_rssi: String,
-    pub wlan_scan: Option<Vec<String>>,
+    pub wlan_scan: Option<Vec<Scan>>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub wlan_status: String,
@@ -40,22 +40,13 @@ impl NetworkContext {
             Ok(rssi) => rssi,
             Err(_) => "Not currently connected".to_string(),
         };
-        let wlan_scan = match network_scan_networks("wlp3s0".to_string()) {
-            Ok(response) => {
-                // response comes in this form: ["Home", "deli"]
-                let len = response.len();
-                // remove square brackets from response String
-                let trimmed_list = response.get(1..len - 1).unwrap();
-                // separate the list of ssids
-                let r: Vec<&str> = trimmed_list.split(',').collect();
-                let mut networks: Vec<String> = Vec::new();
-                for network in r {
-                    let ssid = network.trim_matches('"');
-                    networks.push(ssid.to_string());
-                }
-                Some(networks)
+        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+            Ok(results) => {
+                let scan: Vec<Scan> = serde_json::from_str(results.as_str())
+                    .expect("Failed to deserialize scan_networks response");
+                Some(scan)
             }
-            Err(_) => None, //"No WiFi networks found".to_string(),
+            Err(_) => None,
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
@@ -138,6 +129,13 @@ pub struct MemStat {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Networks {
     pub list: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Scan {
+    pub frequency: String,
+    pub signal_level: String,
+    pub ssid: String,
 }
 
 #[derive(Debug, Deserialize)]

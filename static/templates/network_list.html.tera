@@ -8,7 +8,7 @@
                 <ul class="list">
                 {% if wlan_scan %}
                     {% for network in wlan_scan %}
-                        <li class="list-item">{{ network }}</li>
+                        <li class="list-item">{{ network.ssid }} ({{ network.signal_level }})</li>
                     {% endfor %}
                 {% else %}
                     <li class="list-item">No networks found</li>
