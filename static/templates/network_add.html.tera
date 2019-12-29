@@ -4,16 +4,16 @@
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
             <!-- Standard input with button -->
-            <div id="wifiCreds" class="form">
+            <form id="wifiCreds" class="form">
                 <h1 class="bold center-text title-medium">Add WiFi Network</h1>
                 <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point"></input>
                 <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
-                <button class="center button">Connect</button>
+                <button id="addWifi" class="center button" name="wifi">Connect</button>
                 <a class="link" href="/network">
                     <button class="center button">Cancel</button>
                 </a>
                 <!-- NOTE : used to share ux information with the user -->
                 <p class="label-small" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
-            </div>
+            </form>
         </div>
 {% endblock %}

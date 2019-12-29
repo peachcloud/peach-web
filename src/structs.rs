@@ -220,7 +220,7 @@ pub struct Uptime {
     pub nanos: u32,
 }
 
-#[derive(FromForm)]
+#[derive(Debug, FromForm)]
 pub struct WiFi {
     pub ssid: String,
     pub pass: String,
