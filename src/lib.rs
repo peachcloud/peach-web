@@ -47,13 +47,10 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
-    match flash {
-        Some(flash) => {
-            // add flash message contents to the context object
-            context.flash_name = Some(flash.name().to_string());
-            context.flash_msg = Some(flash.msg().to_string());
-        }
-        _ => (),
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
     };
     // template_dir is set in Rocket.toml
     Template::render("network_card", &context)
@@ -64,13 +61,10 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
-    match flash {
-        Some(flash) => {
-            // add flash message contents to the context object
-            context.flash_name = Some(flash.name().to_string());
-            context.flash_msg = Some(flash.msg().to_string());
-        }
-        _ => (),
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
     };
     // template_dir is set in Rocket.toml
     Template::render("network_add", &context)
@@ -81,13 +75,10 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
-    match flash {
-        Some(flash) => {
-            // add flash message contents to the context object
-            context.flash_name = Some(flash.name().to_string());
-            context.flash_msg = Some(flash.msg().to_string());
-        }
-        _ => (),
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
     };
     // template_dir is set in Rocket.toml
     Template::render("network_list", &context)

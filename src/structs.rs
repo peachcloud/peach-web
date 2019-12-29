@@ -40,8 +40,8 @@ impl NetworkContext {
                 // modify traffic values & assign measurement unit
                 // based on received and transmitted values
                 // if received > 999 MB, convert it to GB
-                if t.received > 1047527424 {
-                    t.received = t.received / 1073741824;
+                if t.received > 1_047_527_424 {
+                    t.received /= 1_073_741_824;
                     t.rx_unit = Some("GB".to_string());
                 } else if t.received > 0 {
                     // otherwise, convert it to MB
@@ -52,8 +52,8 @@ impl NetworkContext {
                     t.rx_unit = Some("MB".to_string());
                 }
 
-                if t.transmitted > 1047527424 {
-                    t.transmitted = t.transmitted / 1073741824;
+                if t.transmitted > 1_047_527_424 {
+                    t.transmitted /= 1_073_741_824;
                     t.tx_unit = Some("GB".to_string());
                 } else if t.transmitted > 0 {
                     t.transmitted = (t.transmitted / 1024) / 1024;
@@ -63,8 +63,7 @@ impl NetworkContext {
                     t.tx_unit = Some("MB".to_string());
                 }
                 Some(t)
-
-            },
+            }
             Err(_) => None,
         };
         let wlan_ip = match network_get_ip("wlan0".to_string()) {
@@ -101,8 +100,8 @@ impl NetworkContext {
                 // modify traffic values & assign measurement unit
                 // based on received and transmitted values
                 // if received > 999 MB, convert it to GB
-                if t.received > 1047527424 {
-                    t.received = t.received / 1073741824;
+                if t.received > 1_047_527_424 {
+                    t.received /= 1_073_741_824;
                     t.rx_unit = Some("GB".to_string());
                 } else if t.received > 0 {
                     // otherwise, convert it to MB
@@ -113,8 +112,8 @@ impl NetworkContext {
                     t.rx_unit = Some("MB".to_string());
                 }
 
-                if t.transmitted > 1047527424 {
-                    t.transmitted = t.transmitted / 1073741824;
+                if t.transmitted > 1_047_527_424 {
+                    t.transmitted /= 1_073_741_824;
                     t.tx_unit = Some("GB".to_string());
                 } else if t.transmitted > 0 {
                     t.transmitted = (t.transmitted / 1024) / 1024;
@@ -124,7 +123,7 @@ impl NetworkContext {
                     t.tx_unit = Some("MB".to_string());
                 }
                 Some(t)
-            },
+            }
             Err(_) => None,
         };
 
