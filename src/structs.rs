@@ -8,12 +8,14 @@ pub struct NetworkContext {
     pub ap_ip: String,
     pub ap_ssid: String,
     pub ap_state: String,
+    pub ap_traffic: Option<Traffic>,
     pub wlan_ip: String,
     pub wlan_rssi: String,
     pub wlan_scan: Option<Vec<Scan>>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub wlan_status: String,
+    pub wlan_traffic: Option<Traffic>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
 }
@@ -31,6 +33,39 @@ impl NetworkContext {
         let ap_state = match network_get_state("ap0".to_string()) {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
+        };
+        let ap_traffic = match network_get_traffic("ap0".to_string()) {
+            Ok(traffic) => {
+                let mut t = traffic;
+                // modify traffic values & assign measurement unit
+                // based on received and transmitted values
+                // if received > 999 MB, convert it to GB
+                if t.received > 1047527424 {
+                    t.received = t.received / 1073741824;
+                    t.rx_unit = Some("GB".to_string());
+                } else if t.received > 0 {
+                    // otherwise, convert it to MB
+                    t.received = (t.received / 1024) / 1024;
+                    t.rx_unit = Some("MB".to_string());
+                } else {
+                    t.received = 0;
+                    t.rx_unit = Some("MB".to_string());
+                }
+
+                if t.transmitted > 1047527424 {
+                    t.transmitted = t.transmitted / 1073741824;
+                    t.tx_unit = Some("GB".to_string());
+                } else if t.transmitted > 0 {
+                    t.transmitted = (t.transmitted / 1024) / 1024;
+                    t.tx_unit = Some("MB".to_string());
+                } else {
+                    t.transmitted = 0;
+                    t.tx_unit = Some("MB".to_string());
+                }
+                Some(t)
+
+            },
+            Err(_) => None,
         };
         let wlan_ip = match network_get_ip("wlan0".to_string()) {
             Ok(ip) => ip,
@@ -60,17 +95,51 @@ impl NetworkContext {
             Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
+        let wlan_traffic = match network_get_traffic("wlan0".to_string()) {
+            Ok(traffic) => {
+                let mut t = traffic;
+                // modify traffic values & assign measurement unit
+                // based on received and transmitted values
+                // if received > 999 MB, convert it to GB
+                if t.received > 1047527424 {
+                    t.received = t.received / 1073741824;
+                    t.rx_unit = Some("GB".to_string());
+                } else if t.received > 0 {
+                    // otherwise, convert it to MB
+                    t.received = (t.received / 1024) / 1024;
+                    t.rx_unit = Some("MB".to_string());
+                } else {
+                    t.received = 0;
+                    t.rx_unit = Some("MB".to_string());
+                }
+
+                if t.transmitted > 1047527424 {
+                    t.transmitted = t.transmitted / 1073741824;
+                    t.tx_unit = Some("GB".to_string());
+                } else if t.transmitted > 0 {
+                    t.transmitted = (t.transmitted / 1024) / 1024;
+                    t.tx_unit = Some("MB".to_string());
+                } else {
+                    t.transmitted = 0;
+                    t.tx_unit = Some("MB".to_string());
+                }
+                Some(t)
+            },
+            Err(_) => None,
+        };
 
         NetworkContext {
             ap_ip,
             ap_ssid,
             ap_state,
+            ap_traffic,
             wlan_ip,
             wlan_rssi,
             wlan_scan,
             wlan_ssid,
             wlan_state,
             wlan_status,
+            wlan_traffic,
             flash_name: None,
             flash_msg: None,
         }
@@ -138,10 +207,12 @@ pub struct Scan {
     pub ssid: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Traffic {
     pub received: u64,
     pub transmitted: u64,
+    pub rx_unit: Option<String>,
+    pub tx_unit: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

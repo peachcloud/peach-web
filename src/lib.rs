@@ -241,7 +241,7 @@ fn return_status() -> Json<JsonResponse> {
 #[get("/api/v1/network/wifi")]
 fn scan_networks() -> Json<JsonResponse> {
     // retrieve scan results for access-points within range of wlan0
-    match network_scan_networks("wlp3s0".to_string()) {
+    match network_scan_networks("wlan0".to_string()) {
         Ok(networks) => {
             let status = "success".to_string();
             let data = json!(networks);
