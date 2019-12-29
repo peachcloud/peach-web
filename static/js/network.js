@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             let l = document.getElementById("netModeLabel");
             l.value = "OFFLINE";
             // send activate_ap POST request
-            fetch("/api/activate_ap", {
+            fetch("/api/v1/network/activate_ap", {
                 method: "post",
                 headers: {
                     'Accept': 'application/json',
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             let l = document.getElementById("netModeLabel");
             l.value = "OFFLINE";
          // send activate_client POST request
-            fetch("/api/activate_client", {
+            fetch("/api/v1/network/activate_client", {
                 method: "post",
                 headers: {
                     'Accept': 'application/json',
