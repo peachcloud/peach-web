@@ -25,6 +25,5 @@
                 {% endif %}
                 </ul>
             </div>
-            {{ __tera_context }}
         </div>
 {% endblock %}
