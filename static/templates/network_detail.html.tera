@@ -12,7 +12,7 @@
                 <!-- NETWORK STATUS ICON -->
                 <!-- left column -->
                 <div class="grid-column-1">
-                    <img class="center icon" src="icons/wifi.svg">
+                    <img class="center icon" src="/icons/wifi.svg">
                     <label class="center label-small" title="Access Point Status">AVAILABLE</label>
                 </div>
                 <!-- right column -->
