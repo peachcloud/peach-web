@@ -10,6 +10,100 @@ pub struct FlashContext {
 }
 
 #[derive(Debug, Serialize)]
+pub struct NetworkDetailContext {
+    pub wlan_ip: String,
+    pub wlan_rssi: String,
+    pub wlan_scan: Option<Vec<Scan>>,
+    pub wlan_ssid: String,
+    pub wlan_state: String,
+    pub wlan_status: String,
+    pub wlan_traffic: Option<Traffic>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    // allows for passing in the ssid of a chosen access point
+    // this is used in the network_detail template
+    pub selected: Option<String>,
+}
+
+impl NetworkDetailContext {
+    pub fn build() -> NetworkDetailContext {
+        let wlan_ip = match network_get_ip("wlan0".to_string()) {
+            Ok(ip) => ip,
+            Err(_) => "x.x.x.x".to_string(),
+        };
+        let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
+            Ok(rssi) => rssi,
+            Err(_) => "Not currently connected".to_string(),
+        };
+        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+            Ok(results) => {
+                let scan: Vec<Scan> = serde_json::from_str(results.as_str())
+                    .expect("Failed to deserialize scan_networks response");
+                Some(scan)
+            }
+            Err(_) => None,
+        };
+        let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
+            Ok(ssid) => ssid,
+            Err(_) => "Not connected".to_string(),
+        };
+        let wlan_state = match network_get_state("wlan0".to_string()) {
+            Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+        let wlan_status = match network_get_status("wlan0".to_string()) {
+            Ok(status) => status,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+        let wlan_traffic = match network_get_traffic("wlan0".to_string()) {
+            Ok(traffic) => {
+                let mut t = traffic;
+                // modify traffic values & assign measurement unit
+                // based on received and transmitted values
+                // if received > 999 MB, convert it to GB
+                if t.received > 1_047_527_424 {
+                    t.received /= 1_073_741_824;
+                    t.rx_unit = Some("GB".to_string());
+                } else if t.received > 0 {
+                    // otherwise, convert it to MB
+                    t.received = (t.received / 1024) / 1024;
+                    t.rx_unit = Some("MB".to_string());
+                } else {
+                    t.received = 0;
+                    t.rx_unit = Some("MB".to_string());
+                }
+
+                if t.transmitted > 1_047_527_424 {
+                    t.transmitted /= 1_073_741_824;
+                    t.tx_unit = Some("GB".to_string());
+                } else if t.transmitted > 0 {
+                    t.transmitted = (t.transmitted / 1024) / 1024;
+                    t.tx_unit = Some("MB".to_string());
+                } else {
+                    t.transmitted = 0;
+                    t.tx_unit = Some("MB".to_string());
+                }
+                Some(t)
+            }
+            Err(_) => None,
+        };
+
+        NetworkDetailContext {
+            wlan_ip,
+            wlan_rssi,
+            wlan_scan,
+            wlan_ssid,
+            wlan_state,
+            wlan_status,
+            wlan_traffic,
+            flash_name: None,
+            flash_msg: None,
+            selected: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct NetworkContext {
     pub ap_ip: String,
     pub ap_ssid: String,

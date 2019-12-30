@@ -27,7 +27,7 @@ use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{FlashContext, JsonResponse, NetworkContext, WiFi};
+use crate::structs::{FlashContext, JsonResponse, NetworkContext, NetworkDetailContext, WiFi};
 use crate::ws::*;
 
 use rocket::http::RawStr;
@@ -126,7 +126,7 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
 #[get("/network/wifi?<ssid>")]
 fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
-    let mut context = NetworkContext::build();
+    let mut context = NetworkDetailContext::build();
     context.selected = Some(ssid.to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
