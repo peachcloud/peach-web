@@ -43,7 +43,7 @@ use rocket_contrib::templates::Template;
 //  [GET]       /network/wifi/add               Add WiFi form
 //  [POST]      /network/wifi/add               Add WiFi handler
 //  [GET]       /network/wifi                   List of networks
-//  [GET]       /network/wifi?detail&<ssid>     Details of single network
+//  [GET]       /network/wifi?<ssid>            Details of single network
 
 #[get("/")]
 fn index() -> &'static str {
@@ -123,7 +123,7 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
     Template::render("network_list", &context)
 }
 
-#[get("/network/wifi?detail&<ssid>")]
+#[get("/network/wifi?<ssid>")]
 fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
