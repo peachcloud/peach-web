@@ -21,10 +21,10 @@
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
                     <label class="label-small" title="Signal Strength">SIGNAL</label>
                     <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
-                    <label class="label-small" title="Download total">DOWNLOAD ({{  }})</label>
-                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.wlan_traffic.received }}</p>
-                    <label class="label-small" title="Upload total">UPLOAD ({{ network.wlan_traffic.transmitted }})</label>
-                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
+                    <label class="label-small" title="Download total">DOWNLOAD ({{ wlan_traffic.rx_unit }})</label>
+                    <p class="card-text" title="Download total for the WiFi interface">{{ wlan_traffic.received }}</p>
+                    <label class="label-small" title="Upload total">UPLOAD ({{ wlan_traffic.tx_unit }})</label>
+                    <p class="card-text" title="Upload total for the WiFi interface">{{ wlan_traffic.transmitted }}</p>
                 </div>
             </div>
             <div class="form">
