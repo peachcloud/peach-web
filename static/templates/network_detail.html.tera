@@ -1,0 +1,35 @@
+{% extends "nav" %}
+
+{% block network_detail %}
+    <!-- if wlan_ssid == scan_networks.ssid -->
+    {% if wlan_scan %}
+    {% for network in wlan_scan %}
+        {% if network.ssid == selected %}
+        <!-- NETWORK CARD -->
+        <!-- NETWORK INFO BOX -->
+        <div class="card center">
+            <div class="card-grid-two" title="PeachCloud network mode and status">
+                <!-- NETWORK STATUS ICON -->
+                <!-- left column -->
+                <div class="grid-column-1">
+                    <img class="center icon" src="icons/wifi.svg">
+                    <label class="center label-small" title="Access Point Status">AVAILABLE</label>
+                </div>
+                <!-- right column -->
+                <div class="grid-column-2">
+                    <label class="label-small" title="WiFi network SSID">SSID</label>
+                    <p class="card-text" title="SSID">{{ network.ssid }}</p>
+                    <label class="label-small" title="Signal Strength">SIGNAL</label>
+                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.rssi }}</p>
+                </div>
+            </div>
+            <div class="form">
+                <input class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
+                <button class="center button">Connect</button>
+                <button class="center button">Cancel</button>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endblock %}

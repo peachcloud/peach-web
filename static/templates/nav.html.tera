@@ -13,6 +13,7 @@
         <div style="width: 300px;">
             {% block network_add %}{% endblock %}
             {% block network_card %}{% endblock %}
+            {% block network_detail %}{% endblock %}
             {% block network_list %}{% endblock %}
         </div>
         <!-- Bottom nav bar -->

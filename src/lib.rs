@@ -27,9 +27,10 @@ use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{JsonResponse, FlashContext, NetworkContext, WiFi};
+use crate::structs::{FlashContext, JsonResponse, NetworkContext, WiFi};
 use crate::ws::*;
 
+use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::NamedFile;
 use rocket_contrib::json::{Json, JsonValue};
@@ -37,12 +38,12 @@ use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
-//  [GET]       /                           Home
-//  [GET]       /network                    Network overview
-//  [GET]       /network/wifi/add           Add WiFi form
-//  [POST]      /network/wifi/add           Add WiFi handler
-//  [GET]       /network/wifi               List of networks
-//  [GET]       /network/wifi/<ssid>        Details of single network*
+//  [GET]       /                               Home
+//  [GET]       /network                        Network overview
+//  [GET]       /network/wifi/add               Add WiFi form
+//  [POST]      /network/wifi/add               Add WiFi handler
+//  [GET]       /network/wifi                   List of networks
+//  [GET]       /network/wifi?detail&<ssid>     Details of single network
 
 #[get("/")]
 fn index() -> &'static str {
@@ -76,7 +77,7 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
     Template::render("network_add", &context)
 }
 
-#[post("/network/wifi/add", data="<wifi>")]
+#[post("/network/wifi/add", data = "<wifi>")]
 fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
     let ssid = wifi.ssid.to_string();
@@ -99,8 +100,8 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
             let context = FlashContext {
-                flash_name : Some("error".to_string()),
-                flash_msg : Some("Failed to add WiFi credentials".to_string()),
+                flash_name: Some("error".to_string()),
+                flash_msg: Some("Failed to add WiFi credentials".to_string()),
             };
             // render network_card view
             Template::render("network_add", &context)
@@ -122,6 +123,21 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
     Template::render("network_list", &context)
 }
 
+#[get("/network/wifi?detail&<ssid>")]
+fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkContext::build();
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+        context.selected = Some(ssid.to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_detail", &context)
+}
+
 #[get("/<file..>")]
 fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(file)).ok()
@@ -140,6 +156,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [POST]       /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi/forget         Forget network*
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
+//  [POST]       /api/v1/shutdown                    Shutdown device*
 
 #[post("/api/v1/network/activate_ap")]
 fn activate_ap() -> Json<JsonResponse> {
@@ -345,6 +362,7 @@ fn rocket() -> rocket::Rocket {
                 files,
                 network_add,
                 network_card,
+                network_detail,
                 network_list,
                 activate_ap,
                 activate_client,
@@ -355,7 +373,7 @@ fn rocket() -> rocket::Rocket {
                 return_status,
                 scan_networks,
                 add_wifi,
-                add_credentials
+                add_credentials,
             ],
         )
         .register(catchers![not_found])

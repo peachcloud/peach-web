@@ -67,6 +67,10 @@ Run the binary:
 
 _Note: Networking functionality requires peach-network microservice to be running._
 
+### Design
+
+`peach-web` is built on the Rocket webserver and Tera templating engine. Request handlers call JSON-RPC microservices and serve HTML and assets. A JSON RPI is exposed for remote calls and dynamic content updates (via vanilla Javascript). Each Tera template is passed a context object. In the case of Rust, this object is a `struct` and must implement `Serialize`. The fields of the context object are available in the context of the template to be rendered.
+
 ### Licensing
 
 AGPL-3.0

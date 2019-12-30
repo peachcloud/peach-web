@@ -24,6 +24,9 @@ pub struct NetworkContext {
     pub wlan_traffic: Option<Traffic>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    // allows for passing in the ssid of a chosen access point
+    // this is used in the network_detail template
+    pub selected: Option<String>,
 }
 
 impl NetworkContext {
@@ -147,6 +150,7 @@ impl NetworkContext {
             wlan_traffic,
             flash_name: None,
             flash_msg: None,
+            selected: None,
         }
     }
 }
