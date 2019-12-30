@@ -127,12 +127,12 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
 fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
+    context.selected = Some(ssid.to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
         context.flash_name = Some(flash.name().to_string());
         context.flash_msg = Some(flash.msg().to_string());
-        context.selected = Some(ssid.to_string());
     };
     // template_dir is set in Rocket.toml
     Template::render("network_detail", &context)
