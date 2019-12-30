@@ -427,6 +427,7 @@ body {
 
 .link {
     text-decoration: none;
+    color: var(--font-near-black);
 }
 
 /*
@@ -441,7 +442,6 @@ body {
     border-radius: var(--border-radius-2);
     list-style-type: none;
     font-family: var(--sans-serif);
-    color: var(--font-near-black);
 }
 
 .list-container {

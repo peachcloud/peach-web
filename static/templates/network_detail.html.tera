@@ -29,8 +29,10 @@
             </div>
             <div class="form">
                 <input class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
-                <button class="center button">Connect</button>
-                <button class="center button">Cancel</button>
+                <button class="button center">Connect</button>
+                <a class="link" href="/network/wifi">
+                    <button class="button center">Cancel</button>
+                </a>
             </div>
         </div>
         {% endif %}
