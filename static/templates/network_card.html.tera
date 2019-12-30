@@ -20,7 +20,7 @@
                     <label class="label-small" title="Network Mode">MODE</label>
                     <p class="card-text" title="Network Mode">Access Point</p>
                     <label class="label-small" title="Access Point SSID">SSID</label>
-                    <p class="card-text" title="SSID">{{ ap_ssid }}</p>
+                    <p class="card-text" title="SSID">peach</p>
                     <label class="label-small" title="Access Point IP Address">IP</label>
                     <p class="card-text" title="IP">{{ ap_ip }}</p>
                 </div>
@@ -30,7 +30,7 @@
                 <button class="button center">Add WiFi Network</button>
             </a>
             <!-- CARD GRID -->
-            <div style="padding-left: 5px; padding-right: 5px;">
+            <div class="card-grid">
                 <!-- row of icons representing network statistics -->
                 <div class="card-grid-three">
                     <img class="grid-three-icon-1 icon" title="Devices" src="icons/devices.svg">

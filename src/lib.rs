@@ -27,7 +27,7 @@ use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{JsonResponse, NetworkContext, WiFi};
+use crate::structs::{JsonResponse, FlashContext, NetworkContext, WiFi};
 use crate::ws::*;
 
 use rocket::request::{FlashMessage, Form};
@@ -58,7 +58,6 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
 
 #[get("/network/add")]
 fn network_add(flash: Option<FlashMessage>) -> Template {
-    // assign context through context_builder call
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
@@ -68,6 +67,38 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
     };
     // template_dir is set in Rocket.toml
     Template::render("network_add", &context)
+}
+
+#[post("/network/add", data="<wifi>")]
+fn add_credentials(wifi: Form<WiFi>) -> Template {
+    // generate and write wifi config to wpa_supplicant
+    let ssid = wifi.ssid.to_string();
+    let pass = wifi.pass.to_string();
+    let add = network_add_wifi(ssid, pass);
+    match add {
+        Ok(_) => {
+            debug!("Added WiFi credentials.");
+            match network_reconnect_wifi("wlan0".to_string()) {
+                Ok(_) => debug!("Reconnected wlan0 interface."),
+                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
+            }
+            // assign context through context_builder call
+            let mut context = NetworkContext::build();
+            context.flash_name = Some("success".to_string());
+            context.flash_msg = Some("Added WiFi credentials".to_string());
+            // render network_card view
+            Template::render("network_card", &context)
+        }
+        Err(_) => {
+            debug!("Failed to add WiFi credentials.");
+            let context = FlashContext {
+                flash_name : Some("error".to_string()),
+                flash_msg : Some("Failed to add WiFi credentials".to_string()),
+            };
+            // render network_card view
+            Template::render("network_add", &context)
+        }
+    }
 }
 
 #[get("/network/list")]
@@ -313,7 +344,8 @@ fn rocket() -> rocket::Rocket {
                 return_state,
                 return_status,
                 scan_networks,
-                add_wifi
+                add_wifi,
+                add_credentials
             ],
         )
         .register(catchers![not_found])

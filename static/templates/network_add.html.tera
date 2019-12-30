@@ -4,14 +4,18 @@
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
             <!-- Standard input with button -->
-            <form id="wifiCreds" class="form">
+            <form id="wifiCreds" class="form" action="/network/add" method="post">
                 <h1 class="bold center-text title-medium">Add WiFi Network</h1>
                 <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point"></input>
                 <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
-                <button id="addWifi" class="center button" name="wifi">Connect</button>
+                <input type="submit" id="addWifi" class="center button" value="Connect"></input>
                 <a class="link" href="/network">
                     <button class="center button">Cancel</button>
                 </a>
+                {% if flash_msg %}
+                <!-- display error message -->
+                <p class="label-small" style="color: red; padding-left: 5px;">{{ flash_msg }}.</p>
+                {% endif %}
                 <!-- NOTE : used to share ux information with the user -->
                 <p class="label-small" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
             </form>

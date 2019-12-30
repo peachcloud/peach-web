@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var addWifi = document.getElementById('addWifi');
     if (addWifi) {
         addWifi.addEventListener('click', function() {
+            event.preventDefault();
             console.log('Uploading new WiFi credentials & attempting connection');
             var ssid = document.getElementById(ssid);
             var pass = document.getElementById(pass);

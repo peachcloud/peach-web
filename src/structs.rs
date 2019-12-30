@@ -4,6 +4,12 @@ use rocket_contrib::json::JsonValue;
 use crate::network::*;
 
 #[derive(Debug, Serialize)]
+pub struct FlashContext {
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+#[derive(Debug, Serialize)]
 pub struct NetworkContext {
     pub ap_ip: String,
     pub ap_ssid: String,

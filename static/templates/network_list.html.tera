@@ -7,19 +7,19 @@
                 <h1 class="bold title-medium">WiFi Networks</h1>
                 <ul class="list">
                 {% if wlan_scan %}
-                    {% for network in wlan_scan %}
-                        <li class="list-item">
-                            {% if wlan_ssid == network.ssid %}
-                                <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg">
-                                <p class="list-text">{{ network.ssid }}</p>
-                                <label class="label-small list-label" title="Status">Connected</label>
-                            {% else %}
-                                <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
-                                <p class="list-text">{{ network.ssid }}</p>
-                                <label class="label-small list-label" title="Status">Available</label>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
+                {% for network in wlan_scan %}
+                    <li class="list-item">
+                        {% if wlan_ssid == network.ssid %}
+                        <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg">
+                        <p class="list-text">{{ network.ssid }}</p>
+                        <label class="label-small list-label" title="Status">Connected</label>
+                        {% else %}
+                        <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
+                        <p class="list-text">{{ network.ssid }}</p>
+                        <label class="label-small list-label" title="Status">Available</label>
+                        {% endif %}
+                    </li>
+                {% endfor %}
                 {% else %}
                     <li class="list-item">No networks found</li>
                 {% endif %}
