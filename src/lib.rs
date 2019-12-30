@@ -37,6 +37,13 @@ use rocket_contrib::templates::Template;
 
 // WEB PAGE ROUTES
 
+//  [GET]       /                           Home
+//  [GET]       /network                    Network overview
+//  [GET]       /network/wifi/add           Add WiFi form
+//  [POST]      /network/wifi/add           Add WiFi handler
+//  [GET]       /network/wifi               List of networks
+//  [GET]       /network/wifi/<ssid>        Details of single network*
+
 #[get("/")]
 fn index() -> &'static str {
     "PeachCloud"
@@ -56,7 +63,7 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
     Template::render("network_card", &context)
 }
 
-#[get("/network/add")]
+#[get("/network/wifi/add")]
 fn network_add(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
@@ -69,7 +76,7 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
     Template::render("network_add", &context)
 }
 
-#[post("/network/add", data="<wifi>")]
+#[post("/network/wifi/add", data="<wifi>")]
 fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
     let ssid = wifi.ssid.to_string();
@@ -101,7 +108,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     }
 }
 
-#[get("/network/list")]
+#[get("/network/wifi")]
 fn network_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
@@ -129,7 +136,10 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/ssid
 //  [GET]        /api/v1/network/state
 //  [GET]        /api/v1/network/status
-//  [GET, POST]  /api/v1/network/wifi
+//  [GET]        /api/v1/network/wifi
+//  [POST]       /api/v1/network/wifi
+//  [POST]       /api/v1/network/wifi/forget         Forget network*
+//  [POST]       /api/v1/network/wifi/modify         Modify network password*
 
 #[post("/api/v1/network/activate_ap")]
 fn activate_ap() -> Json<JsonResponse> {

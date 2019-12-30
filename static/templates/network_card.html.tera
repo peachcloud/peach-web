@@ -26,7 +26,7 @@
                 </div>
             </div>
             <button class="button center" id="connectWifi">Enable WiFi</button>
-            <a class="link" href="/network/add">
+            <a class="link" href="/network/wifi/add">
                 <button class="button center">Add WiFi Network</button>
             </a>
             <!-- CARD GRID -->
@@ -89,7 +89,7 @@
                 </div>
             </div>
             <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
-            <a class="link" href="/network/list">
+            <a class="link" href="/network/wifi">
                 <button class="button center">List WiFi Networks</button>
             </a>
             <!-- CARD GRID -->

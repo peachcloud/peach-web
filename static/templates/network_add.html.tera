@@ -4,7 +4,7 @@
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
             <!-- Standard input with button -->
-            <form id="wifiCreds" class="form" action="/network/add" method="post">
+            <form id="wifiCreds" class="form" action="/network/wifi/add" method="post">
                 <h1 class="bold center-text title-medium">Add WiFi Network</h1>
                 <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point"></input>
                 <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
