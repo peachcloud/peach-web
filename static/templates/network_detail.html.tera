@@ -20,7 +20,11 @@
                     <label class="label-small" title="WiFi network SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
                     <label class="label-small" title="Signal Strength">SIGNAL</label>
-                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.rssi }}</p>
+                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
+                    <label class="label-small" title="Download total">DOWNLOAD ({{  }})</label>
+                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.wlan_traffic.received }}</p>
+                    <label class="label-small" title="Upload total">UPLOAD ({{ network.wlan_traffic.transmitted }})</label>
+                    <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
                 </div>
             </div>
             <div class="form">
