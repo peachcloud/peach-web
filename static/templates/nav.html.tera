@@ -8,14 +8,14 @@
             <img class="nav-icon nav-icon-right icon-active" src="/icons/exit.svg">
             <img class="nav-icon nav-icon-right icon-active" src="/icons/power-switch.svg">
         </div>
-        <!-- UI card -->
+        <!-- Main content container -->
         <!-- one of these blocks will render based on the request route -->
-        <div style="width: 300px;">
+        <main>
             {% block network_add %}{% endblock %}
             {% block network_card %}{% endblock %}
             {% block network_detail %}{% endblock %}
             {% block network_list %}{% endblock %}
-        </div>
+        </main>
         <!-- Bottom nav bar -->
         <div class="nav-bar">
             <img class="nav-icon nav-icon-left" src="/icons/hermies.png">

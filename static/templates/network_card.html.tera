@@ -58,7 +58,6 @@
                     <label class="grid-three-label-3 label-small">UPLOAD</label>
                 </div>
             </div>
-            <br>
         </div>
     {% else %}
         <!-- NETWORK CARD -->
@@ -121,7 +120,6 @@
                     <label class="grid-three-label-3 label-small">UPLOAD</label>
                 </div>
             </div>
-            <br>
         </div>
     {% endif %}
 {% endblock %}

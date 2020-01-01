@@ -6,7 +6,7 @@
             <!-- Standard input with button -->
             <form id="wifiCreds" class="form" action="/network/wifi/add" method="post">
                 <h1 class="bold center-text title-medium">Add WiFi Network</h1>
-                <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point"></input>
+                <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}"></input>
                 <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
                 <input type="submit" id="addWifi" class="center button" value="Connect"></input>
                 <a class="link" href="/network">

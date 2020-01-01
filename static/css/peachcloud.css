@@ -15,6 +15,10 @@
  * - FORMS (incl. inputs)
  * - ICONS
  * - LABELS
+ * - LINKS
+ * - LISTS
+ * - MAIN
+ * - NAVIGATION
  * - RADIAL MENU
  * - SWITCHES / SLIDERS
  * - PARAGRAPHS
@@ -46,11 +50,16 @@
  */
 
 body {
-    align-content: center;
-    align-items: center;
+    background-color: var(--gray);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    background-color: var(--gray);
+    align-content: center;
+    align-items: center;
 }
 
 /*
@@ -79,7 +88,7 @@ body {
 .card {
     background-color: var(--near-white);
     border-radius: var(--border-radius-4);
-    /*max-width: var(--max-width-5);*/
+    max-width: var(--max-width-5);
     position: relative;
     box-shadow: var(--box-shadow-3);
     margin-top: 1rem;
@@ -88,6 +97,14 @@ body {
 
 .card-grid {
     padding: 1rem;
+}
+
+.card-grid-vert {
+    display: grid;
+    align-items: flex-end;
+    justify-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .card-grid-three {
@@ -255,8 +272,9 @@ body {
  */
 
 .flex-grid {
-    align-content: space-between;
     display: flex;
+    align-content: space-between;
+    align-items: baseline;
     justify-content: center;
 }
 
@@ -407,7 +425,6 @@ body {
  */
 
 .label-small {
-    color: var(--gray);
     font-family: var(--sans-serif);
     font-size: var(--font-size-7);
     display: block;
@@ -478,6 +495,18 @@ body {
 }
 
 /*
+ * MAIN
+ */
+
+main {
+    width: 300px;
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+/*
  * NAVIGATION
  */
 
@@ -503,6 +532,10 @@ body {
 .nav-icon-right {
     float: right;
     padding-right: 10px;
+}
+
+.nav-item {
+    list-style-type: none;
 }
 
 /*

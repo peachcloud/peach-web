@@ -9,6 +9,14 @@ pub struct FlashContext {
     pub flash_msg: Option<String>,
 }
 
+// used in /network/wifi/add?<ssid>
+#[derive(Debug, Serialize)]
+pub struct NetworkAddContext {
+    pub selected: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
 #[derive(Debug, Serialize)]
 pub struct NetworkDetailContext {
     pub wlan_ip: String,

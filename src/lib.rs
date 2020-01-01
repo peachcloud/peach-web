@@ -27,7 +27,9 @@ use std::{env, thread};
 
 use crate::error::BoxError;
 use crate::network::*;
-use crate::structs::{FlashContext, JsonResponse, NetworkContext, NetworkDetailContext, WiFi};
+use crate::structs::{
+    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext, WiFi,
+};
 use crate::ws::*;
 
 use rocket::http::RawStr;
@@ -41,6 +43,7 @@ use rocket_contrib::templates::Template;
 //  [GET]       /                               Home
 //  [GET]       /network                        Network overview
 //  [GET]       /network/wifi/add               Add WiFi form
+//  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/add               Add WiFi handler
 //  [GET]       /network/wifi                   List of networks
 //  [GET]       /network/wifi?<ssid>            Details of single network
@@ -67,6 +70,23 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
 #[get("/network/wifi/add")]
 fn network_add(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_add", &context)
+}
+
+#[get("/network/wifi/add?<ssid>")]
+fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+    let mut context = NetworkAddContext {
+        selected: Some(ssid.to_string()),
+        flash_name: None,
+        flash_msg: None,
+    };
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -361,6 +381,7 @@ fn rocket() -> rocket::Rocket {
                 index,
                 files,
                 network_add,
+                network_add_ssid,
                 network_card,
                 network_detail,
                 network_list,
