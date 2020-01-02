@@ -31,32 +31,35 @@
             </a>
             <!-- CARD GRID -->
             <div class="card-grid">
-                <!-- row of icons representing network statistics -->
                 <div class="card-grid-three">
-                    <img class="grid-three-icon-1 icon" title="Devices" src="icons/devices.svg">
-                    <img class="grid-three-icon-2 icon" title="Download" src="icons/down-arrow.svg">
-                    <img class="grid-three-icon-3 icon" title="Upload" src="icons/up-arrow.svg">
-                </div>
-                <!-- row of values representing current network state -->
-                {% if ap_traffic %}
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
-                    <label class="grid-three-label-2 label-medium" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
-                    <label class="grid-three-label-3 label-medium" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
-                </div>
-                {% else %}
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
-                    <label class="grid-three-label-2 label-medium" title="Data download total"></label>
-                    <label class="grid-three-label-3 label-medium" title="Data upload total"></label>
+                    {% if ap_traffic %}
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices">3</label>
+                        </div>
+                        <label class="label-small font-gray">DEVICES</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
+                            <label class="label-small font-near-black">{{ ap_traffic.rx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">DOWNLOAD</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
+                            <label class="label-small font-near-black">{{ ap_traffic.tx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">UPLOAD</label>
+                    </div>
+                    {% else %}
                 </div>
                 {% endif %}
-                <!-- row of labels for each network statistic column -->
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-small">DEVICES</label>
-                    <label class="grid-three-label-2 label-small">DOWNLOAD</label>
-                    <label class="grid-three-label-3 label-small">UPLOAD</label>
-                </div>
+            </div>
             </div>
         </div>
     {% else %}
@@ -87,6 +90,9 @@
                     <p class="card-text" title="IP">{{ wlan_ip }}</p>
                 </div>
             </div>
+            <a class="link" href="/network/wifi/add">
+                <button class="button center">Add WiFi Network</button>
+            </a>
             <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
             <a class="link" href="/network/wifi">
                 <button class="button center">List WiFi Networks</button>
@@ -95,29 +101,55 @@
             <div class="card-grid">
                 <!-- row of icons representing network statistics -->
                 <div class="card-grid-three">
-                    <img class="grid-three-icon-1 icon" title="Devices" src="icons/devices.svg">
-                    <img class="grid-three-icon-2 icon" title="Download" src="icons/down-arrow.svg">
-                    <img class="grid-three-icon-3 icon" title="Upload" src="icons/up-arrow.svg">
-                </div>
-                <!-- row of values representing current network state -->
-                {% if wlan_traffic %}
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
-                    <label class="grid-three-label-2 label-medium" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
-                    <label class="grid-three-label-3 label-medium" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
-                </div>
-                {% else %}
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-medium" title="Number of connected devices">6</label>
-                    <label class="grid-three-label-2 label-medium" title="Data download total"></label>
-                    <label class="grid-three-label-3 label-medium" title="Data upload total"></label>
-                </div>
-                {% endif %}
-                <!-- row of labels for each network statistic column -->
-                <div class="card-grid-three">
-                    <label class="grid-three-label-1 label-small">DEVICES</label>
-                    <label class="grid-three-label-2 label-small">DOWNLOAD</label>
-                    <label class="grid-three-label-3 label-small">UPLOAD</label>
+                    {% if wlan_traffic %}
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices">3</label>
+                        </div>
+                        <label class="label-small font-gray">DEVICES</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
+                            <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">DOWNLOAD</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
+                            <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">UPLOAD</label>
+                    </div>
+                    {% else %}
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices"></label>
+                        </div>
+                        <label class="label-small font-gray">DEVICES</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data download total"></label>
+                            <label class="label-small font-near-black"></label>
+                        </div>
+                        <label class="label-small font-gray">DOWNLOAD</label>
+                    </div>
+                    <div class="card-grid-vert">
+                        <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data upload total"></label>
+                            <label class="label-small font-near-black"></label>
+                        </div>
+                        <label class="label-small font-gray">UPLOAD</label>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

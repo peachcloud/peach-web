@@ -17,7 +17,7 @@
                 <p class="label-small font-success"style="padding-left: 5px;">{{ flash_msg }}.</p>
                 {% endif %}
                 <!-- NOTE : used to share ux information with the user -->
-                <p class="label-small" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
+                <p class="label-small font-gray" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
             </form>
         </div>
 {% endblock %}
