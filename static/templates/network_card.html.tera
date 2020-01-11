@@ -12,7 +12,7 @@
                     <!-- network mode icon with label -->
                     <div class="grid-column-1">
                         <img id="netModeIcon" class="center icon icon-active" src="icons/router.svg">
-                        <label id="netModeLabel" class="center label-small" title="Access Point Status">ONLINE</label>
+                        <label id="netModeLabel" class="center label-small font-gray" title="Access Point Status">ONLINE</label>
                     </div>
                     <!-- right column -->
                     <!-- network mode, ssid & ip with labels -->
@@ -96,10 +96,10 @@
                     <div class="grid-column-1">
                     {% if wlan_state == "up" %}
                         <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg">
-                        <label id="netModeLabel" class="center label-small" title="WiFi Client Point Status">ONLINE</label>
+                        <label id="netModeLabel" class="center label-small font-gray" title="WiFi Client Point Status">ONLINE</label>
                     {% else %}
                         <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg">
-                        <label id="netModeLabel" class="center label-small font-light-gray" title="WiFi Client Point Status">OFFLINE</label>
+                        <label id="netModeLabel" class="center label-small font-gray" title="WiFi Client Point Status">OFFLINE</label>
                     {% endif %}
                     </div>
                     <!-- right column -->
