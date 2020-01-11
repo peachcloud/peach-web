@@ -128,7 +128,7 @@
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
                             <div class="flex-grid" style="padding-top: 1rem;">
-                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">3</label>
+                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{{ wlan_rssi }}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
