@@ -99,36 +99,6 @@ body {
     padding: 1rem;
 }
 
-.card-grid-vert {
-    display: grid;
-    align-items: flex-end;
-    justify-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.card-grid-three {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto;
-    grid-gap: 10px;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.card-grid-two {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
-    align-items: center;
-    justify-content: center;
-    justify-items: center;
-    padding-top: 1.5rem;
-    padding-bottom: 1rem;
-    width: 100%;
-}
-
 .card-text {
     margin: 0;
     font-size: var(--font-size-5);
@@ -278,7 +248,41 @@ body {
     justify-content: center;
 }
 
-.grid-three-icon-1 {
+/* .card-grid-two { */
+.two-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+    width: 100%;
+}
+
+/* .card-grid-three { */
+.three-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    grid-gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* .card-grid-vert { */
+.stack {
+    display: grid;
+    align-items: flex-end;
+    justify-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* grid-three-icon-1 { */
+.three-grid-icon-1 {
     align-self: center;
     grid-column: 1;
     grid-row: 1;
@@ -288,7 +292,8 @@ body {
     text-align: center;
 }
 
-.grid-three-icon-2 {
+/* .grid-three-icon-2 { */
+.three-grid-icon-2 {
     align-self: center;
     grid-column: 2;
     grid-row: 1;
@@ -298,7 +303,8 @@ body {
     text-align: center;
 }
 
-.grid-three-icon-3 {
+/* .grid-three-icon-3 { */
+.three-grid-icon-3 {
     align-self: center;
     grid-column: 3;
     grid-row: 1;
@@ -308,7 +314,8 @@ body {
     text-align: center;
 }
 
-.grid-three-label-1 {
+/* .grid-three-label-1 { */
+.three-grid-label-1 {
     align-self: center;
     grid-column: 1;
     grid-row: 1;
@@ -316,7 +323,8 @@ body {
     text-align: center;
 }
 
-.grid-three-label-2 {
+/* .grid-three-label-2 { */
+.three-grid-label-2 {
     align-self: center;
     grid-column: 2;
     grid-row: 1;
@@ -324,7 +332,8 @@ body {
     text-align: center;
 }
 
-.grid-three-label-3 {
+/* .grid-three-label-3 { */
+.three-grid-label-3 {
     align-self: center;
     grid-column: 3;
     grid-row: 1;
@@ -394,19 +403,19 @@ body {
  */
 
 .icon {
-    width: 3em;
+    width: 3rem;
 }
 
 .icon-small {
-    width: 1em;
+    width: 1rem;
 }
 
 .icon-medium {
-    width: 2.5em;
+    width: 2rem;
 }
 
 .icon-large {
-    width: 3em;
+    width: 3rem;
 }
 
 .icon-100 {
