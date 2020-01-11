@@ -10,11 +10,11 @@
  * - CARDS
  * - CIRCLES
  * - DEGREES
- * - FONTS
- * - FORMS (incl. inputs)
  * - GRIDS
  * - HTML
+ * - FONTS
  * - ICONS
+ * - INPUTS
  * - LABELS
  * - LINKS
  * - LISTS
@@ -96,8 +96,8 @@ body {
     margin-bottom: 1rem;
 }
 
-.card-grid {
-    padding: 1rem;
+.card-container {
+    padding: 1.5rem;
 }
 
 .card-text {
@@ -239,50 +239,6 @@ body {
 }
 
 /*
- * FONTS
- */
-
-.font-near-black {
-    color: var(--near-black);
-}
-
-.font-gray {
-    color: var(--gray);
-}
-
-.font-light-gray {
-    color: var(--silver);
-}
-
-.font-success {
-    color: var(--color-success);
-}
-
-.font-warning {
-    color: var(--color-warning);
-}
-
-.font-failure {
-    color: var(--color-failure);
-}
-
-/*
- * FORMS (incl. inputs)
- */
-
-.form {
-    padding: 1.5rem;
-}
-
-.input {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding-left: 5px;
-    line-height: 1.5rem;
-    width: 90%;
-}
-
-/*
  * GRIDS
  */
 
@@ -408,6 +364,34 @@ html {
 }
 
 /*
+ * FONTS
+ */
+
+.font-near-black {
+    color: var(--near-black);
+}
+
+.font-gray {
+    color: var(--gray);
+}
+
+.font-light-gray {
+    color: var(--silver);
+}
+
+.font-success {
+    color: var(--color-success);
+}
+
+.font-warning {
+    color: var(--color-warning);
+}
+
+.font-failure {
+    color: var(--color-failure);
+}
+
+/*
  * ICONS
  */
 
@@ -439,6 +423,18 @@ html {
 /* icon-inactive: sets color of icon svg to gray */
 .icon-inactive {
     filter: invert(72%) sepia(8%) saturate(14%) hue-rotate(316deg) brightness(93%) contrast(92%);
+}
+
+/*
+ * INPUTS
+ */
+
+.input {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 5px;
+    line-height: 1.5rem;
+    width: 90%;
 }
 
 /*

@@ -3,21 +3,23 @@
 {% block card %}
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
-            <!-- Standard input with button -->
-            <form id="wifiCreds" class="form" action="/network/wifi/add" method="post">
-                <h1 class="bold center-text title-medium">Add WiFi Network</h1>
-                <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}">
-                <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
-                <input type="submit" id="addWifi" class="center button" value="Connect">
+            <div class="card-container">
+                <!-- Standard input with button -->
+                <form id="wifiCreds" action="/network/wifi/add" method="post">
+                    <h1 class="bold center-text title-medium">Add WiFi Network</h1>
+                    <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}">
+                    <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
+                    <input type="submit" id="addWifi" class="center button" value="Connect">
+                    {% if flash_msg %}
+                    <!-- display error message -->
+                    <p class="label-small font-success"style="padding-left: 5px;">{{ flash_msg }}.</p>
+                    {% endif %}
+                </form>
                 <a class="link" href="/network">
                     <button class="center button">Cancel</button>
                 </a>
-                {% if flash_msg %}
-                <!-- display error message -->
-                <p class="label-small font-success"style="padding-left: 5px;">{{ flash_msg }}.</p>
-                {% endif %}
                 <!-- NOTE : used to share ux information with the user -->
                 <p class="label-small font-gray" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
-            </form>
+            </div>
         </div>
 {% endblock %}

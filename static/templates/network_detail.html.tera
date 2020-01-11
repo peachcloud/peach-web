@@ -27,9 +27,16 @@
                     <p class="card-text" title="Upload total for the WiFi interface">{{ wlan_traffic.transmitted }}</p>
                 </div>
             </div>
-            <div class="form">
-                <input class="center input" type="password" placeholder="Password" title="Password for WiFi access point"></input>
-                <button class="button center">Connect</button>
+            <div class="card-container">
+                <a class="link" href="/network/wifi?ssid={{ network.ssid }}">
+                    <button class="button center">Connect</button>
+                </a>
+                <a class="link" href="/network/wifi">
+                    <button class="button center">Modify</button>
+                </a>
+                <a class="link" href="/network/wifi/remove">
+                    <button class="button center">Forget</button>
+                </a>
                 <a class="link" href="/network/wifi">
                     <button class="button center">Cancel</button>
                 </a>

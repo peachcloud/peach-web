@@ -30,7 +30,7 @@
                     <button class="button center">Add WiFi Network</button>
                 </a>
                 <!-- CARD GRID -->
-                <div class="card-grid">
+                <div class="card-container">
                     <div class="three-grid">
                         {% if ap_traffic %}
                         <div class="stack">
@@ -121,14 +121,14 @@
                     <button class="button center">List WiFi Networks</button>
                 </a>
                 <!-- CARD GRID -->
-                <div class="card-grid">
+                <div class="card-container">
                     <!-- row of icons representing network statistics -->
                     <div class="three-grid">
                         {% if wlan_traffic %}
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
                             <div class="flex-grid" style="padding-top: 1rem;">
-                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{{ wlan_rssi }}</label>
+                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
@@ -152,7 +152,7 @@
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
                             <div class="flex-grid" style="padding-top: 1rem;">
-                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{{ wlan_rssi }}</label>
+                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>

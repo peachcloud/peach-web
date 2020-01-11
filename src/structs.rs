@@ -20,7 +20,7 @@ pub struct NetworkAddContext {
 #[derive(Debug, Serialize)]
 pub struct NetworkDetailContext {
     pub wlan_ip: String,
-    pub wlan_rssi: String,
+    pub wlan_rssi: Option<String>,
     pub wlan_scan: Option<Vec<Scan>>,
     pub wlan_ssid: String,
     pub wlan_state: String,
@@ -40,8 +40,8 @@ impl NetworkDetailContext {
             Err(_) => "x.x.x.x".to_string(),
         };
         let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
-            Ok(rssi) => rssi,
-            Err(_) => "Not currently connected".to_string(),
+            Ok(rssi) => Some(rssi),
+            Err(_) => None,
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(results) => {
@@ -118,7 +118,7 @@ pub struct NetworkContext {
     pub ap_state: String,
     pub ap_traffic: Option<Traffic>,
     pub wlan_ip: String,
-    pub wlan_rssi: String,
+    pub wlan_rssi: Option<String>,
     pub wlan_scan: Option<Vec<Scan>>,
     pub wlan_ssid: String,
     pub wlan_state: String,
@@ -182,8 +182,8 @@ impl NetworkContext {
             Err(_) => "x.x.x.x".to_string(),
         };
         let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
-            Ok(rssi) => rssi,
-            Err(_) => "Not currently connected".to_string(),
+            Ok(rssi) => Some(rssi),
+            Err(_) => None,
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(results) => {
