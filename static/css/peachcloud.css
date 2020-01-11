@@ -10,9 +10,10 @@
  * - CARDS
  * - CIRCLES
  * - DEGREES
- * - GRIDS
  * - FONTS
  * - FORMS (incl. inputs)
+ * - GRIDS
+ * - HTML
  * - ICONS
  * - LABELS
  * - LINKS
@@ -238,6 +239,50 @@ body {
 }
 
 /*
+ * FONTS
+ */
+
+.font-near-black {
+    color: var(--near-black);
+}
+
+.font-gray {
+    color: var(--gray);
+}
+
+.font-light-gray {
+    color: var(--silver);
+}
+
+.font-success {
+    color: var(--color-success);
+}
+
+.font-warning {
+    color: var(--color-warning);
+}
+
+.font-failure {
+    color: var(--color-failure);
+}
+
+/*
+ * FORMS (incl. inputs)
+ */
+
+.form {
+    padding: 1.5rem;
+}
+
+.input {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 5px;
+    line-height: 1.5rem;
+    width: 90%;
+}
+
+/*
  * GRIDS
  */
 
@@ -355,47 +400,11 @@ body {
 }
 
 /*
- * FONTS
+ * HTML
  */
 
-.font-near-black {
-    color: var(--near-black);
-}
-
-.font-gray {
-    color: var(--gray);
-}
-
-.font-light-gray {
-    color: var(--silver);
-}
-
-.font-success {
-    color: var(--color-success);
-}
-
-.font-warning {
-    color: var(--color-warning);
-}
-
-.font-failure {
-    color: var(--color-failure);
-}
-
-/*
- * FORMS (incl. inputs)
- */
-
-.form {
-    padding: 1.5rem;
-}
-
-.input {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding-left: 5px;
-    line-height: 1.5rem;
-    width: 90%;
+html {
+    height: 100%;
 }
 
 /*
