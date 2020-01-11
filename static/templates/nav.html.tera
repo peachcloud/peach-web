@@ -9,12 +9,8 @@
             <img class="nav-icon nav-icon-right icon-active" src="/icons/power-switch.svg">
         </div>
         <!-- Main content container -->
-        <!-- one of these blocks will render based on the request route -->
         <main>
-            {% block network_add %}{% endblock %}
-            {% block network_card %}{% endblock %}
-            {% block network_detail %}{% endblock %}
-            {% block network_list %}{% endblock %}
+            {% block card %}{% endblock %}
         </main>
         <!-- Bottom nav bar -->
         <div class="nav-bar">

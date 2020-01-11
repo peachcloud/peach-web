@@ -50,16 +50,15 @@
  */
 
 body {
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
     background-color: var(--gray);
-    position: fixed;
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    align-items: center;
 }
 
 /*
@@ -88,7 +87,8 @@ body {
 .card {
     background-color: var(--near-white);
     border-radius: var(--border-radius-4);
-    max-width: var(--max-width-5);
+    min-height: var(--height-5);
+    width: var(--max-width-5);
     position: relative;
     box-shadow: var(--box-shadow-3);
     margin-top: 1rem;
@@ -125,14 +125,14 @@ body {
     justify-content: center;
     justify-items: center;
     padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-bottom: 1rem;
     width: 100%;
 }
 
 .card-text {
     margin: 0;
     font-size: var(--font-size-5);
-    padding-bottom: 3px;
+    padding-bottom: 0.3rem;
     padding-right: 1rem;
 }
 
@@ -382,8 +382,11 @@ body {
 }
 
 .input {
-    margin-top: 5px;
+    margin-top: 1rem;
     margin-bottom: 1rem;
+    padding-left: 5px;
+    line-height: 1.5rem;
+    width: 90%;
 }
 
 /*
@@ -399,7 +402,7 @@ body {
 }
 
 .icon-medium {
-    width: 2em;
+    width: 2.5em;
 }
 
 .icon-large {
@@ -432,10 +435,12 @@ body {
 
 .label-medium {
     font-size: var(--font-size-3);
+    display: block;
 }
 
 .label-large {
     font-size: var(--font-size-2);
+    display: block;
 }
 
 /*

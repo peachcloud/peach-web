@@ -1,6 +1,6 @@
 {% extends "nav" %}
 
-{% block network_list %}
+{% block card %}
         <!-- Titled list -->
         <div class="card">
             <div class="center list-container">

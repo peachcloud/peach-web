@@ -1,12 +1,12 @@
 {% extends "nav" %}
 
-{% block network_card %}
-    <!-- if ap is up, show ap card, else show wlan card -->
+{% block card %}
+        <!-- if ap is up, show ap card, else show wlan card -->
     {% if ap_state == "up" %}
         <!-- NETWORK CARD -->
-        <!-- NETWORK INFO BOX -->
         <div class="card">
-            <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
+            <!-- NETWORK INFO BOX -->
+            <div class="two-grid" style="position: relative;" title="PeachCloud network mode and status">
                 <!-- NETWORK STATUS -->
                 <!-- left column -->
                 <!-- network mode icon with label -->
@@ -17,11 +17,11 @@
                 <!-- right column -->
                 <!-- network mode, ssid & ip with labels -->
                 <div class="grid-column-2">
-                    <label class="label-small" title="Network Mode">MODE</label>
+                    <label class="label-small font-gray" title="Network Mode">MODE</label>
                     <p class="card-text" title="Network Mode">Access Point</p>
-                    <label class="label-small" title="Access Point SSID">SSID</label>
+                    <label class="label-small font-gray" title="Access Point SSID">SSID</label>
                     <p class="card-text" title="SSID">peach</p>
-                    <label class="label-small" title="Access Point IP Address">IP</label>
+                    <label class="label-small font-gray" title="Access Point IP Address">IP</label>
                     <p class="card-text" title="IP">{{ ap_ip }}</p>
                 </div>
             </div>
@@ -31,16 +31,16 @@
             </a>
             <!-- CARD GRID -->
             <div class="card-grid">
-                <div class="card-grid-three">
+                <div class="three-grid">
                     {% if ap_traffic %}
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices">3</label>
                         </div>
                         <label class="label-small font-gray">DEVICES</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
@@ -48,7 +48,7 @@
                         </div>
                         <label class="label-small font-gray">DOWNLOAD</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
@@ -57,6 +57,29 @@
                         <label class="label-small font-gray">UPLOAD</label>
                     </div>
                     {% else %}
+                    <div class="stack">
+                        <img class="icon icon-medium" title="Low-signal bar icon" src="icons/low-signal.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{{ wlan_rssi }}</label>
+                        </div>
+                        <label class="label-small font-gray">SIGNAL</label>
+                    </div>
+                    <div class="stack">
+                        <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
+                            <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">DOWNLOAD</label>
+                    </div>
+                    <div class="stack">
+                        <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                        <div class="flex-grid" style="padding-top: 1rem;">
+                            <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
+                            <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
+                        </div>
+                        <label class="label-small font-gray">UPLOAD</label>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -64,9 +87,9 @@
         </div>
     {% else %}
         <!-- NETWORK CARD -->
-        <!-- NETWORK INFO BOX -->
         <div class="card">
-            <div class="card-grid-two" style="position: relative;" title="PeachCloud network mode and status">
+            <!-- NETWORK INFO BOX -->
+            <div class="two-grid" style="position: relative;" title="PeachCloud network mode and status">
                 <!-- NETWORK STATUS -->
                 <!-- left column -->
                 <!-- network mode icon with label -->
@@ -82,11 +105,11 @@
                 <!-- right column -->
                 <!-- network mode, ssid & ip with labels -->
                 <div class="grid-column-2">
-                    <label class="label-small" title="Network Mode">MODE</label>
+                    <label class="label-small font-gray" title="Network Mode">MODE</label>
                     <p class="card-text" title="Network Mode">WiFi Client</p>
-                    <label class="label-small" title="WiFi SSID">SSID</label>
+                    <label class="label-small font-gray" title="WiFi SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ wlan_ssid }}</p>
-                    <label class="label-small" title="WiFi Client IP Address">IP</label>
+                    <label class="label-small font-gray" title="WiFi Client IP Address">IP</label>
                     <p class="card-text" title="IP">{{ wlan_ip }}</p>
                 </div>
             </div>
@@ -100,16 +123,16 @@
             <!-- CARD GRID -->
             <div class="card-grid">
                 <!-- row of icons representing network statistics -->
-                <div class="card-grid-three">
+                <div class="three-grid">
                     {% if wlan_traffic %}
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices">3</label>
                         </div>
                         <label class="label-small font-gray">DEVICES</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
@@ -117,7 +140,7 @@
                         </div>
                         <label class="label-small font-gray">DOWNLOAD</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
@@ -126,14 +149,14 @@
                         <label class="label-small font-gray">UPLOAD</label>
                     </div>
                     {% else %}
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices"></label>
                         </div>
                         <label class="label-small font-gray">DEVICES</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data download total"></label>
@@ -141,7 +164,7 @@
                         </div>
                         <label class="label-small font-gray">DOWNLOAD</label>
                     </div>
-                    <div class="card-grid-vert">
+                    <div class="stack">
                         <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
                         <div class="flex-grid" style="padding-top: 1rem;">
                             <label class="label-medium" style="padding-right: 3px;" title="Data upload total"></label>

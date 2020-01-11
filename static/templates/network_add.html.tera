@@ -1,6 +1,6 @@
 {% extends "nav" %}
 
-{% block network_add %}
+{% block card %}
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
             <!-- Standard input with button -->

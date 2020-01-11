@@ -1,6 +1,6 @@
 {% extends "nav" %}
 
-{% block network_detail %}
+{% block card %}
     <!-- if wlan_ssid == scan_networks.ssid -->
     {% if wlan_scan %}
     {% for network in wlan_scan %}
@@ -8,7 +8,7 @@
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
         <div class="card center">
-            <div class="card-grid-two" title="PeachCloud network mode and status">
+            <div class="two-grid" title="PeachCloud network mode and status">
                 <!-- NETWORK STATUS ICON -->
                 <!-- left column -->
                 <div class="grid-column-1">
