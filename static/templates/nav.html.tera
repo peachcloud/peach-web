@@ -3,8 +3,12 @@
 {% block nav %}
         <!-- Top nav bar -->
         <div class="nav-bar">
-            <img class="nav-icon nav-icon-left" src="/icons/peach-icon.png">
-            <img class="nav-icon nav-icon-left icon-active" src="/icons/back.svg">
+            <a href="/">
+                <img class="nav-icon nav-icon-left" src="/icons/peach-icon.png">
+            </a>
+            <a href="{{ back }}">
+                <img class="nav-icon nav-icon-left icon-active" src="/icons/back.svg">
+            </a>
             <img class="nav-icon nav-icon-right icon-active" src="/icons/exit.svg">
             <img class="nav-icon nav-icon-right icon-active" src="/icons/power-switch.svg">
         </div>

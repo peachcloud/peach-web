@@ -12,6 +12,7 @@ pub struct FlashContext {
 // used in /network/wifi/add?<ssid>
 #[derive(Debug, Serialize)]
 pub struct NetworkAddContext {
+    pub back: Option<String>,
     pub selected: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
@@ -31,6 +32,7 @@ pub struct NetworkDetailContext {
     // allows for passing in the ssid of a chosen access point
     // this is used in the network_detail template
     pub selected: Option<String>,
+    pub back: Option<String>,
 }
 
 impl NetworkDetailContext {
@@ -107,6 +109,7 @@ impl NetworkDetailContext {
             flash_name: None,
             flash_msg: None,
             selected: None,
+            back: None,
         }
     }
 }
@@ -129,6 +132,8 @@ pub struct NetworkContext {
     // allows for passing in the ssid of a chosen access point
     // this is used in the network_detail template
     pub selected: Option<String>,
+    // url for back-arrow link
+    pub back: Option<String>,
 }
 
 impl NetworkContext {
@@ -253,6 +258,7 @@ impl NetworkContext {
             flash_name: None,
             flash_msg: None,
             selected: None,
+            back: None,
         }
     }
 }

@@ -57,6 +57,7 @@ fn index() -> &'static str {
 fn network_card(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
+    context.back = Some("/".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -71,6 +72,7 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
 fn network_add(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
     // check to see if there is a flash message to display
+    context.back = Some("/network/wifi".to_string());
     if let Some(flash) = flash {
         // add flash message contents to the context object
         context.flash_name = Some(flash.name().to_string());
@@ -83,6 +85,7 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
 #[get("/network/wifi/add?<ssid>")]
 fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkAddContext {
+        back: Some("/network/wifi".to_string()),
         selected: Some(ssid.to_string()),
         flash_name: None,
         flash_msg: None,
@@ -133,6 +136,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 fn network_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
+    context.back = Some("/network".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -147,6 +151,7 @@ fn network_list(flash: Option<FlashMessage>) -> Template {
 fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkDetailContext::build();
+    context.back = Some("/network/wifi".to_string());
     context.selected = Some(ssid.to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {

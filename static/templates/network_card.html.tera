@@ -35,14 +35,14 @@
                         {% if ap_traffic %}
                         <div class="stack">
                             <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices">3</label>
                             </div>
                             <label class="label-small font-gray">DEVICES</label>
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
                                 <label class="label-small font-near-black">{{ ap_traffic.rx_unit }}</label>
                             </div>
@@ -50,7 +50,7 @@
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
                                 <label class="label-small font-near-black">{{ ap_traffic.tx_unit }}</label>
                             </div>
@@ -59,14 +59,14 @@
                         {% else %}
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal bar icon" src="icons/low-signal.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{{ wlan_rssi }}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
                             </div>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
                             </div>
@@ -127,14 +127,14 @@
                         {% if wlan_traffic %}
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
                             </div>
@@ -142,7 +142,7 @@
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
                             </div>
@@ -151,14 +151,14 @@
                         {% else %}
                         <div class="stack">
                             <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data download total"></label>
                                 <label class="label-small font-near-black"></label>
                             </div>
@@ -166,7 +166,7 @@
                         </div>
                         <div class="stack">
                             <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
-                            <div class="flex-grid" style="padding-top: 1rem;">
+                            <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total"></label>
                                 <label class="label-small font-near-black"></label>
                             </div>
