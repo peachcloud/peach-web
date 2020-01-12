@@ -43,10 +43,10 @@ impl NetworkDetailContext {
             Err(_) => "x.x.x.x".to_string(),
         };
         let wlan_list = match network_list_networks("wlan0".to_string()) {
-            Ok(results) => {
-                let scan: Vec<Networks> = serde_json::from_str(results.as_str())
+            Ok(networks) => {
+                let list: Vec<Networks> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_list response");
-                Some(scan)
+                Some(list)
             }
             Err(_) => None,
         };
@@ -55,8 +55,8 @@ impl NetworkDetailContext {
             Err(_) => None,
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
-            Ok(results) => {
-                let scan: Vec<Scan> = serde_json::from_str(results.as_str())
+            Ok(networks) => {
+                let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
                 Some(scan)
             }
@@ -201,8 +201,8 @@ impl NetworkContext {
             Err(_) => None,
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
-            Ok(results) => {
-                let scan: Vec<Scan> = serde_json::from_str(results.as_str())
+            Ok(networks) => {
+                let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
                 Some(scan)
             }
