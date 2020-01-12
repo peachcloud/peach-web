@@ -21,7 +21,7 @@ pub struct NetworkAddContext {
 #[derive(Debug, Serialize)]
 pub struct NetworkDetailContext {
     pub wlan_ip: String,
-    pub wlan_list: Option<Vec<Scan>>,
+    pub wlan_list: Option<Vec<Networks>>,
     pub wlan_rssi: Option<String>,
     pub wlan_scan: Option<Vec<Scan>>,
     pub wlan_ssid: String,
@@ -44,7 +44,7 @@ impl NetworkDetailContext {
         };
         let wlan_list = match network_list_networks("wlan0".to_string()) {
             Ok(results) => {
-                let scan: Vec<Scan> = serde_json::from_str(results.as_str())
+                let scan: Vec<Networks> = serde_json::from_str(results.as_str())
                     .expect("Failed to deserialize scan_list response");
                 Some(scan)
             }
