@@ -1,0 +1,16 @@
+network_detail
+
+we have the following buttons:
+
+ - connect
+ - modify
+ - forget
+ - cancel
+
+cancel is shown under all conditions
+
+connect is shown if ap is in-range but not currently connected
+
+modify is shown if ap is currently connected or in list of previously-associated networks (list_networks)
+
+remove is shown if ap is currently connected or in list of previously-associated networks (list_networks)

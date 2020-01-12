@@ -324,7 +324,7 @@ pub struct MemStat {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Networks {
-    pub list: String,
+    pub ssid: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
