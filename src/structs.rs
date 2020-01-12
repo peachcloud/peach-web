@@ -319,6 +319,7 @@ pub struct Networks {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Scan {
+    pub flags: String,
     pub frequency: String,
     pub signal_level: String,
     pub ssid: String,
