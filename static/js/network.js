@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             i.className = "center icon-inactive";
             i.src = "icons/router.svg";
             let l = document.getElementById("netModeLabel");
-            l.value = "OFFLINE";
+            l.textContent = "OFFLINE";
             // send activate_ap POST request
             fetch("/api/v1/network/activate_ap", {
                 method: "post",
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             i.className = "center icon-inactive";
             i.src = "icons/wifi.svg";
             let l = document.getElementById("netModeLabel");
-            l.value = "OFFLINE";
+            l.textContent = "OFFLINE";
          // send activate_client POST request
             fetch("/api/v1/network/activate_client", {
                 method: "post",
