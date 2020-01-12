@@ -31,7 +31,7 @@
                 <a class="link" href="/network/wifi/disconnect">
                     <button class="button center">Disconnect</button>
                 </a>
-                {% else if wlan_ssid != selected %}
+                {% elif wlan_ssid != selected %}
                 <a class="link" href="/network/wifi/connect?ssid={{ network.ssid }}">
                     <button class="button center">Connect</button>
                 </a>
@@ -49,7 +49,7 @@
         </div>
         {% endif %}
     {% endfor %}
-    }% endif %}
+    {% endif %}
     {% if wlan_list %}
     {# check the list of saved networks for our selected ssid #}
     {% for network in wlan_list %}
