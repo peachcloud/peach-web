@@ -13,13 +13,13 @@
                         <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
                             <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg">
                             <p class="list-text">{{ network.ssid }}</p>
-                            <label class="label-small list-label" title="Status">Connected</label>
+                            <label class="label-small list-label font-gray" title="Status">Connected</label>
                         </a>
                         {% else %}
                         <a class="list-item link" href="/network/wifi?ssid={{ network.ssid }}">
                             <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
                             <p class="list-text">{{ network.ssid }}</p>
-                            <label class="label-small list-label" title="Status">Available</label>
+                            <label class="label-small list-label font-gray" title="Status">Available</label>
                         </a>
                         {% endif %}
                     </li>

@@ -13,7 +13,7 @@
                 <!-- left column -->
                 <div class="grid-column-1">
                     <img class="center icon" src="/icons/wifi.svg">
-                    <label class="center label-small font-gray" title="Access Point Status">AVAILABLE</label>
+                    <label class="center label-small font-gray" title="Access Point Status">{% if wlan_ssid == selected %}CONNECTED{% else %}AVAILABLE{% endif %}</label>
                 </div>
                 <!-- right column -->
                 <div class="grid-column-2">
