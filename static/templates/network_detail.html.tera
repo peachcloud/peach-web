@@ -20,7 +20,7 @@
                     <label class="label-small font-gray" title="WiFi network SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
                     <label class="label-small font-gray" title="Security protocol">SECURITY</label>
-                    <p class="card-text" title="Security protocol in use by {{ network.ssid }}">WPA2-PSK</p>
+                    <p class="card-text" title="Security protocol in use by {{ network.ssid }}">{{ network.flags }}</p>
                     <label class="label-small font-gray" title="Signal Strength">SIGNAL</label>
                     <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
                 </div>
