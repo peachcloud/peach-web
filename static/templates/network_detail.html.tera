@@ -1,9 +1,10 @@
 {% extends "nav" %}
 
 {% block card %}
-    <!-- if wlan_ssid == scan_networks.ssid -->
     {% if wlan_scan %}
+    {# iterate through each in-range access point #}
     {% for network in wlan_scan %}
+        {# select only the access point we are interested in #}
         {% if network.ssid == selected %}
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
@@ -26,9 +27,50 @@
                 </div>
             </div>
             <div class="card-container" style="padding-top: 0;">
-                <a class="link" href="/network/wifi/add?ssid={{ network.ssid }}">
+                {% if wlan_ssid == selected %}
+                <a class="link" href="/network/wifi/disconnect">
+                    <button class="button center">Disconnect</button>
+                </a>
+                {% else if wlan_ssid != selected %}
+                <a class="link" href="/network/wifi/connect?ssid={{ network.ssid }}">
                     <button class="button center">Connect</button>
                 </a>
+                {% endif %}
+                <a class="link" href="/network/wifi">
+                    <button class="button center">Modify</button>
+                </a>
+                <a class="link" href="/network/wifi/remove">
+                    <button class="button center">Forget</button>
+                </a>
+                <a class="link" href="/network/wifi">
+                    <button class="button center">Cancel</button>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    }% endif %}
+    {% if wlan_list %}
+    {# check the list of saved networks for our selected ssid #}
+    {% for network in wlan_list %}
+        {% if network.ssid == selected %}
+        <!-- NETWORK CARD -->
+        <!-- NETWORK INFO BOX -->
+        <div class="card center">
+            <div class="two-grid" title="PeachCloud network mode and status">
+                <!-- NETWORK STATUS ICON -->
+                <!-- left column -->
+                <div class="grid-column-1">
+                    <img class="center icon" src="/icons/wifi.svg">
+                    <label class="center label-small font-gray" title="Access Point Status">NOT IN RANGE</label>
+                </div>
+                <!-- right column -->
+                <div class="grid-column-2">
+                    <label class="label-small font-gray" title="WiFi network SSID">SSID</label>
+                    <p class="card-text" title="SSID">{{ network.ssid }}</p>
+                </div>
+            </div>
+            <div class="card-container" style="padding-top: 0;">
                 <a class="link" href="/network/wifi">
                     <button class="button center">Modify</button>
                 </a>
