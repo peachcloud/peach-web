@@ -6,6 +6,8 @@
     {% for network in wlan_scan %}
         {# select only the access point we are interested in #}
         {% if network.ssid == selected %}
+        {# set displayed flag to handle duplicate networks in scan and list #}
+        {% set displayed = true %}
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
         <div class="card center">
@@ -53,7 +55,8 @@
     {% if wlan_list %}
     {# check the list of saved networks for our selected ssid #}
     {% for network in wlan_list %}
-        {% if network.ssid == selected %}
+        {# check to see if the network is selected and not already displayed #}
+        {% if network.ssid == selected and not displayed %}
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->
         <div class="card center">
