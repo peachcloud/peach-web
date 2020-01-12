@@ -1,6 +1,7 @@
 {% extends "nav" %}
 
 {% block card %}
+    {% set display = false %}
     {% if wlan_scan %}
     {# iterate through each in-range access point #}
     {% for network in wlan_scan %}
