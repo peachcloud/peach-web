@@ -42,11 +42,11 @@ impl NetworkDetailContext {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let wlan_list = match network_list_networks("wlan0".to_string()) {
-            Ok(networks) => {
-                let list: Vec<Networks> = serde_json::from_str(networks.as_str())
+        let wlan_list = match network_list_networks() {
+            Ok(ssids) => {
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
-                Some(list)
+                Some(networks)
             }
             Err(_) => None,
         };

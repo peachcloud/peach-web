@@ -100,7 +100,7 @@ pub fn network_get_ip(iface: String) -> std::result::Result<String, NetworkError
 ///
 /// * `iface` - A String containing the network interface identifier.
 ///
-pub fn network_list_networks(iface: String) -> std::result::Result<String, NetworkError> {
+pub fn network_list_networks() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -110,7 +110,7 @@ pub fn network_list_networks(iface: String) -> std::result::Result<String, Netwo
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
-    let response = client.list_networks(iface).call()?;
+    let response = client.list_networks().call()?;
 
     Ok(response)
 }
@@ -293,7 +293,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn get_traffic(&mut self, iface: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to list all networks saved in `wpa_supplicant.conf`.
-    pub fn list_networks(&mut self, iface: String) -> RpcRequest<String>;
+    pub fn list_networks(&mut self) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to reconnect WiFi for the given interface.
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
