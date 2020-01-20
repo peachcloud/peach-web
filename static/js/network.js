@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             console.log('Activating AP Mode');
             // update network mode and status (icon & label)
             let i = document.getElementById("netModeIcon");
-            i.className = "center icon-inactive";
+            i.className = "center icon icon-inactive";
             i.src = "icons/router.svg";
             let l = document.getElementById("netModeLabel");
             l.textContent = "OFFLINE";
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             console.log('Activating WiFi Client Mode');
             // update network mode and status (icon & label)
             let i = document.getElementById("netModeIcon");
-            i.className = "center icon-inactive";
+            i.className = "center icon icon-inactive";
             i.src = "icons/wifi.svg";
             let l = document.getElementById("netModeLabel");
             l.textContent = "OFFLINE";
