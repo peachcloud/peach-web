@@ -108,10 +108,17 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     let add = network_add_wifi(ssid, pass);
     match add {
         Ok(_) => {
-            debug!("Added WiFi credentials.");
-            match network_reconnect_wifi("wlan0".to_string()) {
-                Ok(_) => debug!("Reconnected wlan0 interface."),
-                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
+            debug!("Added WiFi credentials to wpa_supplicant config file.");
+            match network_activate_client() {
+                Ok(_) => debug!("Activated WiFi client on wlan0 interface."),
+                Err(_) => warn!("Failed to activate WiFi client on wlan0 interface."),
+            }
+            // run RECONFIGURE to force reread of wpa_supplicant config
+            // wpa_supplicant needs to be running, that's why we activate the
+            // wireless client first before reconfiguration
+            match network_reconfigure_wifi() {
+                Ok(_) => debug!("Reread wpa_supplicant configuration from file."),
+                Err(_) => warn!("Failed to force reread of wpa_supplicant configuration from file."),
             }
             // assign context through context_builder call
             let mut context = NetworkContext::build();

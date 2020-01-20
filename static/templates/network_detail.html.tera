@@ -52,7 +52,7 @@
     {% elif wlan_list %}
     {# check the list of saved networks for our selected ssid #}
     {% for network in wlan_list %}
-        {# check to see if the network is selected and not already displayed #}
+        {# check to see if the network is selected #}
         {% if network.ssid == selected %}
         <!-- NETWORK CARD -->
         <!-- NETWORK INFO BOX -->

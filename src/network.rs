@@ -220,6 +220,25 @@ pub fn network_get_traffic(iface: String) -> std::result::Result<Traffic, Networ
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `reconfigure_wifi` method.
+///
+pub fn network_reconfigure_wifi() -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+
+    let response = client.reconfigure_wifi().call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `reconnect_wifi` method.
 ///
 /// # Arguments
@@ -294,6 +313,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to list all networks saved in `wpa_supplicant.conf`.
     pub fn list_networks(&mut self) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to reread the wpa_supplicant config for the given interface.
+    pub fn reconfigure_wifi(&mut self) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to reconnect WiFi for the given interface.
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
