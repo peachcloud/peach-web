@@ -103,22 +103,34 @@ fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 #[post("/network/wifi/add", data = "<wifi>")]
 fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
-    let ssid = wifi.ssid.to_string();
+    let ssid = &wifi.ssid;
     let pass = wifi.pass.to_string();
-    let add = network_add_wifi(ssid, pass);
+    let ssid_copy = ssid.to_string();
+    let add = network_add_wifi(ssid_copy, pass);
     match add {
         Ok(_) => {
             debug!("Added WiFi credentials to wpa_supplicant config file.");
-            match network_activate_client() {
-                Ok(_) => debug!("Activated WiFi client on wlan0 interface."),
-                Err(_) => warn!("Failed to activate WiFi client on wlan0 interface."),
-            }
             // run RECONFIGURE to force reread of wpa_supplicant config
-            // wpa_supplicant needs to be running, that's why we activate the
-            // wireless client first before reconfiguration
+            // wpa_supplicant needs to be running
+            // if it's not, we catch the error and activate client mode
             match network_reconfigure_wifi() {
-                Ok(_) => debug!("Reread wpa_supplicant configuration from file."),
-                Err(_) => warn!("Failed to force reread of wpa_supplicant configuration from file."),
+                Ok(_) => {
+                    debug!("Reread wpa_supplicant configuration from file.");
+                    match network_get_id("wlan0".to_string(), ssid.to_string()) {
+                        Ok(id) => match network_select_network(id, "wlan0".to_string()) {
+                            Ok(_) => debug!("Selected chosen network."),
+                            Err(_) => warn!("Failed to select chosen network."),
+                        },
+                        Err(_) => warn!("Failed to retrieve the network id."),
+                    }
+                }
+                Err(_) => {
+                    warn!("Failed to force reread of wpa_supplicant configuration from file.");
+                    match network_activate_client() {
+                        Ok(_) => debug!("Activated WiFi client."),
+                        Err(_) => warn!("Failed to activate WiFi client."),
+                    }
+                }
             }
             let context = FlashContext {
                 flash_name: Some("success".to_string()),

@@ -70,6 +70,30 @@ pub fn network_add_wifi(ssid: String, pass: String) -> std::result::Result<Strin
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `get_id` method.
+///
+/// # Arguments
+///
+/// * `iface` - A String containing the network interface identifier.
+/// * `ssid` - A String containing the SSID of a network.
+///
+pub fn network_get_id(iface: String, ssid: String) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+
+    let response = client.get_id(iface, ssid).call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `get_ip` method.
 ///
 /// # Arguments
@@ -283,6 +307,34 @@ pub fn network_scan_networks(iface: String) -> std::result::Result<String, Netwo
     Ok(response)
 }
 
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `select_network` method, which disables other network connections and
+/// enables the connection for the chosen network, identified by ID and
+/// interface.
+///
+/// # Arguments
+///
+/// * `id` - A String containing a network identifier.
+/// * `iface` - A String containing the network interface identifier.
+///
+pub fn network_select_network(
+    id: String,
+    iface: String,
+) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+    let response = client.select_network(id, iface).call()?;
+
+    Ok(response)
+}
+
 jsonrpc_client!(pub struct PeachNetworkClient {
     /// Creates a JSON-RPC request to activate the access point.
     pub fn activate_ap(&mut self) -> RpcRequest<String>;
@@ -292,6 +344,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to save credentials for an access point.
     pub fn add_wifi(&mut self, ssid: String, pass: String) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to get the ID for the given interface and SSID.
+    pub fn get_id(&mut self, iface: String, ssid: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to get the IP address for the given interface.
     pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
@@ -319,6 +374,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to reconnect WiFi for the given interface.
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to select the network for the given interface and ID.
+    pub fn select_network(&mut self, id: String, iface: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to list all networks in range of the given interface.
     pub fn scan_networks(&mut self, iface: String) -> RpcRequest<String>;
