@@ -120,12 +120,11 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
                 Ok(_) => debug!("Reread wpa_supplicant configuration from file."),
                 Err(_) => warn!("Failed to force reread of wpa_supplicant configuration from file."),
             }
-            // assign context through context_builder call
-            let mut context = NetworkContext::build();
-            context.flash_name = Some("success".to_string());
-            context.flash_msg = Some("Added WiFi credentials".to_string());
-            // render network_card view
-            Template::render("network_card", &context)
+            let context = FlashContext {
+                flash_name: Some("success".to_string()),
+                flash_msg: Some("Added WiFi credentials".to_string()),
+            };
+            Template::render("network_add", &context)
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
@@ -133,7 +132,6 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
                 flash_name: Some("error".to_string()),
                 flash_msg: Some("Failed to add WiFi credentials".to_string()),
             };
-            // render network_card view
             Template::render("network_add", &context)
         }
     }
