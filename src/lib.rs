@@ -34,7 +34,7 @@ use crate::ws::*;
 
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
-use rocket::response::NamedFile;
+use rocket::response::{Flash, NamedFile, Redirect};
 use rocket_contrib::json::{Json, JsonValue};
 use rocket_contrib::templates::Template;
 
@@ -151,7 +151,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 }
 
 #[post("/network/wifi/forget", data = "<network>")]
-fn forget_wifi(network: Form<Ssid>) -> Template {
+fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let iface = "wlan0".to_string();
     let ssid = &network.ssid;
     let ssid_copy = ssid.to_string();
@@ -161,44 +161,25 @@ fn forget_wifi(network: Form<Ssid>) -> Template {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
                     Ok(_) => {
-                        let context = FlashContext {
-                            flash_name: Some("success".to_string()),
-                            flash_msg: Some(
-                                "Removed WiFi credentials and saved configuration updated"
-                                    .to_string(),
-                            ),
-                        };
-                        Template::render("network_detail", &context)
+                        Flash::success(Redirect::to("/network/wifi"), "Removed WiFi credentials.")
                     }
                     Err(_) => {
                         warn!("Failed to remove WiFi credentials for chosen network.");
-                        let context = FlashContext {
-                            flash_name: Some("error".to_string()),
-                            flash_msg: Some("Failed to remove WiFi credentials".to_string()),
-                        };
-                        Template::render("network_detail", &context)
+                        let url = format!("/network/wifi?{}", ssid);
+                        Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
                     }
                 }
             }
             Err(_) => {
                 warn!("Failed to remove WiFi credentials for chosen network.");
-                let context = FlashContext {
-                    flash_name: Some("error".to_string()),
-                    flash_msg: Some("Failed to remove WiFi credentials".to_string()),
-                };
-                Template::render("network_detail", &context)
+                let url = format!("/network/wifi?{}", ssid);
+                Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
             }
         },
         Err(_) => {
-            debug!("Failed to get ID for chosen network.");
-            let context = FlashContext {
-                flash_name: Some("error".to_string()),
-                flash_msg: Some(
-                    "Failed to remove WiFi credentials due to error retrieving network ID"
-                        .to_string(),
-                ),
-            };
-            Template::render("network_detail", &context)
+            warn!("Failed to get ID for chosen network.");
+            let url = format!("/network/wifi?{}", ssid);
+            Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
         }
     }
 }
