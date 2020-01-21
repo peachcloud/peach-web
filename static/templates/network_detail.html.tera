@@ -47,6 +47,8 @@
                     <button class="button center">Modify</button>
                 </a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
+                    <!-- hidden element: allows ssid to be sent in request -->
+                    <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
                 <a class="link" href="/network/wifi">
@@ -89,6 +91,8 @@
                     <button class="button center">Modify</button>
                 </a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
+                    <!-- hidden element: allows ssid to be sent in request -->
+                    <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
                 <a class="link" href="/network/wifi">
