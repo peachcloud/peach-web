@@ -24,8 +24,20 @@
                         {% endif %}
                     </li>
                 {% endfor %}
+                {% elif wlan_list %}
+                {% for network in wlan_list %}
+                {% if network not in wlan_scan %}
+                    <li>
+                        <a class="list-item link" href="/network/wifi?ssid={{ network.ssid }}">
+                            <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
+                            <p class="list-text">{{ network.ssid }}</p>
+                            <label class="label-small list-label font-gray" title="Status">Not in range</label>
+                        </a>
+                    </li>
                 {% else %}
                     <li class="list-item">No networks found</li>
+                {% endif %}
+                {% endfor %}
                 {% endif %}
                 </ul>
             </div>

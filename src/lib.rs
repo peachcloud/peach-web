@@ -28,7 +28,8 @@ use std::{env, thread};
 use crate::error::BoxError;
 use crate::network::*;
 use crate::structs::{
-    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext, Ssid, WiFi,
+    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext,
+    NetworkListContext, Ssid, WiFi,
 };
 use crate::ws::*;
 
@@ -164,7 +165,7 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
                     Ok(_) => {
                         let url = format!("/network/wifi?={}", ssid);
                         Flash::success(Redirect::to(url), "Removed WiFi credentials.")
-                    },
+                    }
                     Err(_) => remove_wifi_failed(ssid),
                 }
             }
@@ -177,7 +178,7 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[get("/network/wifi")]
 fn network_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
-    let mut context = NetworkContext::build();
+    let mut context = NetworkListContext::build();
     context.back = Some("/network".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
@@ -445,7 +446,7 @@ fn build_json_response(
     JsonResponse { status, data, msg }
 }
 
-fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
+fn remove_wifi_failed(ssid: &str) -> Flash<Redirect> {
     warn!("Failed to get ID for chosen network.");
     let url = format!("/network/wifi?ssid={}", ssid);
     Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
