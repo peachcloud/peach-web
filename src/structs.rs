@@ -274,8 +274,10 @@ impl NetworkContext {
 
 #[derive(Debug, Serialize)]
 pub struct NetworkListContext {
+    pub wlan_list: Option<Vec<String>>,
+    pub wlan_scan: Option<Vec<String>>,
     pub wlan_ssid: String,
-    pub wlan_networks: Option<Vec<String>>,
+    //pub wlan_networks: Option<Vec<String>>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub back: Option<String>,
@@ -287,31 +289,33 @@ impl NetworkListContext {
             Ok(ssids) => {
                 let networks: Vec<String> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
-                networks
+                Some(networks)
             }
-            Err(_) => Vec::new(),
+            Err(_) => None,
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(networks) => {
                 let scan: Vec<String> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
-                scan
+                Some(scan)
             }
-            Err(_) => Vec::new(),
+            Err(_) => None,
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
         // combine the list of networks in range & saved (not in range) networks
-        let mut wlan_networks = [wlan_list, wlan_scan].concat();
+        //let mut wlan_networks = [wlan_list, wlan_scan].concat();
         // sort the combined list, placing duplicate elements together
-        wlan_networks.sort();
+        //wlan_networks.sort();
         // remove any duplicate adjacent elements
-        wlan_networks.dedup();
+        //wlan_networks.dedup();
 
         NetworkListContext {
-            wlan_networks: Some(wlan_networks),
+            //wlan_networks: Some(wlan_networks),
+            wlan_list,
+            wlan_scan,
             wlan_ssid,
             flash_name: None,
             flash_msg: None,
