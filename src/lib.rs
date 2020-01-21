@@ -160,27 +160,13 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
-                    Ok(_) => {
-                        Flash::success(Redirect::to("/network/wifi"), "Removed WiFi credentials.")
-                    }
-                    Err(_) => {
-                        warn!("Failed to remove WiFi credentials for chosen network.");
-                        let url = format!("/network/wifi?{}", ssid);
-                        Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
-                    }
+                    Ok(_) => Flash::success(Redirect::to("/network/wifi"), "Removed WiFi credentials."),
+                    Err(_) => remove_wifi_failed(ssid),
                 }
             }
-            Err(_) => {
-                warn!("Failed to remove WiFi credentials for chosen network.");
-                let url = format!("/network/wifi?{}", ssid);
-                Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
-            }
+            Err(_) => remove_wifi_failed(ssid),
         },
-        Err(_) => {
-            warn!("Failed to get ID for chosen network.");
-            let url = format!("/network/wifi?{}", ssid);
-            Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
-        }
+        Err(_) => remove_wifi_failed(ssid),
     }
 }
 
@@ -453,6 +439,12 @@ fn build_json_response(
     msg: Option<String>,
 ) -> JsonResponse {
     JsonResponse { status, data, msg }
+}
+
+fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
+    warn!("Failed to get ID for chosen network.");
+    let url = format!("/network/wifi?{}", ssid);
+    Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
 }
 
 #[catch(404)]
