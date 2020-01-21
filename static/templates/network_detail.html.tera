@@ -88,7 +88,7 @@
                 <a class="link" href="/network/wifi">
                     <button class="button center">Modify</button>
                 </a>
-                <form id="wifiForget" action="/network/wifi/remove" method="post">
+                <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
                 <a class="link" href="/network/wifi">
