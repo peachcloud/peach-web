@@ -160,7 +160,10 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
-                    Ok(_) => Flash::success(Redirect::to("/network/wifi"), "Removed WiFi credentials."),
+                    Ok(_) => {
+                        let url = format!("/network/wifi?={}", ssid);
+                        Flash::success(Redirect::to(url), "Removed WiFi credentials.")
+                    },
                     Err(_) => remove_wifi_failed(ssid),
                 }
             }
@@ -443,7 +446,7 @@ fn build_json_response(
 
 fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
     warn!("Failed to get ID for chosen network.");
-    let url = format!("/network/wifi?{}", ssid);
+    let url = format!("/network/wifi?ssid={}", ssid);
     Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
 }
 
