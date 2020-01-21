@@ -286,6 +286,30 @@ pub fn network_reconnect_wifi(iface: String) -> std::result::Result<String, Netw
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `remove_wifi` method, which removes the credentials of the given network
+/// from the wpa_configuration file.
+///
+/// # Arguments
+///
+/// * `id` - A String containing a network identifier.
+/// * `iface` - A String containing the network interface identifier.
+///
+pub fn network_remove_wifi(id: String, iface: String) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+    let response = client.remove_wifi(id, iface).call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `scan_networks` method, which returns a list of in-range access points.
 ///
 /// # Arguments
@@ -374,6 +398,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to reconnect WiFi for the given interface.
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to remove the credentials for the given network from the wpa_supplicant config.
+    pub fn remove_wifi(&mut self, id: String, iface: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to select the network for the given interface and ID.
     pub fn select_network(&mut self, id: String, iface: String) -> RpcRequest<String>;

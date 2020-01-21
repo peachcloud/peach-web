@@ -6,7 +6,7 @@
             <a href="/">
                 <img class="nav-icon nav-icon-left" src="/icons/peach-icon.png">
             </a>
-            <a href="{{ back }}">
+            <a href="{% if back %}{{ back }}{% endif %}">
                 <img class="nav-icon nav-icon-left icon-active" src="/icons/back.svg">
             </a>
             <img class="nav-icon nav-icon-right icon-active" src="/icons/exit.svg">

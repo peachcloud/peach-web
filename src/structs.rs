@@ -327,6 +327,11 @@ pub struct Networks {
     pub ssid: String,
 }
 
+#[derive(Debug, FromForm)]
+pub struct Ssid {
+    pub ssid: String,
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Scan {
     pub protocol: String,

@@ -28,7 +28,7 @@ use std::{env, thread};
 use crate::error::BoxError;
 use crate::network::*;
 use crate::structs::{
-    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext, WiFi,
+    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext, Ssid, WiFi,
 };
 use crate::ws::*;
 
@@ -44,7 +44,8 @@ use rocket_contrib::templates::Template;
 //  [GET]       /network                        Network overview
 //  [GET]       /network/wifi/add               Add WiFi form
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
-//  [POST]      /network/wifi/add               Add WiFi handler
+//  [POST]      /network/wifi/add               WiFi form submission
+//  [POST]      /network/wifi/forget            Remove WiFi
 //  [GET]       /network/wifi                   List of networks
 //  [GET]       /network/wifi?<ssid>            Details of single network
 
@@ -149,6 +150,44 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     }
 }
 
+#[post("/network/wifi/forget", data = "<network>")]
+fn forget_wifi(network: Form<Ssid>) -> Template {
+    let iface = "wlan0".to_string();
+    let ssid = &network.ssid;
+    let ssid_copy = ssid.to_string();
+    match network_get_id(iface, ssid_copy) {
+        Ok(id) => match network_remove_wifi(id, ssid.to_string()) {
+            Ok(_) => {
+                debug!("WiFi credentials removed for chosen network.");
+                let context = FlashContext {
+                    flash_name: Some("success".to_string()),
+                    flash_msg: Some("Removed WiFi credentials".to_string()),
+                };
+                Template::render("network_detail", &context)
+            }
+            Err(_) => {
+                warn!("Failed to remove WiFi credentials for chosen network.");
+                let context = FlashContext {
+                    flash_name: Some("error".to_string()),
+                    flash_msg: Some("Failed to remove WiFi credentials".to_string()),
+                };
+                Template::render("network_detail", &context)
+            }
+        },
+        Err(_) => {
+            debug!("Failed to get ID for chosen network.");
+            let context = FlashContext {
+                flash_name: Some("error".to_string()),
+                flash_msg: Some(
+                    "Failed to remove WiFi credentials due to error retrieving network ID"
+                        .to_string(),
+                ),
+            };
+            Template::render("network_detail", &context)
+        }
+    }
+}
+
 #[get("/network/wifi")]
 fn network_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
@@ -196,7 +235,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/status
 //  [GET]        /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi
-//  [POST]       /api/v1/network/wifi/forget         Forget network*
+//  [POST]       /api/v1/network/wifi/forget         Forget / remove network
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
 //  [POST]       /api/v1/shutdown                    Shutdown device*
 
@@ -346,6 +385,40 @@ fn scan_networks() -> Json<JsonResponse> {
     }
 }
 
+#[post("/api/v1/network/wifi/forget", data = "<network>")]
+fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
+    let iface = "wlan0".to_string();
+    let ssid = &network.ssid;
+    let ssid_copy = network.ssid.to_string();
+    match network_get_id(iface, ssid_copy) {
+        Ok(id) => {
+            match network_remove_wifi(id, ssid.to_string()) {
+                Ok(_) => {
+                    debug!("Removed chosen network.");
+                    // json response for successful update
+                    let status = "success".to_string();
+                    let msg = "WiFi credentials removed.".to_string();
+                    Json(build_json_response(status, None, Some(msg)))
+                }
+                Err(_) => {
+                    warn!("Failed to remove chosen network.");
+                    // json response for failed update
+                    let status = "error".to_string();
+                    let msg = "WiFi credentials removed.".to_string();
+                    Json(build_json_response(status, None, Some(msg)))
+                }
+            }
+        }
+        Err(_) => {
+            debug!("Failed to add WiFi credentials.");
+            // json response for failed update
+            let status = "error".to_string();
+            let msg = "Failed to add WiFi credentials.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 #[post("/api/v1/network/wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
@@ -417,6 +490,8 @@ fn rocket() -> rocket::Rocket {
                 scan_networks,
                 add_wifi,
                 add_credentials,
+                forget_wifi,
+                remove_wifi,
             ],
         )
         .register(catchers![not_found])

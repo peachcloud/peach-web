@@ -25,6 +25,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | network/status | GET | | Returns status object for connected WiFi network |
 | network/wifi | GET | | Returns scan results for in-range access-points |
 | network/wifi | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| network/wifi/forget | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
 
 ### Environment
 
