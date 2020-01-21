@@ -159,11 +159,26 @@ fn forget_wifi(network: Form<Ssid>) -> Template {
         Ok(id) => match network_remove_wifi(id, ssid.to_string()) {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
-                let context = FlashContext {
-                    flash_name: Some("success".to_string()),
-                    flash_msg: Some("Removed WiFi credentials".to_string()),
-                };
-                Template::render("network_detail", &context)
+                match network_save_config() {
+                    Ok(_) => {
+                        let context = FlashContext {
+                            flash_name: Some("success".to_string()),
+                            flash_msg: Some(
+                                "Removed WiFi credentials and saved configuration updated"
+                                    .to_string(),
+                            ),
+                        };
+                        Template::render("network_detail", &context)
+                    }
+                    Err(_) => {
+                        warn!("Failed to remove WiFi credentials for chosen network.");
+                        let context = FlashContext {
+                            flash_name: Some("error".to_string()),
+                            flash_msg: Some("Failed to remove WiFi credentials".to_string()),
+                        };
+                        Template::render("network_detail", &context)
+                    }
+                }
             }
             Err(_) => {
                 warn!("Failed to remove WiFi credentials for chosen network.");
