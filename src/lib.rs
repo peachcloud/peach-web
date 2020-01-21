@@ -154,9 +154,10 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let iface = "wlan0".to_string();
     let ssid = &network.ssid;
+    let iface_copy = iface.to_string();
     let ssid_copy = ssid.to_string();
-    match network_get_id(iface, ssid_copy) {
-        Ok(id) => match network_remove_wifi(id, ssid.to_string()) {
+    match network_get_id(iface_copy, ssid_copy) {
+        Ok(id) => match network_remove_wifi(id, iface) {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
