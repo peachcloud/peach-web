@@ -6,38 +6,26 @@
             <div class="center list-container">
                 <h1 class="bold center-text title-medium">WiFi Networks</h1>
                 <ul class="list">
-                {% if wlan_scan %}
-                {% for network in wlan_scan %}
+                {% if wlan_network %}
+                {% for network in wlan_networks %}
                     <li>
-                        {% if wlan_ssid == network.ssid %}
+                        {% if network.key == wlan_ssid %}
                         <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
                             <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg">
                             <p class="list-text">{{ network.ssid }}</p>
                             <label class="label-small list-label font-gray" title="Status">Connected</label>
                         </a>
                         {% else %}
-                        <a class="list-item link" href="/network/wifi?ssid={{ network.ssid }}">
+                        <a class="list-item link" href="/network/wifi?ssid={{ network.key }}">
                             <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
-                            <p class="list-text">{{ network.ssid }}</p>
-                            <label class="label-small list-label font-gray" title="Status">Available</label>
+                            <p class="list-text">{{ network.key }}</p>
+                            <label class="label-small list-label font-gray" title="Status">{{ network.value }}</label>
                         </a>
                         {% endif %}
                     </li>
                 {% endfor %}
-                {% elif wlan_list %}
-                {% for network in wlan_list %}
-                {% if network not in wlan_scan %}
-                    <li>
-                        <a class="list-item link" href="/network/wifi?ssid={{ network.ssid }}">
-                            <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
-                            <p class="list-text">{{ network.ssid }}</p>
-                            <label class="label-small list-label font-gray" title="Status">Not in range</label>
-                        </a>
-                    </li>
                 {% else %}
                     <li class="list-item">No networks found</li>
-                {% endif %}
-                {% endfor %}
                 {% endif %}
                 </ul>
             </div>

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use rocket_contrib::json::JsonValue;
 
 use crate::network::*;
@@ -274,10 +276,8 @@ impl NetworkContext {
 
 #[derive(Debug, Serialize)]
 pub struct NetworkListContext {
-    pub wlan_list: Option<Vec<String>>,
-    pub wlan_scan: Option<Vec<String>>,
     pub wlan_ssid: String,
-    //pub wlan_networks: Option<Vec<String>>,
+    pub wlan_networks: HashMap<String, String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub back: Option<String>,
@@ -287,35 +287,49 @@ impl NetworkListContext {
     pub fn build() -> NetworkListContext {
         let wlan_list = match network_list_networks() {
             Ok(ssids) => {
-                let networks: Vec<String> = serde_json::from_str(ssids.as_str())
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
-                Some(networks)
+                networks
             }
-            Err(_) => None,
+            Err(_) => Vec::new(),
         };
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(networks) => {
-                let scan: Vec<String> = serde_json::from_str(networks.as_str())
+                let scan: Vec<Networks> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
-                Some(scan)
+                scan
             }
-            Err(_) => None,
+            Err(_) => Vec::new(),
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
+        let mut wlan_networks = HashMap::new();
         // combine the list of networks in range & saved (not in range) networks
-        //let mut wlan_networks = [wlan_list, wlan_scan].concat();
+        //let mut networks = [wlan_list, wlan_scan].concat();
         // sort the combined list, placing duplicate elements together
-        //wlan_networks.sort();
+        //networks.sort();
         // remove any duplicate adjacent elements
-        //wlan_networks.dedup();
+        //networks.dedup();
+
+        for ap in wlan_scan {
+            wlan_networks.insert(
+                ap.ssid,
+                "Available".to_string(),
+            );
+        }
+        for network in wlan_list {
+            if wlan_networks.contains_key(&network.ssid) == false {
+                wlan_networks.insert(
+                    network.ssid,
+                    "Not in range".to_string(),
+                );
+            }
+        }
 
         NetworkListContext {
-            //wlan_networks: Some(wlan_networks),
-            wlan_list,
-            wlan_scan,
+            wlan_networks,
             wlan_ssid,
             flash_name: None,
             flash_msg: None,
