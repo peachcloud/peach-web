@@ -314,17 +314,11 @@ impl NetworkListContext {
         //networks.dedup();
 
         for ap in wlan_scan {
-            wlan_networks.insert(
-                ap.ssid,
-                "Available".to_string(),
-            );
+            wlan_networks.insert(ap.ssid, "Available".to_string());
         }
         for network in wlan_list {
             if wlan_networks.contains_key(&network.ssid) == false {
-                wlan_networks.insert(
-                    network.ssid,
-                    "Not in range".to_string(),
-                );
+                wlan_networks.insert(network.ssid, "Not in range".to_string());
             }
         }
 

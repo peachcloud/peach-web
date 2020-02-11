@@ -8,7 +8,6 @@
         <meta name="author" content="glyph">
         <link rel="stylesheet" href="/css/peachcloud.css">
         <style>@import url("/css/_variables.css");</style>
-        <script src="/js/network.js"></script>
     </head>
     <body style="background-color: var(--moon-gray);">
         {% block nav %}{% endblock %}

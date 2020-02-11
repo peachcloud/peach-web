@@ -43,12 +43,12 @@ use rocket_contrib::templates::Template;
 
 //  [GET]       /                               Home
 //  [GET]       /network                        Network overview
+//  [GET]       /network/wifi                   List of networks
+//  [GET]       /network/wifi?<ssid>            Details of single network
 //  [GET]       /network/wifi/add               Add WiFi form
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [POST]      /network/wifi/forget            Remove WiFi
-//  [GET]       /network/wifi                   List of networks
-//  [GET]       /network/wifi?<ssid>            Details of single network
 
 #[get("/")]
 fn index() -> &'static str {
@@ -68,6 +68,37 @@ fn network_card(flash: Option<FlashMessage>) -> Template {
     };
     // template_dir is set in Rocket.toml
     Template::render("network_card", &context)
+}
+
+#[get("/network/wifi")]
+fn network_list(flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkListContext::build();
+    context.back = Some("/network".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_list", &context)
+}
+
+#[get("/network/wifi?<ssid>")]
+fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = NetworkDetailContext::build();
+    context.back = Some("/network/wifi".to_string());
+    context.selected = Some(ssid.to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_detail", &context)
 }
 
 #[get("/network/wifi/add")]
@@ -173,37 +204,6 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
         },
         Err(_) => remove_wifi_failed(ssid),
     }
-}
-
-#[get("/network/wifi")]
-fn network_list(flash: Option<FlashMessage>) -> Template {
-    // assign context through context_builder call
-    let mut context = NetworkListContext::build();
-    context.back = Some("/network".to_string());
-    // check to see if there is a flash message to display
-    if let Some(flash) = flash {
-        // add flash message contents to the context object
-        context.flash_name = Some(flash.name().to_string());
-        context.flash_msg = Some(flash.msg().to_string());
-    };
-    // template_dir is set in Rocket.toml
-    Template::render("network_list", &context)
-}
-
-#[get("/network/wifi?<ssid>")]
-fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
-    // assign context through context_builder call
-    let mut context = NetworkDetailContext::build();
-    context.back = Some("/network/wifi".to_string());
-    context.selected = Some(ssid.to_string());
-    // check to see if there is a flash message to display
-    if let Some(flash) = flash {
-        // add flash message contents to the context object
-        context.flash_name = Some(flash.name().to_string());
-        context.flash_msg = Some(flash.msg().to_string());
-    };
-    // template_dir is set in Rocket.toml
-    Template::render("network_detail", &context)
 }
 
 #[get("/<file..>")]
@@ -372,6 +372,36 @@ fn scan_networks() -> Json<JsonResponse> {
     }
 }
 
+#[post("/api/v1/network/wifi", data = "<wifi>")]
+fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
+    // generate and write wifi config to wpa_supplicant
+    let ssid = wifi.ssid.to_string();
+    let pass = wifi.pass.to_string();
+    let add = network_add_wifi(ssid, pass);
+    match add {
+        Ok(_) => {
+            debug!("Added WiFi credentials.");
+            match network_reconnect_wifi("wlan0".to_string()) {
+                Ok(_) => debug!("Reconnected wlan0 interface."),
+                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
+            }
+            // json response for successful update
+            let status = "success".to_string();
+            let data = json!("WiFi credentials added.");
+
+            Json(build_json_response(status, Some(data), None))
+        }
+        Err(_) => {
+            debug!("Failed to add WiFi credentials.");
+            // json response for failed update
+            let status = "error".to_string();
+            let msg = "Failed to add WiFi credentials.".to_string();
+
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
     let iface = "wlan0".to_string();
@@ -401,36 +431,6 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
             // json response for failed update
             let status = "error".to_string();
             let msg = "Failed to add WiFi credentials.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-    }
-}
-
-#[post("/api/v1/network/wifi", data = "<wifi>")]
-fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
-    // generate and write wifi config to wpa_supplicant
-    let ssid = wifi.ssid.to_string();
-    let pass = wifi.pass.to_string();
-    let add = network_add_wifi(ssid, pass);
-    match add {
-        Ok(_) => {
-            debug!("Added WiFi credentials.");
-            match network_reconnect_wifi("wlan0".to_string()) {
-                Ok(_) => debug!("Reconnected wlan0 interface."),
-                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
-            }
-            // json response for successful update
-            let status = "success".to_string();
-            let data = json!("WiFi credentials added.");
-
-            Json(build_json_response(status, Some(data), None))
-        }
-        Err(_) => {
-            debug!("Failed to add WiFi credentials.");
-            // json response for failed update
-            let status = "error".to_string();
-            let msg = "Failed to add WiFi credentials.".to_string();
-
             Json(build_json_response(status, None, Some(msg)))
         }
     }
