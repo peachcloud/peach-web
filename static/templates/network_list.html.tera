@@ -6,7 +6,7 @@
             <div class="center list-container">
                 <h1 class="bold center-text title-medium">WiFi Networks</h1>
                 <ul class="list">
-                {% if wlan_network %}
+                {% if wlan_networks %}
                 {% for network in wlan_networks %}
                     <li>
                         {% if network.key == wlan_ssid %}

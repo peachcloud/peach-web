@@ -7,16 +7,17 @@
         {# select only the access point we are interested in #}
         {% if network.ssid == selected %}
         <!-- NETWORK CARD -->
-        <!-- NETWORK INFO BOX -->
         <div class="card center">
+            <!-- NETWORK INFO BOX -->
             <div class="two-grid" title="PeachCloud network mode and status">
-                <!-- NETWORK STATUS ICON -->
                 <!-- left column -->
+                <!-- NETWORK STATUS ICON -->
                 <div class="grid-column-1">
                     <img class="center icon" src="/icons/wifi.svg">
                     <label class="center label-small font-gray" title="Access Point Status">{% if wlan_ssid == selected %}CONNECTED{% else %}AVAILABLE{% endif %}</label>
                 </div>
                 <!-- right column -->
+                <!-- NETWORK DETAILED INFO -->
                 <div class="grid-column-2">
                     <label class="label-small font-gray" title="WiFi network SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
@@ -26,24 +27,30 @@
                     <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
                 </div>
             </div>
+            <!-- NETWORK INTERACTION BUTTONS -->
             <div class="card-container" style="padding-top: 0;">
                 {% if wlan_ssid == selected %}
+                <!-- display disconnect button -->
                 <a class="link" href="/network/wifi/disconnect">
                     <button class="button center">Disconnect</button>
                 </a>
                 {% elif wlan_ssid != selected %}
+                <!-- display connect button -->
                 <a class="link" href="/network/wifi/connect?ssid={{ network.ssid }}">
                     <button class="button center">Connect</button>
                 </a>
                 {% endif %}
+                <!-- display modify button -->
                 <a class="link" href="/network/wifi">
                     <button class="button center">Modify</button>
                 </a>
+                <!-- display forget button -->
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
+                <!-- display cancel button -->
                 <a class="link" href="/network/wifi">
                     <button class="button center">Cancel</button>
                 </a>
@@ -64,25 +71,29 @@
         {# check to see if the network is selected #}
         {% if network.ssid == selected %}
         <!-- NETWORK CARD -->
-        <!-- NETWORK INFO BOX -->
         <div class="card center">
+            <!-- NETWORK INFO BOX -->
             <div class="two-grid" title="PeachCloud network mode and status">
-                <!-- NETWORK STATUS ICON -->
                 <!-- left column -->
+                <!-- NETWORK STATUS ICON -->
                 <div class="grid-column-1">
                     <img class="center icon" src="/icons/wifi.svg">
                     <label class="center label-small font-gray" title="Access Point Status">NOT IN RANGE</label>
                 </div>
                 <!-- right column -->
+                <!-- NETWORK DETAILED INFO -->
                 <div class="grid-column-2">
                     <label class="label-small font-gray" title="WiFi network SSID">SSID</label>
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
                 </div>
             </div>
+            <!-- NETWORK INTERACTION BUTTONS -->
             <div class="card-container" style="padding-top: 0;">
+                <!-- display modify button -->
                 <a class="link" href="/network/wifi">
                     <button class="button center">Modify</button>
                 </a>
+                <!-- display forget button -->
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">

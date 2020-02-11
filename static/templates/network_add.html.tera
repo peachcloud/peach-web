@@ -3,23 +3,30 @@
 {% block card %}
         <!-- NETWORK ADD CREDENTIALS FORM -->
         <div class="card center">
-            <div class="card-container">
-                <!-- Standard input with button -->
-                <form id="wifiCreds" action="/network/wifi/add" method="post">
-                    <h1 class="bold center-text title-medium">Add WiFi Network</h1>
-                    <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}">
-                    <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
-                    {% if flash_msg %}
-                    <!-- display error message -->
-                    <p class="label-small font-success"style="padding-left: 5px;">{{ flash_msg }}.</p>
-                    {% endif %}
-                    <input type="submit" id="addWifi" class="center button" value="Connect">
-                </form>
-                <a class="link" href="/network">
-                    <button class="center button">Cancel</button>
-                </a>
-                <!-- NOTE : used to share ux information with the user -->
-                <p class="label-small font-gray" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
-            </div>
+          <div class="card-container">
+            <form id="wifiCreds" action="/network/wifi/add" method="post">
+              <h1 class="bold center-text title-medium">Add WiFi Network</h1>
+              <!-- input for network ssid -->
+              <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}">
+              <!-- input for network password -->
+              <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
+              <!-- check for flash message and display accordingly -->
+              {% if flash_msg and flash_name == "success" %}
+              <!-- display success message -->
+              <p class="label-small font-success" style="padding-left: 5px;">{{ flash_msg }}.</p>
+              {% elif flash_msg and flash_name == "error" %}
+              <!-- display error message -->
+              <p class="label-small font-failure" style="padding-left: 5px;">{{ flash_msg }}.</p>
+              {% endif %}
+              <input type="submit" id="addWifi" class="center button" value="Connect">
+            </form>
+            <a class="link" href="/network">
+              <button class="center button">Cancel</button>
+            </a>
+            <!-- share ux information with the user if JS is disabled -->
+            <noscript>
+              <p class="label-small" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
+            </noscript>
+          </div>
         </div>
 {% endblock %}
