@@ -5,9 +5,9 @@
         <div class="card center">
           <div class="card-container">
             <form id="wifiCreds" action="/network/wifi/add" method="post">
-              <h1 class="bold center-text title-medium">Add WiFi Network</h1>
+              <h1 class="bold center center-text title-medium">Add WiFi Network</h1>
               <!-- input for network ssid -->
-              <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}">
+              <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{% if selected %}{{ selected }}{% endif %}" autofocus>
               <!-- input for network password -->
               <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
               <!-- check for flash message and display accordingly -->
@@ -18,14 +18,12 @@
               <!-- display error message -->
               <p class="label-small font-failure" style="padding-left: 5px;">{{ flash_msg }}.</p>
               {% endif %}
-              <input type="submit" id="addWifi" class="center button" value="Connect">
+              <input id="addWifi" class="button center" title="Connect" type="submit" value="Connect">
+              <a class="button center" href="/network" title="Cancel">Cancel</a>
             </form>
-            <a class="link" href="/network">
-              <button class="center button">Cancel</button>
-            </a>
             <!-- share ux information with the user if JS is disabled -->
             <noscript>
-              <p class="label-small" style="padding-left: 5px;">This website will be unresponsive while the access point is disabled and the WiFi connection attempt is made.</p>
+              <p class="center-text flash-message">This website will be unresponsive while the device enters WiFi mode and attempts to connect to the access point.</p>
             </noscript>
           </div>
         </div>

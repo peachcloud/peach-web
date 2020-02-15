@@ -42,12 +42,14 @@ use rocket_contrib::templates::Template;
 // WEB PAGE ROUTES
 
 //  [GET]       /                               Home
+//  [GET]       /network/ap/activate            Activate WiFi access point mode
 //  [GET]       /network                        Network overview
 //  [GET]       /network/wifi                   List of networks
 //  [GET]       /network/wifi?<ssid>            Details of single network
+//  [GET]       /network/wifi/activate          Activate WiFi client mode
 //  [GET]       /network/wifi/add               Add WiFi form
-//  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/add               WiFi form submission
+//  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/forget            Remove WiFi
 
 #[get("/")]
@@ -104,8 +106,9 @@ fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 #[get("/network/wifi/add")]
 fn network_add(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
+    // set back icon link to network route
+    context.back = Some("/network".to_string());
     // check to see if there is a flash message to display
-    context.back = Some("/network/wifi".to_string());
     if let Some(flash) = flash {
         // add flash message contents to the context object
         context.flash_name = Some(flash.name().to_string());
@@ -203,6 +206,34 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
             Err(_) => remove_wifi_failed(ssid),
         },
         Err(_) => remove_wifi_failed(ssid),
+    }
+}
+
+#[get("/network/ap/activate")]
+fn deploy_ap() -> Flash<Redirect> {
+    // activate the wireless access point
+    debug!("Activating WiFi access point.");
+    match network_activate_ap() {
+        Ok(_) => {
+            Flash::success(Redirect::to("/network"), "Activated WiFi access point.")
+        }
+        Err(_) => {
+            Flash::error(Redirect::to("/network"), "Failed to activate WiFi access point.")
+        }
+    }
+}
+
+#[get("/network/wifi/activate")]
+fn deploy_client() -> Flash<Redirect> {
+    // activate the wireless client
+    debug!("Activating WiFi client mode.");
+    match network_activate_client() {
+        Ok(_) => {
+            Flash::success(Redirect::to("/network"), "Activated WiFi client.")
+        }
+        Err(_) => {
+            Flash::error(Redirect::to("/network"), "Failed to activate WiFi client.")
+        }
     }
 }
 
@@ -466,25 +497,27 @@ fn rocket() -> rocket::Rocket {
         .mount(
             "/",
             routes![
-                index,
-                files,
-                network_add,
-                network_add_ssid,
-                network_card,
-                network_detail,
-                network_list,
-                activate_ap,
-                activate_client,
-                return_ip,
-                return_rssi,
-                return_ssid,
-                return_state,
-                return_status,
-                scan_networks,
-                add_wifi,
-                add_credentials,
-                forget_wifi,
-                remove_wifi,
+                index,              // WEB ROUTE
+                files,              // WEB ROUTE
+                add_credentials,    // WEB ROUTE
+                deploy_ap,          // WEB ROUTE
+                deploy_client,      // WEB ROUTE
+                forget_wifi,        // WEB ROUTE
+                network_add,        // WEB ROUTE
+                network_add_ssid,   // WEB ROUTE
+                network_card,       // WEB ROUTE
+                network_detail,     // WEB ROUTE
+                network_list,       // WEB ROUTE
+                activate_ap,        // JSON API
+                activate_client,    // JSON API
+                return_ip,          // JSON API
+                return_rssi,        // JSON API
+                return_ssid,        // JSON API
+                return_state,       // JSON API
+                return_status,      // JSON API
+                scan_networks,      // JSON API
+                add_wifi,           // JSON API
+                remove_wifi,        // JSON API
             ],
         )
         .register(catchers![not_found])

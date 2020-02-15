@@ -11,8 +11,8 @@
                     <!-- left column -->
                     <!-- network mode icon with label -->
                     <div class="grid-column-1">
-                        <img id="netModeIcon" class="center icon icon-active" src="icons/router.svg">
-                        <label id="netModeLabel" class="center label-small font-gray" title="Access Point Status">ONLINE</label>
+                        <img id="netModeIcon" class="center icon icon-active" src="icons/router.svg" alt="WiFi router icon">
+                        <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="Access Point Online">ONLINE</label>
                     </div>
                     <!-- right column -->
                     <!-- network mode, ssid & ip with labels -->
@@ -25,10 +25,23 @@
                         <p class="card-text" title="IP">{{ ap_ip }}</p>
                     </div>
                 </div>
-                <button class="button center" id="connectWifi">Enable WiFi</button>
+                <!-- BUTTONS -->
+                <a class="button center" id="connectWifi" href="/network/wifi/activate">Enable WiFi</a>
+                <!--
+                    <button class="button center" id="connectWifi">Enable WiFi</button>
+                    </a>-->
                 <a class="link" href="/network/wifi/add">
                     <button class="button center">Add WiFi Network</button>
                 </a>
+                <!-- FLASH MESSAGE -->
+                <!-- check for flash message and display accordingly -->
+                {% if flash_msg and flash_name == "success" %}
+                <!-- display success message -->
+                <p class="label-small font-success" style="padding-left: 5px;">{{ flash_msg }}.</p>
+                {% elif flash_msg and flash_name == "error" %}
+                <!-- display error message -->
+                <p class="center-text label-small font-failure" style="margin-bottom: 0px; padding-bottom: 0px; padding-top: 0px;">{{ flash_msg }}</p>
+                {% endif %}
                 <!-- CARD GRID -->
                 <div class="card-container">
                     <div class="three-grid">
@@ -72,17 +85,17 @@
             <!-- NETWORK CARD -->
             <div class="card">
                 <!-- NETWORK INFO BOX -->
-                <div class="two-grid" style="position: relative;" title="PeachCloud network mode and status">
+                <div id="netInfoBox" class="two-grid" title="PeachCloud network mode and status">
                     <!-- NETWORK STATUS -->
                     <!-- left column -->
                     <!-- network mode icon with label -->
                     <div class="grid-column-1">
                     {% if wlan_state == "up" %}
                         <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg">
-                        <label id="netModeLabel" class="center label-small font-gray" title="WiFi Client Point Status">ONLINE</label>
+                        <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">ONLINE</label>
                     {% else %}
                         <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg">
-                        <label id="netModeLabel" class="center label-small font-gray" title="WiFi Client Point Status">OFFLINE</label>
+                        <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">OFFLINE</label>
                     {% endif %}
                     </div>
                     <!-- right column -->
@@ -96,26 +109,34 @@
                         <p class="card-text" title="IP">{{ wlan_ip }}</p>
                     </div>
                 </div>
-                <a class="link" href="/network/wifi/add">
-                    <button class="button center">Add WiFi Network</button>
-                </a>
-                <button class="button center" id="deployAccessPoint">Deploy Access Point</button>
-                <a class="link" href="/network/wifi">
-                    <button class="button center">List WiFi Networks</button>
-                </a>
-                <!-- CARD GRID -->
-                <div class="card-container">
+                <!-- BUTTONS -->
+                <div id="buttons">
+                    <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
+                    <a id="deployAccessPoint" class="button center" href="/network/ap/activate" title="Deploy Access Point">Deploy Access Point</a>
+                    <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+                </div>
+                <!-- FLASH MESSAGE -->
+                <!-- check for flash message and display accordingly -->
+                {% if flash_msg and flash_name == "success" %}
+                <!-- display success message -->
+                <div id="flashMsg" class="center-text flash-message font-success">{{ flash_msg }}</div>
+                {% elif flash_msg and flash_name == "error" %}
+                <!-- display error message -->
+                <div id="flashMsg" class="center-text flash-message font-failure">{{ flash_msg }}</div>
+                {% endif %}
+                <div id="gridDiv" class="card-container">
+                    <!-- CARD GRID -->
                     <!-- row of icons representing network statistics -->
                     <div class="three-grid">
                         <div class="stack">
-                            <img class="icon icon-medium" title="Low-signal icon" src="icons/low-signal.svg">
+                            <img class="icon icon-medium" alt="Signal icon" title="WiFi Signal (RSSI)"src="icons/low-signal.svg">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
-                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
+                                <label class="label-medium" style="padding-right: 3px;" title="Signal strength of WiFi connection (RSSI)">{% if wlan_rssi %}{{ wlan_rssi }}{% endif %}</label>
                             </div>
                             <label class="label-small font-gray">SIGNAL</label>
                         </div>
                         <div class="stack">
-                            <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                            <img class="icon icon-medium" alt="Down arrow icon" title="WiFi download total" src="icons/down-arrow.svg">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
                                 {% if wlan_traffic %}
                                 <!-- display wlan traffic data -->
@@ -123,14 +144,14 @@
                                 <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
                                 {% else %}
                                 <!-- no wlan traffic data to display -->
-<label class="label-medium" style="padding-right: 3px;" title="Data download total"></label>
+                                <label class="label-medium" style="padding-right: 3px;" title="Data download total"></label>
                                 <label class="label-small font-near-black"></label>
                                 {% endif %}
                             </div>
                             <label class="label-small font-gray">DOWNLOAD</label>
                         </div>
                         <div class="stack">
-                            <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                            <img class="icon icon-medium" alt="Up arrow icon" title="WiFi upload total" src="icons/up-arrow.svg">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
                                 {% if wlan_traffic %}
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
@@ -145,5 +166,6 @@
                     </div>
                 </div>
             </div>
+            <script type="text/javascript" src="js/network_card.js"></script>
             {% endif %}
 {% endblock %}

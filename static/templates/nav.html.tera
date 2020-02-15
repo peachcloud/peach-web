@@ -2,23 +2,31 @@
 
 {% block nav %}
         <!-- Top nav bar -->
-        <div class="nav-bar">
-            <a href="/">
-                <img class="nav-icon nav-icon-left" src="/icons/peach-icon.png">
+        <nav class="nav-bar">
+            <a class="nav-item" href="/">
+                <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud logo consisting of a peach with green leaves on the left and two overlapping clouds to the right" title="Home">
             </a>
-            <a href="{% if back %}{{ back }}{% endif %}">
-                <img class="nav-icon nav-icon-left icon-active" src="/icons/back.svg">
+            <a class="nav-item" href="{% if back %}{{ back }}{% endif %}" title="Back">
+                <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Greater-than symbol or backward-facing arrow">
             </a>
-            <img class="nav-icon nav-icon-right icon-active" src="/icons/exit.svg">
-            <img class="nav-icon nav-icon-right icon-active" src="/icons/power-switch.svg">
-        </div>
+            <a class="nav-item push-right" href="/logout" title="Logout">
+                <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit icon: an arrow pointing out from an open door">
+            </a>
+            <a class="nav-item" href="/shutdown" title="Shutdown">
+                <img class="icon-medium nav-icon-right icon-active" src="/icons/power-switch.svg" alt="Power-switch icon">
+            </a>
+        </nav>
         <!-- Main content container -->
         <main>
             {% block card %}{% endblock %}
         </main>
         <!-- Bottom nav bar -->
-        <div class="nav-bar">
-            <img class="nav-icon nav-icon-left" src="/icons/hermies.png">
-            <img class="nav-icon nav-icon-right icon-active" src="/icons/question-circle.svg">
-        </div>
+        <nav class="nav-bar">
+            <a class="nav-item" href="https://scuttlebutt.nz/">
+                <img class="icon-medium nav-icon-left" title="Scuttlebutt Website" src="/icons/hermies.png" alt="Logo for Secure Scuttlebutt: Hermies the Hermit Crab contained within a hexagon">
+            </a>
+            <a class="nav-item push-right" href="/help">
+                <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question symbol inside of a circle">
+            </a>
+        </nav>
 {% endblock %}
