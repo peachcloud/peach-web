@@ -19,8 +19,10 @@ _Note: This is a work-in-progress._
 | --- | --- | --- | --- |
 | `/` | GET | | Home |
 | `/network` | GET | | Network status overview |
+| `/network/ap/activate` | GET | | Activate WiFi access point mode |
 | `/network/wifi` | GET | | List of networks |
 | `/network/wifi?<ssid>` | GET | `ssid` | Details of a single network |
+| `/network/wifi/activate` | GET | | Activate WiFi client mode |
 | `/network/wifi/add` | GET | `ssid` (optional - prepopulation value of SSID in form) | Add a WiFi network |
 | `/network/wifi/add` | POST | `ssid` & `pass` | Submit form to add a WiFi network |
 | `/network/wifi/forget` | POST | `ssid` | Submit form to forget a saved WiFi network |
@@ -31,6 +33,8 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 
 | Endpoint | Method | Parameters | Description |
 | --- | --- | --- | --- |
+| `network/activate_ap` | POST | | Activate WiFi access point mode |
+| `network/activate_client` | POST | | Activate WiFi client mode |
 | `network/ip` | GET | | Returns IP address values for wlan0 & ap0 interfaces |
 | `network/rssi` | GET | | Returns RSSI for connected WiFi network |
 | `network/ssid` | GET | | Returns SSID for connected WiFi network |
@@ -39,6 +43,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/wifi` | GET | | Returns scan results for in-range access-points |
 | `network/wifi` | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
+| `ping` | GET | | Returns `pong!` |
 
 ### Environment
 

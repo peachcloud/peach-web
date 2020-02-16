@@ -255,6 +255,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [POST]       /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi/forget         Forget / remove network
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
+//  [GET]        /api/v1/ping
 //  [POST]       /api/v1/shutdown                    Shutdown device*
 
 #[post("/api/v1/network/activate_ap")]
@@ -467,6 +468,16 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
     }
 }
 
+// status route: useful for checking connectivity from web client
+#[get("/api/v1/ping")]
+fn ping_pong() -> Json<JsonResponse> {
+    // ping pong
+    let status = "success".to_string();
+    let msg = "pong!".to_string();
+
+    Json(build_json_response(status, None, Some(msg)))
+}
+
 // HELPER FUNCTIONS
 
 fn build_json_response(
@@ -518,6 +529,7 @@ fn rocket() -> rocket::Rocket {
                 scan_networks,      // JSON API
                 add_wifi,           // JSON API
                 remove_wifi,        // JSON API
+                ping_pong,          // JSON API
             ],
         )
         .register(catchers![not_found])
