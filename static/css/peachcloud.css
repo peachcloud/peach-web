@@ -465,7 +465,7 @@ html {
     margin-bottom: 1rem;
     padding-left: 5px;
     line-height: 1.5rem;
-    width: 85%;
+    width: 70%;
 }
 
 /*
@@ -551,8 +551,17 @@ html {
 main {
     display: flex;
     flex-grow: 1;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
+}
+
+@media only screen and (min-width: 350px) {
+    main {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+    }
 }
 
 /*

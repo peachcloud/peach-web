@@ -495,11 +495,14 @@ fn remove_wifi_failed(ssid: &str) -> Flash<Redirect> {
 }
 
 #[catch(404)]
-fn not_found() -> JsonValue {
-    json!({
-        "status": "error",
-        "msg": "Resource was not found"
-    })
+fn not_found() -> Template {
+    debug!("404 Page Not Found");
+    // HACK: this is just here to satisfy the context requirement
+    let context = FlashContext {
+        flash_name: Some("error".to_string()),
+        flash_msg: Some("No resource found for given URL".to_string()),
+    };
+    Template::render("not_found", context)
 }
 
 // create rocket instance & mount routes (makes testing easier)
