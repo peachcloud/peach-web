@@ -1,7 +1,6 @@
 {% extends "nav" %}
 
 {% block card %}
-        <!-- Titled list -->
         <div class="card">
             <div class="center list-container">
                 <h1 class="bold center-text title-medium">WiFi Networks</h1>
@@ -11,13 +10,13 @@
                     <li>
                         {% if network.key == wlan_ssid %}
                         <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
-                            <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg">
+                            <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi icon (black)">
                             <p class="list-text">{{ network.ssid }}</p>
                             <label class="label-small list-label font-gray" title="Status">Connected</label>
                         </a>
                         {% else %}
                         <a class="list-item link" href="/network/wifi?ssid={{ network.key }}">
-                            <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg">
+                            <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi icon (gray)">
                             <p class="list-text">{{ network.key }}</p>
                             <label class="label-small list-label font-gray" title="Status">{{ network.value }}</label>
                         </a>

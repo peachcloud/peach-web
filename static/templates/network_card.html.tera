@@ -27,9 +27,6 @@
                 </div>
                 <!-- BUTTONS -->
                 <a class="button center" id="connectWifi" href="/network/wifi/activate">Enable WiFi</a>
-                <!--
-                    <button class="button center" id="connectWifi">Enable WiFi</button>
-                    </a>-->
                 <a class="link" href="/network/wifi/add">
                     <button class="button center">Add WiFi Network</button>
                 </a>
@@ -46,14 +43,14 @@
                 <div class="card-container">
                     <div class="three-grid">
                         <div class="stack">
-                            <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg">
+                            <img class="icon icon-medium" title="Connected devices" src="icons/devices.svg" alt="Digital devices icon">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
                                 <label class="label-medium" style="padding-right: 3px;" title="Number of connected devices"></label>
                             </div>
                             <label class="label-small font-gray">DEVICES</label>
                         </div>
                         <div class="stack">
-                            <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg">
+                            <img class="icon icon-medium" title="Download" src="icons/down-arrow.svg" alt="Down arrow icon">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
                                 {% if ap_traffic %}
                                 <label class="label-medium" style="padding-right: 3px;" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
@@ -66,7 +63,7 @@
                             <label class="label-small font-gray">DOWNLOAD</label>
                         </div>
                         <div class="stack">
-                            <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg">
+                            <img class="icon icon-medium" title="Upload" src="icons/up-arrow.svg" alt="Up arrow icon">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
                                 {% if ap_traffic %}
                                 <label class="label-medium" style="padding-right: 3px;" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
@@ -91,10 +88,10 @@
                     <!-- network mode icon with label -->
                     <div class="grid-column-1">
                     {% if wlan_state == "up" %}
-                        <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg">
+                        <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg" alt="WiFi icon (black)">
                         <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">ONLINE</label>
                     {% else %}
-                        <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg">
+                        <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg" alt="WiFi icon (gray)">
                         <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">OFFLINE</label>
                     {% endif %}
                     </div>

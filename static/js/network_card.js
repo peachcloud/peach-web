@@ -62,8 +62,30 @@ PEACH_NETWORK.apOnline = function() {
     // TODO: think about updates for buttons (transition from client mode)
 }
 
-// TODO: PEACH_NETWORK.clientOnline()
-// TODO: PEACH_NETWORK.clientOffline()
+// update ui for wifi client mode (status: online)
+PEACH_NETWORK.clientOnline = function() {
+    console.log('Activating Client Mode');
+    // update network mode and status (icon & label)
+    let i = document.getElementById("netModeIcon");
+    i.className = "center icon icon-active";
+    i.src = "icons/wifi.svg";
+    let l = document.getElementById("netModeLabel");
+    l.textContent = "ONLINE";
+    // TODO: think about updates for buttons (transition from ap mode)
+}
+
+// update ui for wifi client mode (status: offline)
+PEACH_NETWORK.clientOffline = function() {
+    console.log('Activating Client Mode');
+    // update network mode and status (icon & label)
+    let i = document.getElementById("netModeIcon");
+    i.className = "center icon icon-inactive";
+    i.src = "icons/wifi.svg";
+    let l = document.getElementById("netModeLabel");
+    l.textContent = "OFFLINE";
+    // TODO: think about updates for buttons (transition from ap mode)
+}
+
 
 // display a message by appending a paragraph element
 PEACH_NETWORK.flashMsg = function(status, msg) {

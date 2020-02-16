@@ -13,7 +13,7 @@
                 <!-- left column -->
                 <!-- NETWORK STATUS ICON -->
                 <div class="grid-column-1">
-                    <img class="center icon" src="/icons/wifi.svg">
+                    <img class="center icon" src="/icons/wifi.svg" alt="WiFi icon">
                     <label class="center label-small font-gray" title="Access Point Status">{% if wlan_ssid == selected %}CONNECTED{% else %}AVAILABLE{% endif %}</label>
                 </div>
                 <!-- right column -->
@@ -27,33 +27,22 @@
                     <p class="card-text" title="Signal strength of WiFi access point">{{ network.signal_level }}</p>
                 </div>
             </div>
-            <!-- NETWORK INTERACTION BUTTONS -->
+            <!-- BUTTONS -->
             <div class="card-container" style="padding-top: 0;">
                 {% if wlan_ssid == selected %}
-                <!-- display disconnect button -->
-                <a class="link" href="/network/wifi/disconnect">
-                    <button class="button center">Disconnect</button>
-                </a>
+                <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
                 {% elif wlan_ssid != selected %}
-                <!-- display connect button -->
-                <a class="link" href="/network/wifi/connect?ssid={{ network.ssid }}">
-                    <button class="button center">Connect</button>
-                </a>
+                <a class="button center" href="/network/wifi/connect?ssid={{ network.ssid }}">Connect</a>
                 {% endif %}
-                <!-- display modify button -->
-                <a class="link" href="/network/wifi">
-                    <button class="button center">Modify</button>
-                </a>
-                <!-- display forget button -->
+                <a class="button center" href="/network/wifi">Modify</a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
-                <!-- display cancel button -->
-                <a class="link" href="/network/wifi">
-                    <button class="button center">Cancel</button>
-                </a>
+                <a class="button center" href="/network/wifi">Cancel</a>
+                <!-- FLASH MESSAGE -->
+                <!-- check for flash message and display accordingly -->
                 {% if flash_msg and flash_name == "success" %}
                 <!-- display success message -->
                 <p class="label-small font-success" style="padding-left: 5px;">{{ flash_msg }}</p>
@@ -77,7 +66,7 @@
                 <!-- left column -->
                 <!-- NETWORK STATUS ICON -->
                 <div class="grid-column-1">
-                    <img class="center icon" src="/icons/wifi.svg">
+                    <img class="center icon" src="/icons/wifi.svg" alt="WiFi icon">
                     <label class="center label-small font-gray" title="Access Point Status">NOT IN RANGE</label>
                 </div>
                 <!-- right column -->
@@ -87,21 +76,17 @@
                     <p class="card-text" title="SSID">{{ network.ssid }}</p>
                 </div>
             </div>
-            <!-- NETWORK INTERACTION BUTTONS -->
+            <!-- BUTTONS -->
             <div class="card-container" style="padding-top: 0;">
-                <!-- display modify button -->
-                <a class="link" href="/network/wifi">
-                    <button class="button center">Modify</button>
-                </a>
-                <!-- display forget button -->
+                <a class="button center" href="/network/wifi">Modify</a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
                     <input type="submit" id="forgetWifi" class="button center" value="Forget">
                 </form>
-                <a class="link" href="/network/wifi">
-                    <button class="button center">Cancel</button>
-                </a>
+                <a class="button center" href="/network/wifi">Cancel</a>
+                <!-- FLASH MESSAGE -->
+                <!-- check for flash message and display accordingly -->
                 {% if flash_msg and flash_name == "success" %}
                 <!-- display success message -->
                 <p class="label-small font-success" style="padding-left: 5px;">{{ flash_msg }}</p>

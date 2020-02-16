@@ -4,10 +4,10 @@
         <!-- Top nav bar -->
         <nav class="nav-bar">
             <a class="nav-item" href="/">
-                <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud logo consisting of a peach with green leaves on the left and two overlapping clouds to the right" title="Home">
+                <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud logo: a peach with green leaves on the left and two overlapping clouds to the right" title="Home">
             </a>
             <a class="nav-item" href="{% if back %}{{ back }}{% endif %}" title="Back">
-                <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Greater-than symbol or backward-facing arrow">
+                <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Back icon: greater-than symbol or backward-facing arrow">
             </a>
             <a class="nav-item push-right" href="/logout" title="Logout">
                 <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit icon: an arrow pointing out from an open door">
