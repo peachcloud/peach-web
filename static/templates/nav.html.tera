@@ -4,16 +4,16 @@
         <!-- Top nav bar -->
         <nav class="nav-bar">
             <a class="nav-item" href="/">
-                <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud logo: a peach with green leaves on the left and two overlapping clouds to the right" title="Home">
+                <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud" title="Home">
             </a>
             <a class="nav-item" href="{% if back %}{{ back }}{% endif %}" title="Back">
-                <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Back icon: greater-than symbol or backward-facing arrow">
+                <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Back">
             </a>
             <a class="nav-item push-right" href="/logout" title="Logout">
-                <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit icon: an arrow pointing out from an open door">
+                <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit">
             </a>
             <a class="nav-item" href="/shutdown" title="Shutdown">
-                <img class="icon-medium nav-icon-right icon-active" src="/icons/power-switch.svg" alt="Power-switch icon">
+                <img class="icon-medium nav-icon-right icon-active" src="/icons/power-switch.svg" alt="Power-off">
             </a>
         </nav>
         <!-- Main content container -->
@@ -23,10 +23,10 @@
         <!-- Bottom nav bar -->
         <nav class="nav-bar">
             <a class="nav-item" href="https://scuttlebutt.nz/">
-                <img class="icon-medium nav-icon-left" title="Scuttlebutt Website" src="/icons/hermies.png" alt="Logo for Secure Scuttlebutt: Hermies the Hermit Crab contained within a hexagon">
+                <img class="icon-medium nav-icon-left" title="Scuttlebutt Website" src="/icons/hermies.png" alt="Secure Scuttlebutt">
             </a>
             <a class="nav-item push-right" href="/help">
-                <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question symbol inside of a circle">
+                <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question mark">
             </a>
         </nav>
 {% endblock %}
