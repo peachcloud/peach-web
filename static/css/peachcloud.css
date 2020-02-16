@@ -403,7 +403,7 @@ html {
 }
 
 .font-gray {
-    color: var(--gray);
+    color: var(--mid-gray);
 }
 
 .font-light-gray {

@@ -10,15 +10,15 @@
                     <li>
                         {% if network.key == wlan_ssid %}
                         <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
-                            <img class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi icon (black)">
+                            <img id="netStatus" class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi online">
                             <p class="list-text">{{ network.ssid }}</p>
-                            <label class="label-small list-label font-gray" title="Status">Connected</label>
+                            <label class="label-small list-label font-gray" for="netStatus" title="Status">Connected</label>
                         </a>
                         {% else %}
                         <a class="list-item link" href="/network/wifi?ssid={{ network.key }}">
-                            <img class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi icon (gray)">
+                            <img id="netStatus" class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi offline">
                             <p class="list-text">{{ network.key }}</p>
-                            <label class="label-small list-label font-gray" title="Status">{{ network.value }}</label>
+                            <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ network.value }}</label>
                         </a>
                         {% endif %}
                     </li>
