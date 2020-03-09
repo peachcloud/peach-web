@@ -285,6 +285,7 @@ pub struct NetworkListContext {
 
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
+        // list of networks saved in the wpa_supplicant.conf
         let wlan_list = match network_list_networks() {
             Ok(ssids) => {
                 let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
@@ -293,6 +294,7 @@ impl NetworkListContext {
             }
             Err(_) => Vec::new(),
         };
+        // list of networks currently in range (online & accessible)
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(networks) => {
                 let scan: Vec<Networks> = serde_json::from_str(networks.as_str())
@@ -305,19 +307,14 @@ impl NetworkListContext {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
+        // create a hashmap to combine wlan_list & wlan_scan without repetition
         let mut wlan_networks = HashMap::new();
-        // combine the list of networks in range & saved (not in range) networks
-        //let mut networks = [wlan_list, wlan_scan].concat();
-        // sort the combined list, placing duplicate elements together
-        //networks.sort();
-        // remove any duplicate adjacent elements
-        //networks.dedup();
-
         for ap in wlan_scan {
             wlan_networks.insert(ap.ssid, "Available".to_string());
         }
         for network in wlan_list {
-            if wlan_networks.contains_key(&network.ssid) == false {
+            // avoid repetition by checking that ssid is not already in list
+            if !wlan_networks.contains_key(&network.ssid) {
                 wlan_networks.insert(network.ssid, "Not in range".to_string());
             }
         }

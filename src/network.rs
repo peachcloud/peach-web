@@ -244,6 +244,35 @@ pub fn network_get_traffic(iface: String) -> std::result::Result<Traffic, Networ
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `new_password` method, which replaces the old network access point password
+/// with a new one. The access point is identified by ID on a given interface.
+///
+/// # Arguments
+///
+/// * `id` - A String containing a network identifier.
+/// * `iface` - A String containing the network interface identifier.
+/// * `pass` - A String containing the new password.
+///
+pub fn network_new_password(
+    id: String,
+    iface: String,
+    pass: String,
+) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+    let response = client.new_password(id, iface, pass).call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `reconfigure_wifi` method.
 ///
 pub fn network_reconfigure_wifi() -> std::result::Result<String, NetworkError> {
@@ -411,6 +440,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// Creates a JSON-RPC request to list all networks saved in `wpa_supplicant.conf`.
     pub fn list_networks(&mut self) -> RpcRequest<String>;
+
+    /// Creates a JSON-RPC request to set a new network password for the given interface and ID.
+    pub fn new_password(&mut self, id: String, iface: String, pass: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to reread the wpa_supplicant config for the given interface.
     pub fn reconfigure_wifi(&mut self) -> RpcRequest<String>;

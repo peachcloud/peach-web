@@ -38,9 +38,9 @@
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
-                    <input type="submit" id="forgetWifi" class="button center" value="Forget">
+                    <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
                 </form>
-                <a class="button center" href="/network/wifi">Cancel</a>
+                <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
                 {% if flash_msg and flash_name == "success" %}
@@ -82,9 +82,9 @@
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
                     <input id="ssid" name="ssid" type="text" value="{{ network.ssid }}" style="display: none;">
-                    <input type="submit" id="forgetWifi" class="button center" value="Forget">
+                    <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
                 </form>
-                <a class="button center" href="/network/wifi">Cancel</a>
+                <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
                 {% if flash_msg and flash_name == "success" %}

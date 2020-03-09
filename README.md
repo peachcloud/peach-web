@@ -10,7 +10,6 @@ Initial development is focused on administration of the device itself, beginning
 
 The peach-web stack currently consists of [Rocket](https://rocket.rs/) (Rust web framework), [Tera](http://tera.netlify.com/) (Rust template engine), HTML, CSS and JavaScript.
 
-
 _Note: This is a work-in-progress._
 
 ### WEB APP ROUTES

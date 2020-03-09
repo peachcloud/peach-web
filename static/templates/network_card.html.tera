@@ -26,10 +26,11 @@
                     </div>
                 </div>
                 <!-- BUTTONS -->
-                <a class="button center" id="connectWifi" href="/network/wifi/activate">Enable WiFi</a>
-                <a class="link" href="/network/wifi/add">
-                    <button class="button center">Add WiFi Network</button>
-                </a>
+                <div id="buttons">
+                    <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
+                    <a class="button center" id="connectWifi" href="/network/wifi/activate">Enable WiFi</a>
+                    <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+                </div>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
                 {% if flash_msg and flash_name == "success" %}

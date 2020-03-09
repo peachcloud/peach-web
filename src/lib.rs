@@ -51,6 +51,7 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/forget            Remove WiFi
+//  [POST]      /network/wifi/modify            Modify network password
 
 #[get("/")]
 fn index() -> &'static str {
@@ -157,7 +158,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
                             Ok(_) => debug!("Selected chosen network."),
                             Err(_) => warn!("Failed to select chosen network."),
                         },
-                        Err(_) => warn!("Failed to retrieve the network id."),
+                        Err(_) => warn!("Failed to retrieve the network ID."),
                     }
                 }
                 Err(_) => {
@@ -209,17 +210,57 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     }
 }
 
+#[post("/network/wifi/modify", data = "<wifi>")]
+fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
+    let iface = "wlan0".to_string();
+    let ssid = &wifi.ssid;
+    let pass = wifi.pass.to_string();
+    let iface_copy = iface.to_string();
+    let ssid_copy = ssid.to_string();
+    match network_get_id(iface_copy, ssid_copy) {
+        Ok(id) => match network_new_password(id, iface, pass) {
+            Ok(_) => {
+                debug!("WiFi password updated for chosen network.");
+                match network_save_config() {
+                    Ok(_) => {
+                        debug!("WiFi configuration saved.");
+                        let url = format!("/network/wifi?={}", ssid);
+                        Flash::success(Redirect::to(url), "Updated WiFi password.")
+                    }
+                    Err(_) => {
+                        warn!("Failed to save WiFi configuration updates.");
+                        let url = format!("/network/wifi?ssid={}", ssid);
+                        Flash::error(
+                            Redirect::to(url),
+                            "Failed to save WiFi configuration updates.",
+                        )
+                    }
+                }
+            }
+            Err(_) => {
+                warn!("Failed to update WiFi password.");
+                let url = format!("/network/wifi?ssid={}", ssid);
+                Flash::error(Redirect::to(url), "Failed to update WiFi password.")
+            }
+        },
+        Err(_) => {
+            warn!("Failed to retrieve the network ID for given SSID.");
+            let url = format!("/network/wifi?ssid={}", ssid);
+            Flash::error(Redirect::to(url), "Failed to retrieve the network ID.")
+        }
+    }
+}
+
 #[get("/network/ap/activate")]
 fn deploy_ap() -> Flash<Redirect> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
     match network_activate_ap() {
-        Ok(_) => {
-            Flash::success(Redirect::to("/network"), "Activated WiFi access point.")
-        }
-        Err(_) => {
-            Flash::error(Redirect::to("/network"), "Failed to activate WiFi access point.")
-        }
+        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi access point."),
+        Err(_) => Flash::error(
+            Redirect::to("/network"),
+            "Failed to activate WiFi access point.",
+        ),
     }
 }
 
@@ -228,12 +269,8 @@ fn deploy_client() -> Flash<Redirect> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
     match network_activate_client() {
-        Ok(_) => {
-            Flash::success(Redirect::to("/network"), "Activated WiFi client.")
-        }
-        Err(_) => {
-            Flash::error(Redirect::to("/network"), "Failed to activate WiFi client.")
-        }
+        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi client."),
+        Err(_) => Flash::error(Redirect::to("/network"), "Failed to activate WiFi client."),
     }
 }
 
@@ -453,7 +490,7 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
                     warn!("Failed to remove chosen network.");
                     // json response for failed update
                     let status = "error".to_string();
-                    let msg = "WiFi credentials removed.".to_string();
+                    let msg = "Failed to remove WiFi credentials.".to_string();
                     Json(build_json_response(status, None, Some(msg)))
                 }
             }
@@ -463,6 +500,49 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
             // json response for failed update
             let status = "error".to_string();
             let msg = "Failed to add WiFi credentials.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[post("/api/v1/network/wifi/modify", data = "<wifi>")]
+fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
+    let iface = "wlan0".to_string();
+    let ssid = &wifi.ssid;
+    let pass = wifi.pass.to_string();
+    let iface_copy = iface.to_string();
+    let ssid_copy = ssid.to_string();
+    match network_get_id(iface_copy, ssid_copy) {
+        Ok(id) => match network_new_password(id, iface, pass) {
+            Ok(_) => {
+                debug!("WiFi password updated for chosen network.");
+                match network_save_config() {
+                    Ok(_) => {
+                        debug!("WiFi configuration saved.");
+                        // json response for successful update
+                        let status = "success".to_string();
+                        let msg = "WiFi password updated.".to_string();
+                        Json(build_json_response(status, None, Some(msg)))
+                    }
+                    Err(_) => {
+                        warn!("Failed to save WiFi configuration updates.");
+                        let status = "error".to_string();
+                        let msg = "Failed to save WiFi configuration updates.".to_string();
+                        Json(build_json_response(status, None, Some(msg)))
+                    }
+                }
+            }
+            Err(_) => {
+                warn!("Failed to update WiFi password.");
+                let status = "error".to_string();
+                let msg = "Failed to update WiFi password.".to_string();
+                Json(build_json_response(status, None, Some(msg)))
+            }
+        },
+        Err(_) => {
+            warn!("Failed to retrieve the network ID for given SSID.");
+            let status = "error".to_string();
+            let msg = "Failed to retrieve network ID.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }
@@ -511,28 +591,30 @@ fn rocket() -> rocket::Rocket {
         .mount(
             "/",
             routes![
-                index,              // WEB ROUTE
-                files,              // WEB ROUTE
-                add_credentials,    // WEB ROUTE
-                deploy_ap,          // WEB ROUTE
-                deploy_client,      // WEB ROUTE
-                forget_wifi,        // WEB ROUTE
-                network_add,        // WEB ROUTE
-                network_add_ssid,   // WEB ROUTE
-                network_card,       // WEB ROUTE
-                network_detail,     // WEB ROUTE
-                network_list,       // WEB ROUTE
-                activate_ap,        // JSON API
-                activate_client,    // JSON API
-                return_ip,          // JSON API
-                return_rssi,        // JSON API
-                return_ssid,        // JSON API
-                return_state,       // JSON API
-                return_status,      // JSON API
-                scan_networks,      // JSON API
-                add_wifi,           // JSON API
-                remove_wifi,        // JSON API
-                ping_pong,          // JSON API
+                index,            // WEB ROUTE
+                files,            // WEB ROUTE
+                add_credentials,  // WEB ROUTE
+                deploy_ap,        // WEB ROUTE
+                deploy_client,    // WEB ROUTE
+                forget_wifi,      // WEB ROUTE
+                modify_password,  // WEB ROUTE
+                network_add,      // WEB ROUTE
+                network_add_ssid, // WEB ROUTE
+                network_card,     // WEB ROUTE
+                network_detail,   // WEB ROUTE
+                network_list,     // WEB ROUTE
+                activate_ap,      // JSON API
+                activate_client,  // JSON API
+                new_password,     // JSON API
+                return_ip,        // JSON API
+                return_rssi,      // JSON API
+                return_ssid,      // JSON API
+                return_state,     // JSON API
+                return_status,    // JSON API
+                scan_networks,    // JSON API
+                add_wifi,         // JSON API
+                remove_wifi,      // JSON API
+                ping_pong,        // JSON API
             ],
         )
         .register(catchers![not_found])
