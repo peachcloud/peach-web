@@ -1052,6 +1052,7 @@ dependencies = [
  "jsonrpc-client-core",
  "jsonrpc-client-http",
  "log 0.4.8",
+ "percent-encoding 2.1.0",
  "rocket",
  "rocket_contrib",
  "serde",

@@ -33,6 +33,8 @@ use crate::structs::{
 };
 use crate::ws::*;
 
+use percent_encoding::percent_decode;
+
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, NamedFile, Redirect};
@@ -93,7 +95,9 @@ fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkDetailContext::build();
     context.back = Some("/network/wifi".to_string());
-    context.selected = Some(ssid.to_string());
+    // decode ssid from url
+    let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
+    context.selected = Some(decoded_ssid.to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -121,9 +125,11 @@ fn network_add(flash: Option<FlashMessage>) -> Template {
 
 #[get("/network/wifi/add?<ssid>")]
 fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+    // decode ssid from url
+    let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
     let mut context = NetworkAddContext {
         back: Some("/network/wifi".to_string()),
-        selected: Some(ssid.to_string()),
+        selected: Some(decoded_ssid.to_string()),
         flash_name: None,
         flash_msg: None,
     };

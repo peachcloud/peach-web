@@ -6,19 +6,19 @@
                 <h1 class="bold center-text title-medium">WiFi Networks</h1>
                 <ul class="list">
                 {% if wlan_networks %}
-                {% for network in wlan_networks %}
+                {% for ssid, state in wlan_networks %}
                     <li>
-                        {% if network.key == wlan_ssid %}
+                        {% if ssid == wlan_ssid %}
                         <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
                             <img id="netStatus" class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi online">
-                            <p class="list-text">{{ network.ssid }}</p>
+                            <p class="list-text">{{ wlan_ssid }}</p>
                             <label class="label-small list-label font-gray" for="netStatus" title="Status">Connected</label>
                         </a>
                         {% else %}
-                        <a class="list-item link" href="/network/wifi?ssid={{ network.key }}">
+                        <a class="list-item link" href="/network/wifi?ssid={{ ssid }}">
                             <img id="netStatus" class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi offline">
-                            <p class="list-text">{{ network.key }}</p>
-                            <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ network.value }}</label>
+                            <p class="list-text">{{ ssid }}</p>
+                            <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ state }}</label>
                         </a>
                         {% endif %}
                     </li>
