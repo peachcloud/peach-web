@@ -35,7 +35,7 @@
                 <a class="button center" href="/network/wifi/connect?ssid={{ network.ssid }}">Connect</a>
                 {% endif %}
                 {# Only show 'Modfiy and 'Forget' buttons if we have #}
-                {# previously associated with this access point,
+                {# previously associated with this access point, #}
                 {# ie. we have the credentials saved in wpa_supplicant. #}
                 {% if selected in wlan_list %}
                 <a class="button center" href="/network/wifi">Modify</a>
