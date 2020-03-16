@@ -32,7 +32,7 @@
                 {% if wlan_ssid == selected %}
                 <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
                 {% elif wlan_ssid != selected %}
-                <a class="button center" href="/network/wifi/connect?ssid={{ network.ssid }}">Connect</a>
+                <a class="button center" href="/network/wifi/add?ssid={{ network.ssid }}">Connect</a>
                 {% endif %}
                 {% if wlan_list %}
                 {# Loop through the list of AP's with saved credentials #}
