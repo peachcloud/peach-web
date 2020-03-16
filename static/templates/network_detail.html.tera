@@ -34,10 +34,10 @@
                 {% elif wlan_ssid != selected %}
                 <a class="button center" href="/network/wifi/connect?ssid={{ network.ssid }}">Connect</a>
                 {% endif %}
-                {# Only show 'Modfiy and 'Forget' buttons if we have #}
-                {# previously associated with this access point, #}
-                {# ie. we have the credentials saved in wpa_supplicant. #}
-                {% if selected in wlan_list %}
+                {# Only show 'Modfiy and 'Forget' buttons if credentials #}
+                {# appear in wpa_supplicant (previously associated).     #}
+                {% for saved in wlan_list %}
+                {% if selected == saved %}
                 <a class="button center" href="/network/wifi">Modify</a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
@@ -45,6 +45,7 @@
                     <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
                 </form>
                 {% endif %}
+                {% endfor %}
                 <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
