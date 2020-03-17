@@ -23,7 +23,7 @@ pub struct NetworkAddContext {
 pub struct NetworkDetailContext {
     pub wlan_ip: String,
     //pub wlan_list: Vec<Networks>,
-    pub wlan_networks: HashMap<String, Scan>,
+    pub wlan_networks: HashMap<String, AccessPoint>,
     pub wlan_rssi: Option<String>,
     //pub wlan_scan: Vec<Scan>,
     pub wlan_ssid: String,
@@ -112,15 +112,20 @@ impl NetworkDetailContext {
         };
         // create a hashmap to combine wlan_list & wlan_scan without repetition
         let mut wlan_networks = HashMap::new();
-        for mut ap in wlan_scan {
+        for ap in wlan_scan {
             let ssid = ap.ssid.clone();
-            ap.state = "Available".to_string();
-            wlan_networks.insert(ssid, ap);
+            //ap.state = "Available".to_string();
+            let ap_detail = AccessPoint {
+                detail: Some(ap),
+                state: "Available".to_string(),
+            };
+            wlan_networks.insert(ssid, ap_detail);
         }
         for network in wlan_list {
             // avoid repetition by checking that ssid is not already in list
             if !wlan_networks.contains_key(&network.ssid) {
                 let ssid = network.ssid.clone();
+                /*
                 let net = Scan {
                     protocol: None,
                     frequency: None,
@@ -128,7 +133,12 @@ impl NetworkDetailContext {
                     ssid: network.ssid,
                     state: "Not in range".to_string(),
                 };
-                wlan_networks.insert(ssid, net);
+                */
+                let net_detail = AccessPoint {
+                    detail: None,
+                    state: "Not in range".to_string(),
+                };
+                wlan_networks.insert(ssid, net_detail);
             }
         }
         
@@ -413,7 +423,6 @@ pub struct Ssid {
     pub ssid: String,
 }
 
-/*
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Scan {
     pub protocol: String,
@@ -421,14 +430,21 @@ pub struct Scan {
     pub signal_level: String,
     pub ssid: String,
 }
-*/
 
+/*
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Scan {
     pub protocol: Option<String>,
     pub frequency: Option<String>,
     pub signal_level: Option<String>,
     pub ssid: String,
+    pub state: String,
+}
+*/
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AccessPoint {
+    pub detail: Option<Scan>,
     pub state: String,
 }
 
