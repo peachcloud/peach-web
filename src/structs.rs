@@ -22,9 +22,10 @@ pub struct NetworkAddContext {
 #[derive(Debug, Serialize)]
 pub struct NetworkDetailContext {
     pub wlan_ip: String,
-    pub wlan_list: Option<Vec<Networks>>,
+    //pub wlan_list: Vec<Networks>,
+    pub wlan_networks: HashMap<String, Scan>,
     pub wlan_rssi: Option<String>,
-    pub wlan_scan: Option<Vec<Scan>>,
+    //pub wlan_scan: Vec<Scan>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub wlan_status: String,
@@ -43,25 +44,27 @@ impl NetworkDetailContext {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
+        // list of networks saved in wpa_supplicant.conf
         let wlan_list = match network_list_networks() {
             Ok(ssids) => {
                 let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
-                Some(networks)
+                networks
             }
-            Err(_) => None,
+            Err(_) => Vec::new(),
         };
         let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
+        // list of networks currently in range (online & accessible)
         let wlan_scan = match network_scan_networks("wlan0".to_string()) {
             Ok(networks) => {
                 let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
-                Some(scan)
+                scan
             }
-            Err(_) => None,
+            Err(_) => Vec::new(),
         };
         let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
@@ -107,12 +110,34 @@ impl NetworkDetailContext {
             }
             Err(_) => None,
         };
-
+        // create a hashmap to combine wlan_list & wlan_scan without repetition
+        let mut wlan_networks = HashMap::new();
+        for mut ap in wlan_scan {
+            let ssid = ap.ssid.clone();
+            ap.state = "Available".to_string();
+            wlan_networks.insert(ssid, ap);
+        }
+        for network in wlan_list {
+            // avoid repetition by checking that ssid is not already in list
+            if !wlan_networks.contains_key(&network.ssid) {
+                let ssid = network.ssid.clone();
+                let net = Scan {
+                    protocol: None,
+                    frequency: None,
+                    signal_level: None,
+                    ssid: network.ssid,
+                    state: "Not in range".to_string(),
+                };
+                wlan_networks.insert(ssid, net);
+            }
+        }
+        
         NetworkDetailContext {
             wlan_ip,
-            wlan_list,
+            //wlan_list,
+            wlan_networks,
             wlan_rssi,
-            wlan_scan,
+            //wlan_scan,
             wlan_ssid,
             wlan_state,
             wlan_status,
@@ -388,12 +413,23 @@ pub struct Ssid {
     pub ssid: String,
 }
 
+/*
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Scan {
     pub protocol: String,
     pub frequency: String,
     pub signal_level: String,
     pub ssid: String,
+}
+*/
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Scan {
+    pub protocol: Option<String>,
+    pub frequency: Option<String>,
+    pub signal_level: Option<String>,
+    pub ssid: String,
+    pub state: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
