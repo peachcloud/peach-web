@@ -38,11 +38,11 @@
                 {% for ap in saved_aps %}
                 {# If the selected access point appears in the list, #}
                 {# display the Modify and Forget buttons.            #}
-                {% if ap == selected %}
+                {% if ap.ssid == selected %}
                 <a class="button center" href="/network/wifi">Modify</a>
                 <form id="wifiForget" action="/network/wifi/forget" method="post">
                     <!-- hidden element: allows ssid to be sent in request -->
-                    <input id="ssid" name="ssid" type="text" value="{{ ap }}" style="display: none;">
+                    <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
                         <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
                 </form>
                 {% endif %}
