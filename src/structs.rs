@@ -23,6 +23,7 @@ pub struct NetworkAddContext {
 pub struct NetworkDetailContext {
     pub wlan_ip: String,
     //pub wlan_list: Vec<Networks>,
+    pub saved_aps: Vec<Networks>,
     pub wlan_networks: HashMap<String, AccessPoint>,
     pub wlan_rssi: Option<String>,
     //pub wlan_scan: Vec<Scan>,
@@ -46,6 +47,17 @@ impl NetworkDetailContext {
         };
         // list of networks saved in wpa_supplicant.conf
         let wlan_list = match network_list_networks() {
+            Ok(ssids) => {
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
+                    .expect("Failed to deserialize scan_list response");
+                networks
+            }
+            Err(_) => Vec::new(),
+        };
+        // list of networks saved in wpa_supplicant.conf
+        // HACK: we're running the same function twice (wlan_list)
+        // see if we can implement clone for Vec<Networks> instead
+        let saved_aps = match network_list_networks() {
             Ok(ssids) => {
                 let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
@@ -145,6 +157,7 @@ impl NetworkDetailContext {
         NetworkDetailContext {
             wlan_ip,
             //wlan_list,
+            saved_aps,
             wlan_networks,
             wlan_rssi,
             //wlan_scan,

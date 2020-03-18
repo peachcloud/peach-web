@@ -33,9 +33,9 @@
                 {% elif wlan_ssid != selected and ap.state == "Available" %}
                 <a class="button center" href="/network/wifi/add?ssid={{ network.ssid }}">Connect</a>
                 {% endif %}
-                {% if wlan_list %}
+                {% if saved_aps %}
                 {# Loop through the list of AP's with saved credentials #}
-                {% for ap in wlan_list %}
+                {% for ap in saved_aps %}
                 {# If the selected access point appears in the list, #}
                 {# display the Modify and Forget buttons.            #}
                 {% if ssid == selected %}
