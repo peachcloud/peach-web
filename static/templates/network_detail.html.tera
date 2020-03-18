@@ -21,7 +21,7 @@
                     <label class="label-small font-gray" for="netSsid" title="WiFi network SSID">SSID</label>
                     <p id="netSsid" class="card-text" title="SSID">{{ ssid }}</p>
                     <label class="label-small font-gray" for="netSec" title="Security protocol">SECURITY</label>
-                    <p id="netSec" class="card-text" title="Security protocol in use by {{ network.ssid }}">{% if ap.detail %}{% if ap.detail.protocol != "" %}{{ ap.detail.protocol }}{% else %}None{% endif %}{% endif %}</p>
+                    <p id="netSec" class="card-text" title="Security protocol in use by {{ ssid }}">{% if ap.detail %}{% if ap.detail.protocol != "" %}{{ ap.detail.protocol }}{% else %}None{% endif %}{% endif %}</p>
                     <label class="label-small font-gray" for="netSig" title="Signal Strength">SIGNAL</label>
                     <p id="netSig" class="card-text" title="Signal strength of WiFi access point">{% if ap.detail %}{{ ap.detail.signal_level }}{% endif %}</p>
                 </div>
@@ -31,7 +31,7 @@
                 {% if wlan_ssid == selected %}
                 <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
                 {% elif wlan_ssid != selected and ap.state == "Available" %}
-                <a class="button center" href="/network/wifi/add?ssid={{ network.ssid }}">Connect</a>
+                <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Connect</a>
                 {% endif %}
                 {% if saved_aps %}
                 {# Loop through the list of AP's with saved credentials #}
