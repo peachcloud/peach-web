@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+//use rocket::http::RawStr;
 use rocket_contrib::json::JsonValue;
 
 use crate::network::*;
@@ -14,29 +15,25 @@ pub struct FlashContext {
 #[derive(Debug, Serialize)]
 pub struct NetworkAddContext {
     pub back: Option<String>,
-    pub selected: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub selected: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
 pub struct NetworkDetailContext {
-    pub wlan_ip: String,
-    //pub wlan_list: Vec<Networks>,
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
     pub saved_aps: Vec<Networks>,
+    pub selected: Option<String>,
+    pub wlan_ip: String,
     pub wlan_networks: HashMap<String, AccessPoint>,
     pub wlan_rssi: Option<String>,
-    //pub wlan_scan: Vec<Scan>,
     pub wlan_ssid: String,
     pub wlan_state: String,
     pub wlan_status: String,
     pub wlan_traffic: Option<Traffic>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    // allows for passing in the ssid of a chosen access point
-    // this is used in the network_detail template
-    pub selected: Option<String>,
-    pub back: Option<String>,
 }
 
 impl NetworkDetailContext {
@@ -126,7 +123,6 @@ impl NetworkDetailContext {
         let mut wlan_networks = HashMap::new();
         for ap in wlan_scan {
             let ssid = ap.ssid.clone();
-            //ap.state = "Available".to_string();
             let ap_detail = AccessPoint {
                 detail: Some(ap),
                 state: "Available".to_string(),
@@ -137,15 +133,6 @@ impl NetworkDetailContext {
             // avoid repetition by checking that ssid is not already in list
             if !wlan_networks.contains_key(&network.ssid) {
                 let ssid = network.ssid.clone();
-                /*
-                let net = Scan {
-                    protocol: None,
-                    frequency: None,
-                    signal_level: None,
-                    ssid: network.ssid,
-                    state: "Not in range".to_string(),
-                };
-                */
                 let net_detail = AccessPoint {
                     detail: None,
                     state: "Not in range".to_string(),
@@ -155,20 +142,18 @@ impl NetworkDetailContext {
         }
         
         NetworkDetailContext {
-            wlan_ip,
-            //wlan_list,
+            back: None,
+            flash_name: None,
+            flash_msg: None,
             saved_aps,
+            selected: None,
+            wlan_ip,
             wlan_networks,
             wlan_rssi,
-            //wlan_scan,
             wlan_ssid,
             wlan_state,
             wlan_status,
             wlan_traffic,
-            flash_name: None,
-            flash_msg: None,
-            selected: None,
-            back: None,
         }
     }
 }
@@ -324,11 +309,11 @@ impl NetworkContext {
 
 #[derive(Debug, Serialize)]
 pub struct NetworkListContext {
-    pub wlan_ssid: String,
-    pub wlan_networks: HashMap<String, String>,
+    pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
-    pub back: Option<String>,
+    pub wlan_networks: HashMap<String, String>,
+    pub wlan_ssid: String,
 }
 
 impl NetworkListContext {
@@ -431,7 +416,7 @@ pub struct Networks {
     pub ssid: String,
 }
 
-#[derive(Debug, FromForm)]
+#[derive(Debug, FromForm, UriDisplayQuery)]
 pub struct Ssid {
     pub ssid: String,
 }
