@@ -159,7 +159,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
             match network_reconfigure_wifi() {
                 Ok(_) => {
                     debug!("Reread wpa_supplicant configuration from file.");
-                    match network_get_id("wlan0".to_string(), ssid.to_string()) {
+                    match network_get_id("wlan0", ssid) {
                         Ok(id) => match network_select_network(id, "wlan0".to_string()) {
                             Ok(_) => debug!("Selected chosen network."),
                             Err(_) => warn!("Failed to select chosen network."),
@@ -194,13 +194,13 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 
 #[post("/network/wifi/forget", data = "<network>")]
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
-    let iface = "wlan0".to_string();
+    let iface = "wlan0";
     let ssid = &network.ssid;
-    let iface_copy = iface.to_string();
-    let ssid_copy = ssid.to_string();
+    //let iface_copy = iface.to_string();
+    //let ssid_copy = ssid.to_string();
     debug!("Fetching ID for given interface and SSID");
-    match network_get_id(iface_copy, ssid_copy) {
-        Ok(id) => match network_remove_wifi(id, iface) {
+    match network_get_id(iface, ssid) {
+        Ok(id) => match network_remove_wifi(id.as_str(), iface) {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
@@ -219,13 +219,13 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 
 #[post("/network/wifi/modify", data = "<wifi>")]
 fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
-    let iface = "wlan0".to_string();
+    let iface = "wlan0";
     let ssid = &wifi.ssid;
-    let pass = wifi.pass.to_string();
-    let iface_copy = iface.to_string();
-    let ssid_copy = ssid.to_string();
-    match network_get_id(iface_copy, ssid_copy) {
-        Ok(id) => match network_new_password(id, iface, pass) {
+    let pass = &wifi.pass;
+    //let iface_copy = iface.to_string();
+    //let ssid_copy = ssid.to_string();
+    match network_get_id(iface, ssid) {
+        Ok(id) => match network_new_password(id.as_str(), iface, pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
                 match network_save_config() {
@@ -482,8 +482,8 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
 fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
     //let iface = "wlan0".to_string();
     //let ssid_copy = network.ssid.to_string();
-    let ssid = network.ssid.to_string();
-    let iface = "wlan0".to_string();
+    let ssid = &network.ssid;
+    let iface = "wlan0";
     match forget_network(ssid, iface) {
         Ok(msg) => {
             let status = "success".to_string();
@@ -527,13 +527,13 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
 fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
-    let iface = "wlan0".to_string();
+    let iface = "wlan0";
     let ssid = &wifi.ssid;
-    let pass = wifi.pass.to_string();
-    let iface_copy = iface.to_string();
-    let ssid_copy = ssid.to_string();
-    match network_get_id(iface_copy, ssid_copy) {
-        Ok(id) => match network_new_password(id, iface, pass) {
+    let pass = &wifi.pass;
+    //let iface_copy = iface.to_string();
+    //let ssid_copy = ssid.to_string();
+    match network_get_id(iface, ssid) {
+        Ok(id) => match network_new_password(id.as_str(), iface, pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
                 match network_save_config() {
@@ -595,12 +595,12 @@ fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
 }
 
 // let's create a helper function which returns a result type
-fn forget_network(iface: String, ssid: String) -> Result<String, String> {
+fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     debug!("Fetching ID for given interface and SSID");
-    let iface_copy = &iface;
-    let ssid_copy = &ssid;
-    match network_get_id(iface_copy.to_string(), ssid_copy.to_string()) {
-        Ok(id) => match network_remove_wifi(id, iface) {
+    //let iface_copy = &iface;
+    //let ssid_copy = &ssid;
+    match network_get_id(iface, ssid) {
+        Ok(id) => match network_remove_wifi(id.as_str(), iface) {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {

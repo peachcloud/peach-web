@@ -77,7 +77,7 @@ pub fn network_add_wifi(ssid: String, pass: String) -> std::result::Result<Strin
 /// * `iface` - A String containing the network interface identifier.
 /// * `ssid` - A String containing the SSID of a network.
 ///
-pub fn network_get_id(iface: String, ssid: String) -> std::result::Result<String, NetworkError> {
+pub fn network_get_id(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -254,9 +254,9 @@ pub fn network_get_traffic(iface: String) -> std::result::Result<Traffic, Networ
 /// * `pass` - A String containing the new password.
 ///
 pub fn network_new_password(
-    id: String,
-    iface: String,
-    pass: String,
+    id: &str,
+    iface: &str,
+    pass: &str,
 ) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -323,7 +323,7 @@ pub fn network_reconnect_wifi(iface: String) -> std::result::Result<String, Netw
 /// * `id` - A String containing a network identifier.
 /// * `iface` - A String containing the network interface identifier.
 ///
-pub fn network_remove_wifi(id: String, iface: String) -> std::result::Result<String, NetworkError> {
+pub fn network_remove_wifi(id: &str, iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -418,7 +418,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn add_wifi(&mut self, ssid: String, pass: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to get the ID for the given interface and SSID.
-    pub fn get_id(&mut self, iface: String, ssid: String) -> RpcRequest<String>;
+    pub fn get_id(&mut self, iface: &str, ssid: &str) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to get the IP address for the given interface.
     pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
@@ -442,7 +442,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn list_networks(&mut self) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to set a new network password for the given interface and ID.
-    pub fn new_password(&mut self, id: String, iface: String, pass: String) -> RpcRequest<String>;
+    pub fn new_password(&mut self, id: &str, iface: &str, pass: &str) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to reread the wpa_supplicant config for the given interface.
     pub fn reconfigure_wifi(&mut self) -> RpcRequest<String>;
@@ -451,7 +451,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to remove the credentials for the given network from the wpa_supplicant config.
-    pub fn remove_wifi(&mut self, id: String, iface: String) -> RpcRequest<String>;
+    pub fn remove_wifi(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to save network configuration updates to file.
     pub fn save_config(&mut self) -> RpcRequest<String>;
