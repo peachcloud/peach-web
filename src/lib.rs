@@ -480,9 +480,21 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
+    //let iface = "wlan0".to_string();
+    //let ssid_copy = network.ssid.to_string();
+    let ssid = network.ssid.to_string();
     let iface = "wlan0".to_string();
-    let ssid = &network.ssid;
-    let ssid_copy = network.ssid.to_string();
+    match forget_network(ssid, iface) {
+        Ok(msg) => {
+            let status = "success".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        },
+        Err(e) => {
+            let status = "error".to_string();
+            Json(build_json_response(status, None, Some(e)))
+        }
+    }
+    /*
     match network_get_id(iface, ssid_copy) {
         Ok(id) => {
             match network_remove_wifi(id, ssid.to_string()) {
@@ -510,6 +522,7 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
             Json(build_json_response(status, None, Some(msg)))
         }
     }
+    */
 }
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
@@ -579,6 +592,26 @@ fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
     warn!("Failed to get ID for chosen network.");
     let url = uri!(network_detail: ssid);
     Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
+}
+
+// let's create a helper function which returns a result type
+fn forget_network(iface: String, ssid: String) -> Result<String, String> {
+    debug!("Fetching ID for given interface and SSID");
+    let iface_copy = &iface;
+    let ssid_copy = &ssid;
+    match network_get_id(iface_copy.to_string(), ssid_copy.to_string()) {
+        Ok(id) => match network_remove_wifi(id, iface) {
+            Ok(_) => {
+                debug!("WiFi credentials removed for chosen network.");
+                match network_save_config() {
+                    Ok(_) => Ok("Success. Network configuration updated.".to_string()),
+                    Err(_) => Err("Failed to save network configuration.".to_string())
+                }
+            }
+            Err(_) => Err("Failed to remove configuration for given ID and iface.".to_string()),
+        },
+        Err(_) => Err("Failed to get ID for given iface and SSID.".to_string()),
+    }
 }
 
 #[catch(404)]
