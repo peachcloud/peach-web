@@ -198,6 +198,7 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let iface_copy = iface.to_string();
     let ssid_copy = ssid.to_string();
+    debug!("Fetching ID for given interface and SSID");
     match network_get_id(iface_copy, ssid_copy) {
         Ok(id) => match network_remove_wifi(id, iface) {
             Ok(_) => {
@@ -576,7 +577,6 @@ fn build_json_response(
 
 fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
     warn!("Failed to get ID for chosen network.");
-    //let url = format!("/network/wifi?ssid={}", ssid);
     let url = uri!(network_detail: ssid);
     Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
 }
