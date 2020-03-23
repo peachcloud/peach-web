@@ -199,6 +199,14 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     //let iface_copy = iface.to_string();
     //let ssid_copy = ssid.to_string();
     debug!("Fetching ID for given interface and SSID");
+    let url = uri!(network_detail: ssid);
+    match forget_network(iface, ssid) {
+        Ok(msg) => {
+            Flash::success(Redirect::to(url), msg)
+        }
+        Err(e) => Flash::error(Redirect::to(url), e)
+    }
+    /*
     match network_get_id(iface, ssid) {
         Ok(id) => match network_remove_wifi(id.as_str(), iface) {
             Ok(_) => {
@@ -215,6 +223,7 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
         },
         Err(_) => remove_wifi_failed(ssid),
     }
+    */
 }
 
 #[post("/network/wifi/modify", data = "<wifi>")]
@@ -588,11 +597,13 @@ fn build_json_response(
     JsonResponse { status, data, msg }
 }
 
+/*
 fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
     warn!("Failed to get ID for chosen network.");
     let url = uri!(network_detail: ssid);
     Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
 }
+*/
 
 // let's create a helper function which returns a result type
 fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
@@ -604,7 +615,7 @@ fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
             Ok(_) => {
                 debug!("WiFi credentials removed for chosen network.");
                 match network_save_config() {
-                    Ok(_) => Ok("Success. Network configuration updated.".to_string()),
+                    Ok(_) => Ok("Network configuration updated.".to_string()),
                     Err(_) => Err("Failed to save network configuration.".to_string())
                 }
             }
