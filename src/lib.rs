@@ -611,15 +611,18 @@ fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     //let iface_copy = &iface;
     //let ssid_copy = &ssid;
     match network_get_id(iface, ssid) {
-        Ok(id) => match network_remove_wifi(id.as_str(), iface) {
-            Ok(_) => {
-                debug!("WiFi credentials removed for chosen network.");
-                match network_save_config() {
-                    Ok(_) => Ok("Network configuration updated.".to_string()),
-                    Err(_) => Err("Failed to save network configuration.".to_string())
+        Ok(id) => {
+            debug!("Access point ID: {}", id);
+            match network_remove_wifi(id.as_str(), iface) {
+                Ok(_) => {
+                    debug!("WiFi credentials removed for chosen network.");
+                    match network_save_config() {
+                        Ok(_) => Ok("Network configuration updated.".to_string()),
+                        Err(_) => Err("Failed to save network configuration.".to_string())
+                    }
                 }
+                Err(_) => Err("Failed to remove configuration for given ID and iface.".to_string()),
             }
-            Err(_) => Err("Failed to remove configuration for given ID and iface.".to_string()),
         },
         Err(_) => Err("Failed to get ID for given iface and SSID.".to_string()),
     }
