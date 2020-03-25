@@ -608,12 +608,10 @@ fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
 // let's create a helper function which returns a result type
 fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     debug!("Fetching ID for given interface and SSID");
-    //let iface_copy = &iface;
-    //let ssid_copy = &ssid;
     match network_get_id(iface, ssid) {
         Ok(id) => {
             debug!("Access point ID: {}", id);
-            match network_remove_wifi(id.as_str(), iface) {
+            match network_remove_wifi(&id, iface) {
                 Ok(_) => {
                     debug!("WiFi credentials removed for chosen network.");
                     match network_save_config() {
