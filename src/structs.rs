@@ -140,7 +140,7 @@ impl NetworkDetailContext {
                 wlan_networks.insert(ssid, net_detail);
             }
         }
-        
+
         NetworkDetailContext {
             back: None,
             flash_name: None,

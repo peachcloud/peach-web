@@ -56,8 +56,12 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/modify            Modify network password
 
 #[get("/")]
-fn index() -> &'static str {
-    "PeachCloud"
+fn index() -> Template {
+    let context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    Template::render("index", &context)
 }
 
 #[get("/network")]
@@ -196,34 +200,11 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let iface = "wlan0";
     let ssid = &network.ssid;
-    //let iface_copy = iface.to_string();
-    //let ssid_copy = ssid.to_string();
-    debug!("Fetching ID for given interface and SSID");
     let url = uri!(network_detail: ssid);
     match forget_network(iface, ssid) {
-        Ok(msg) => {
-            Flash::success(Redirect::to(url), msg)
-        }
-        Err(e) => Flash::error(Redirect::to(url), e)
+        Ok(msg) => Flash::success(Redirect::to(url), msg),
+        Err(e) => Flash::error(Redirect::to(url), e),
     }
-    /*
-    match network_get_id(iface, ssid) {
-        Ok(id) => match network_remove_wifi(id.as_str(), iface) {
-            Ok(_) => {
-                debug!("WiFi credentials removed for chosen network.");
-                match network_save_config() {
-                    Ok(_) => {
-                        let url = uri!(network_detail: ssid);
-                        Flash::success(Redirect::to(url), "Removed WiFi credentials.")
-                    }
-                    Err(_) => remove_wifi_failed(ssid),
-                }
-            }
-            Err(_) => remove_wifi_failed(ssid),
-        },
-        Err(_) => remove_wifi_failed(ssid),
-    }
-    */
 }
 
 #[post("/network/wifi/modify", data = "<wifi>")]
@@ -231,8 +212,6 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let iface = "wlan0";
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
-    //let iface_copy = iface.to_string();
-    //let ssid_copy = ssid.to_string();
     match network_get_id(iface, ssid) {
         Ok(id) => match network_new_password(id.as_str(), iface, pass) {
             Ok(_) => {
@@ -489,49 +468,18 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
-    //let iface = "wlan0".to_string();
-    //let ssid_copy = network.ssid.to_string();
     let ssid = &network.ssid;
     let iface = "wlan0";
     match forget_network(ssid, iface) {
         Ok(msg) => {
             let status = "success".to_string();
             Json(build_json_response(status, None, Some(msg)))
-        },
+        }
         Err(e) => {
             let status = "error".to_string();
             Json(build_json_response(status, None, Some(e)))
         }
     }
-    /*
-    match network_get_id(iface, ssid_copy) {
-        Ok(id) => {
-            match network_remove_wifi(id, ssid.to_string()) {
-                Ok(_) => {
-                    debug!("Removed chosen network.");
-                    // json response for successful update
-                    let status = "success".to_string();
-                    let msg = "WiFi credentials removed.".to_string();
-                    Json(build_json_response(status, None, Some(msg)))
-                }
-                Err(_) => {
-                    warn!("Failed to remove chosen network.");
-                    // json response for failed update
-                    let status = "error".to_string();
-                    let msg = "Failed to remove WiFi credentials.".to_string();
-                    Json(build_json_response(status, None, Some(msg)))
-                }
-            }
-        }
-        Err(_) => {
-            debug!("Failed to add WiFi credentials.");
-            // json response for failed update
-            let status = "error".to_string();
-            let msg = "Failed to add WiFi credentials.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-    }
-    */
 }
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
@@ -539,8 +487,6 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
     let iface = "wlan0";
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
-    //let iface_copy = iface.to_string();
-    //let ssid_copy = ssid.to_string();
     match network_get_id(iface, ssid) {
         Ok(id) => match network_new_password(id.as_str(), iface, pass) {
             Ok(_) => {
@@ -597,15 +543,7 @@ fn build_json_response(
     JsonResponse { status, data, msg }
 }
 
-/*
-fn remove_wifi_failed(ssid: &String) -> Flash<Redirect> {
-    warn!("Failed to get ID for chosen network.");
-    let url = uri!(network_detail: ssid);
-    Flash::error(Redirect::to(url), "Failed to remove WiFi credentials.")
-}
-*/
-
-// let's create a helper function which returns a result type
+// fetch network id, remove credentials and save config
 fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     debug!("Fetching ID for given interface and SSID");
     match network_get_id(iface, ssid) {
@@ -616,12 +554,12 @@ fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
                     debug!("WiFi credentials removed for chosen network.");
                     match network_save_config() {
                         Ok(_) => Ok("Network configuration updated.".to_string()),
-                        Err(_) => Err("Failed to save network configuration.".to_string())
+                        Err(_) => Err("Failed to save network configuration.".to_string()),
                     }
                 }
                 Err(_) => Err("Failed to remove configuration for given ID and iface.".to_string()),
             }
-        },
+        }
         Err(_) => Err("Failed to get ID for given iface and SSID.".to_string()),
     }
 }

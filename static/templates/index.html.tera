@@ -1,71 +1,8 @@
-<!DOCTYPE html>
+{% extends "nav" %}
 
-<html lang="en">
-  <title>PeachCloud</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/tachyons.min.css">
-  <body class="near-white bg-near-black">
-    <!-- HEADER -->
-    <div>
-      <div>
-        <!-- PeachCloud icon -->
-        <img src="peach-icon.png" class="ph3 w3"></img>
-	<!-- network status information -->
-        <span class="fr pt2 ph3 f5" id="ap0">ap0 (<span class="red">{{ ap_state }}</span>): <span class="b">{{ ap_ip }}</span> [ {{ ap_ssid }} ]</span>
-        <span class="fr pt2 ph3 f5" id="wlan0">wlan0 (<span class="green">{{ wlan_state }}</span>): <span class="b">{{ wlan_ip }}</span> [ Connected to {{ wlan_ssid }} ]</span>
-      </div>
-      <div>
-        <h1 class="ph3">Welcome to PeachCloud!</h1>
-      </div>
-    </div>
-    <!-- BODY -->
-    <div class="flex justify-between">
-      <!-- Left Panel -->
-      <div class="outline w-20 pa3">
-      </div>
-      <!-- Middle Panel -->
-      <div class="outline w-50 pa3">
-        <p class="ph4 f5" id="wifi_networks">WiFi Networks: {{ wlan_scan }}</p>
-      </div>
-      <!-- Right Panel -->
-      <div class="outline w-25 pa3">
-        <!-- add WiFi network credentials -->
-        <article class="pa2 black-80">
-          <form id="wifiCreds">
-            <fieldset class="ba b--transparent near-white ph0 mh0">
-              <legend class="ph0 mh0 fw6 clip">Configure WiFi</legend>
-              <div class="mt3">
-                <label class="db fw4 lh-copy f6" for="ssid">SSID</label>
-                <input class="pa2 input-reset ba bg-transparent w-100 measure" type="text" name="ssid"  id="ssid">
-              </div>
-              <div class="mt3">
-                <label class="db fw4 lh-copy f6" for="password">Password</label>
-                <input class="b pa2 input-reset ba bg-transparent" type="password" name="pass"  id="pass">
-              </div>
-              <div class="mt3">
-                <input class="b ph3 pv2 input-reset near-white ba b--near-white bg-transparent grow pointer f6" type="submit" value="Submit">
-              </div>
-            </fieldset>
-          </form>
-        </article>
-	<!-- activate WiFi access point -->
-        <form action="/api/activate_ap" method="post">
-          <button class="f6 link dim ba ph3 pv2 mb2 dib black" name="activate_ap">Activate WiFi Access Point</button>
-        </form>
-	<!-- activate WiFi client mode -->
-        <form action="/api/activate_client" method="post">
-          <button class="f6 link dim ba ph3 pv2 mb2 dib black" name="activate_client">Activate WiFi Client Mode</button>
-        </form>
-	<!-- display flash message(s) -->
-        {% if flash_name == "error" %}
-          <p>{{ flash_msg }}</p>
-        {% elif flash_name == "success" %}
-          <p>{{ flash_msg }}</p>
-        {% endif %}
-      </div>
-    </div>
-    <!-- FOOTER -->
-    <div>
-    </div>
-  </body>
-</html>
+{% block card %}
+            <!-- CARD -->
+            <div class="card">
+                <h1>PeachCloud Home</h1>
+            </div>
+{% endblock %}

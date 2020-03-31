@@ -33,17 +33,135 @@ fn read_file_content(path: &str) -> Vec<u8> {
 }
 
 #[test]
-fn test_index_response() {
+fn test_index_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
-    let response = client.get("/").dispatch();
+    let mut response = client.get("/").dispatch();
     assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("PeachCloud Home"));
 }
 
 #[test]
-fn test_index_html() {
-    test_query_file("/", "static/index.html", Status::Ok);
-    test_query_file("/?v=1", "static/index.html", Status::Ok);
-    test_query_file("/?this=should&be=ignored", "static/index.html", Status::Ok);
+fn test_network_card_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/network").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("MODE"));
+    assert!(body.contains("SSID"));
+    assert!(body.contains("IP"));
+    assert!(body.contains("Add WiFi Network"));
+    assert!(body.contains("Deploy Access Point"));
+    assert!(body.contains("List WiFi Networks"));
+    assert!(body.contains("SIGNAL"));
+    assert!(body.contains("DOWNLOAD"));
+    assert!(body.contains("UPLOAD"));
+}
+
+#[test]
+fn test_network_list_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/network/wifi").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("WiFi Networks"));
+    assert!(body.contains("No networks found"));
+}
+
+// TODO: needs further testing once template has been refactored
+#[test]
+fn test_network_detail_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client.get("/network/wifi?ssid=Home").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    //let body = response.body_string().unwrap();
+    //assert!(body.contains("Network not found"));
+}
+
+#[test]
+fn test_network_add_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/network/wifi/add").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Add WiFi Network"));
+    assert!(body.contains("SSID"));
+    assert!(body.contains("Password"));
+    assert!(body.contains("Connect"));
+    assert!(body.contains("Cancel"));
+}
+
+#[test]
+fn test_network_add_ssid_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/network/wifi/add?ssid=Home").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Add WiFi Network"));
+    assert!(body.contains("Home"));
+    assert!(body.contains("Password"));
+    assert!(body.contains("Connect"));
+    assert!(body.contains("Cancel"));
+}
+
+#[test]
+fn test_add_credentials() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client
+        .post("/network/wifi/add")
+        .header(ContentType::Form)
+        .body("ssid=Home&pass=Password")
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+}
+
+#[test]
+fn test_forget_wifi() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client
+        .post("/network/wifi/forget")
+        .header(ContentType::Form)
+        .body("ssid=Home")
+        .dispatch();
+    assert_eq!(response.status(), Status::SeeOther);
+    assert_eq!(response.content_type(), None);
+}
+
+#[test]
+fn test_modify_password() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client
+        .post("/network/wifi/modify")
+        .header(ContentType::Form)
+        .body("ssid=Home&pass=Password")
+        .dispatch();
+    assert_eq!(response.status(), Status::SeeOther);
+    assert_eq!(response.content_type(), None);
+}
+
+#[test]
+fn test_deploy_ap() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client.get("/network/ap/activate").dispatch();
+    // check for 303 status (redirect)
+    assert_eq!(response.status(), Status::SeeOther);
+    assert_eq!(response.content_type(), None);
+}
+
+#[test]
+fn test_deploy_client() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client.get("/network/wifi/activate").dispatch();
+    // check for 303 status (redirect)
+    assert_eq!(response.status(), Status::SeeOther);
+    assert_eq!(response.content_type(), None);
 }
 
 #[test]
@@ -67,7 +185,11 @@ fn test_nested_file() {
 
 #[test]
 fn test_icon_file() {
-    test_query_file("/peach-icon.png", "static/peach-icon.png", Status::Ok);
+    test_query_file(
+        "/icons/peach-icon.png",
+        "static/icons/peach-icon.png",
+        Status::Ok,
+    );
 }
 
 #[test]
@@ -89,6 +211,6 @@ fn test_invalid_get_request() {
     assert_eq!(res.status(), Status::NotFound);
 
     let body = res.body_string().unwrap();
-    assert!(body.contains("error"));
-    assert!(body.contains("Resource was not found"));
+    assert!(body.contains("404: Page Not Found"));
+    assert!(body.contains("No PeachCloud resource exists for this URL."));
 }
