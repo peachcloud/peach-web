@@ -5,6 +5,7 @@ use rocket::http::{ContentType, Status};
 use rocket::local::Client;
 
 use super::rocket;
+use crate::build_json_response;
 
 // helper function to test correct retrieval and content of a file
 fn test_query_file<T>(path: &str, file: T, status: Status)
@@ -31,6 +32,8 @@ fn read_file_content(path: &str) -> Vec<u8> {
         .expect(&format!("Reading {} failed.", path));
     file_content
 }
+
+// WEB PAGE ROUTES
 
 #[test]
 fn test_index_html() {
@@ -163,6 +166,180 @@ fn test_deploy_client() {
     assert_eq!(response.status(), Status::SeeOther);
     assert_eq!(response.content_type(), None);
 }
+
+// JSON API ROUTES
+
+#[test]
+fn test_activate_ap() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client
+        .post("/api/v1/network/activate_ap")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+}
+
+#[test]
+fn test_activate_client() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let response = client
+        .post("/api/v1/network/activate_client")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+}
+
+#[test]
+fn test_return_ip() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/ip")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("wlan0"));
+    assert!(body.contains("ap0"));
+}
+
+#[test]
+fn test_return_rssi() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/rssi")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Not currently connected to an access point."));
+}
+
+#[test]
+fn test_return_ssid() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/ssid")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Not currently connected to an access point."));
+}
+
+#[test]
+fn test_return_state() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/state")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("ap0"));
+    assert!(body.contains("wlan0"));
+    assert!(body.contains("unavailable"));
+}
+
+#[test]
+fn test_return_status() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/status")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Not currently connected to an access point."));
+}
+
+#[test]
+fn test_scan_networks() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/network/wifi")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Unable to scan for networks. Interface may be deactivated."));
+}
+
+#[test]
+fn test_add_wifi() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .post("/api/v1/network/wifi")
+        .header(ContentType::Form)
+        .body("ssid=Home&pass=Password")
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Failed to add WiFi credentials."));
+}
+
+#[test]
+fn test_remove_wifi() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .post("/api/v1/network/wifi/forget")
+        .header(ContentType::Form)
+        .body("ssid=Home")
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Failed to retrieve network ID."));
+}
+
+#[test]
+fn test_new_password() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .post("/api/v1/network/wifi/modify")
+        .header(ContentType::Form)
+        .body("ssid=Home&pass=Password")
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Failed to retrieve network ID."));
+}
+
+#[test]
+fn test_ping_pong() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client
+        .get("/api/v1/ping")
+        .header(ContentType::JSON)
+        .dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("pong!"));
+}
+
+// HELPER FUNCTION TESTS
+
+#[test]
+fn test_build_json_response() {
+    let status = "success".to_string();
+    let data = json!("WiFi credentials added.".to_string());
+    let json = build_json_response(status, Some(data), None);
+    assert_eq!(json.status, "success");
+    assert_eq!(json.data, Some(json!("WiFi credentials added.")));
+    assert_eq!(json.msg, None);
+}
+
+// FILE TESTS
 
 #[test]
 fn test_nested_file() {

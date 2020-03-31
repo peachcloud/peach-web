@@ -557,10 +557,10 @@ fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
                         Err(_) => Err("Failed to save network configuration.".to_string()),
                     }
                 }
-                Err(_) => Err("Failed to remove configuration for given ID and iface.".to_string()),
+                Err(_) => Err("Failed to remove network configuration.".to_string()),
             }
         }
-        Err(_) => Err("Failed to get ID for given iface and SSID.".to_string()),
+        Err(_) => Err("Failed to retrieve network ID.".to_string()),
     }
 }
 
