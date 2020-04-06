@@ -23,6 +23,7 @@ mod tests;
 mod ws;
 
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::{env, thread};
 
 use crate::error::BoxError;
@@ -52,8 +53,10 @@ use rocket_contrib::templates::Template;
 //  [GET]       /network/wifi/add               Add WiFi form
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
-//  [POST]      /network/wifi/forget            Remove WiFi
-//  [POST]      /network/wifi/modify            Modify network password
+//  [POST]      /network/wifi/forget            Remove WiFi*
+//  [POST]      /network/wifi/modify            Modify network password*
+//
+//  * not yet working 100%
 
 #[get("/")]
 fn index() -> Template {
@@ -285,10 +288,13 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/status
 //  [GET]        /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi
-//  [POST]       /api/v1/network/wifi/forget         Forget / remove network
+//  [POST]       /api/v1/network/wifi/forget         Forget / remove network*
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
 //  [GET]        /api/v1/ping
-//  [POST]       /api/v1/shutdown                    Shutdown device*
+//  [POST]       /api/v1/device/reboot               Reboot device*
+//  [POST]       /api/v1/device/shutdown             Shutdown device*
+//
+//  * not yet added or not yet working 100%
 
 #[post("/api/v1/network/activate_ap")]
 fn activate_ap() -> Json<JsonResponse> {
@@ -523,6 +529,52 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
     }
 }
 
+// reboot the device
+#[post("/api/v1/device/reboot")]
+fn reboot_device() -> Json<JsonResponse> {
+    info!("Rebooting the device");
+    let output = Command::new("sudo")
+        .arg("shutdown")
+        .arg("-r")
+        .arg("now")
+        .output();
+    match output {
+        Ok(_) => {
+            debug!("Going down for reboot...");
+            let status = "success".to_string();
+            let msg = "Rebooting the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Reboot failed");
+            let status = "error".to_string();
+            let msg = "Failed to reboot the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+// shutdown the device
+#[post("/api/v1/device/shutdown")]
+fn shutdown_device() -> Json<JsonResponse> {
+    info!("Shutting down the device");
+    let output = Command::new("sudo").arg("shutdown").arg("now").output();
+    match output {
+        Ok(_) => {
+            debug!("Going down for shutdown...");
+            let status = "success".to_string();
+            let msg = "Shutting down the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Shutdown failed");
+            let status = "error".to_string();
+            let msg = "Failed to shutdown the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 // status route: useful for checking connectivity from web client
 #[get("/api/v1/ping")]
 fn ping_pong() -> Json<JsonResponse> {
@@ -595,15 +647,17 @@ fn rocket() -> rocket::Rocket {
                 network_list,     // WEB ROUTE
                 activate_ap,      // JSON API
                 activate_client,  // JSON API
+                add_wifi,         // JSON API
                 new_password,     // JSON API
                 return_ip,        // JSON API
                 return_rssi,      // JSON API
                 return_ssid,      // JSON API
                 return_state,     // JSON API
                 return_status,    // JSON API
-                scan_networks,    // JSON API
-                add_wifi,         // JSON API
+                reboot_device,    // JSON API
                 remove_wifi,      // JSON API
+                scan_networks,    // JSON API
+                shutdown_device,  // JSON API
                 ping_pong,        // JSON API
             ],
         )
