@@ -15,6 +15,7 @@ extern crate serde_derive;
 extern crate tera;
 extern crate websocket;
 
+mod device;
 mod error;
 mod network;
 mod structs;
@@ -23,9 +24,9 @@ mod tests;
 mod ws;
 
 use std::path::{Path, PathBuf};
-use std::process::Command;
 use std::{env, thread};
 
+use crate::device::*;
 use crate::error::BoxError;
 use crate::network::*;
 use crate::structs::{
@@ -291,8 +292,8 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [POST]       /api/v1/network/wifi/forget         Forget / remove network*
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
 //  [GET]        /api/v1/ping
-//  [POST]       /api/v1/device/reboot               Reboot device*
-//  [POST]       /api/v1/device/shutdown             Shutdown device*
+//  [POST]       /api/v1/device/reboot               Reboot device
+//  [POST]       /api/v1/device/shutdown             Shutdown device
 //
 //  * not yet added or not yet working 100%
 
@@ -532,13 +533,8 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
 // reboot the device
 #[post("/api/v1/device/reboot")]
 fn reboot_device() -> Json<JsonResponse> {
-    info!("Rebooting the device");
-    let output = Command::new("sudo")
-        .arg("shutdown")
-        .arg("-r")
-        .arg("now")
-        .output();
-    match output {
+    let reboot = device_reboot();
+    match reboot {
         Ok(_) => {
             debug!("Going down for reboot...");
             let status = "success".to_string();
@@ -557,9 +553,8 @@ fn reboot_device() -> Json<JsonResponse> {
 // shutdown the device
 #[post("/api/v1/device/shutdown")]
 fn shutdown_device() -> Json<JsonResponse> {
-    info!("Shutting down the device");
-    let output = Command::new("sudo").arg("shutdown").arg("now").output();
-    match output {
+    let shutdown = device_shutdown();
+    match shutdown {
         Ok(_) => {
             debug!("Going down for shutdown...");
             let status = "success".to_string();
