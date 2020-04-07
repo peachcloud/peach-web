@@ -55,6 +55,7 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/forget            Remove WiFi*
+//  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
 //  [POST]      /network/wifi/modify            Modify network password*
 //
 //  * not yet working 100%
@@ -209,6 +210,26 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(e) => Flash::error(Redirect::to(url), e),
     }
+}
+
+#[get("/network/wifi/modify?<ssid>")]
+fn network_modify_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+    // decode ssid from url
+    let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
+    let mut context = NetworkAddContext {
+        back: Some("/network/wifi".to_string()),
+        selected: Some(decoded_ssid.to_string()),
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_modify", &context)
 }
 
 #[post("/network/wifi/modify", data = "<wifi>")]
@@ -628,32 +649,33 @@ fn rocket() -> rocket::Rocket {
         .mount(
             "/",
             routes![
-                index,            // WEB ROUTE
-                files,            // WEB ROUTE
-                add_credentials,  // WEB ROUTE
-                deploy_ap,        // WEB ROUTE
-                deploy_client,    // WEB ROUTE
-                forget_wifi,      // WEB ROUTE
-                modify_password,  // WEB ROUTE
-                network_add,      // WEB ROUTE
-                network_add_ssid, // WEB ROUTE
-                network_card,     // WEB ROUTE
-                network_detail,   // WEB ROUTE
-                network_list,     // WEB ROUTE
-                activate_ap,      // JSON API
-                activate_client,  // JSON API
-                add_wifi,         // JSON API
-                new_password,     // JSON API
-                return_ip,        // JSON API
-                return_rssi,      // JSON API
-                return_ssid,      // JSON API
-                return_state,     // JSON API
-                return_status,    // JSON API
-                reboot_device,    // JSON API
-                remove_wifi,      // JSON API
-                scan_networks,    // JSON API
-                shutdown_device,  // JSON API
-                ping_pong,        // JSON API
+                index,                   // WEB ROUTE
+                files,                   // WEB ROUTE
+                add_credentials,         // WEB ROUTE
+                deploy_ap,               // WEB ROUTE
+                deploy_client,           // WEB ROUTE
+                forget_wifi,             // WEB ROUTE
+                network_modify_password, // WEB ROUTE
+                modify_password,         // WEB ROUTE
+                network_add,             // WEB ROUTE
+                network_add_ssid,        // WEB ROUTE
+                network_card,            // WEB ROUTE
+                network_detail,          // WEB ROUTE
+                network_list,            // WEB ROUTE
+                activate_ap,             // JSON API
+                activate_client,         // JSON API
+                add_wifi,                // JSON API
+                new_password,            // JSON API
+                return_ip,               // JSON API
+                return_rssi,             // JSON API
+                return_ssid,             // JSON API
+                return_state,            // JSON API
+                return_status,           // JSON API
+                reboot_device,           // JSON API
+                remove_wifi,             // JSON API
+                scan_networks,           // JSON API
+                shutdown_device,         // JSON API
+                ping_pong,               // JSON API
             ],
         )
         .register(catchers![not_found])
