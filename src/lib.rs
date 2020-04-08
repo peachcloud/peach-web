@@ -244,7 +244,7 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
                 match network_save_config() {
                     Ok(_) => {
                         debug!("WiFi configuration saved.");
-                        let url = format!("/network/wifi?={}", ssid);
+                        let url = format!("/network/wifi?ssid={}", ssid);
                         Flash::success(Redirect::to(url), "Updated WiFi password.")
                     }
                     Err(_) => {

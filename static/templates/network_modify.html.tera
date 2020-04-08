@@ -19,7 +19,7 @@
               <!-- display error message -->
               <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
               {% endif %}
-              <input id="savePassword" class="button center" title="Save" type="submit" value="Connect">
+              <input id="savePassword" class="button center" title="Save" type="submit" value="Save">
               <a class="button center" href="/network" title="Cancel">Cancel</a>
             </form>
           </div>
