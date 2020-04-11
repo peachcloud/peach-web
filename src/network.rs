@@ -407,6 +407,35 @@ pub fn network_select_network(
     Ok(response)
 }
 
+// BUNDLED METHODS
+//  - perform multiple RPC calls with one transport
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `get_id`, `remove_wifi` and `save_config` methods.
+///
+/// # Arguments
+///
+/// * `iface` - A String containing the network interface identifier.
+/// * `ssid` - A String containing the SSID of a network.
+///
+pub fn forget_network(iface: String, ssid: &str) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+    let id = client.get_id(&iface, &ssid).call()?;
+    client.remove_wifi(&id, &iface).call()?;
+    client.save_config().call()?;
+    let response = "success".to_string();
+
+    Ok(response)
+}
+
 jsonrpc_client!(pub struct PeachNetworkClient {
     /// Creates a JSON-RPC request to activate the access point.
     pub fn activate_ap(&mut self) -> RpcRequest<String>;

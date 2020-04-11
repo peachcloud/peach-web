@@ -203,12 +203,15 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 
 #[post("/network/wifi/forget", data = "<network>")]
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
-    let iface = "wlan0";
+    let iface = "wlan0".to_string();
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
-    match forget_network(iface, ssid) {
+    match forget_network(iface, &ssid) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
-        Err(e) => Flash::error(Redirect::to(url), e),
+        Err(_) => Flash::error(
+            Redirect::to(url),
+            "Failed to remove WiFi credentials".to_string(),
+        ),
     }
 }
 
@@ -494,6 +497,7 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     }
 }
 
+/*
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
@@ -509,6 +513,7 @@ fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
         }
     }
 }
+*/
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
 fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
@@ -611,6 +616,7 @@ fn build_json_response(
     JsonResponse { status, data, msg }
 }
 
+/*
 // fetch network id, remove credentials and save config
 fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     debug!("Fetching ID for given interface and SSID");
@@ -631,6 +637,7 @@ fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
         Err(_) => Err("Failed to retrieve network ID.".to_string()),
     }
 }
+*/
 
 #[catch(404)]
 fn not_found() -> Template {
@@ -672,10 +679,10 @@ fn rocket() -> rocket::Rocket {
                 return_state,            // JSON API
                 return_status,           // JSON API
                 reboot_device,           // JSON API
-                remove_wifi,             // JSON API
-                scan_networks,           // JSON API
-                shutdown_device,         // JSON API
-                ping_pong,               // JSON API
+                //remove_wifi,             // JSON API
+                scan_networks,   // JSON API
+                shutdown_device, // JSON API
+                ping_pong,       // JSON API
             ],
         )
         .register(catchers![not_found])
