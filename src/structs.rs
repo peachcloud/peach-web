@@ -318,6 +318,13 @@ pub struct NetworkListContext {
 
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
+        network_list_context("wlan0").unwrap()
+    }
+}
+
+/*
+impl NetworkListContext {
+    pub fn build() -> NetworkListContext {
         // list of networks saved in the wpa_supplicant.conf
         let wlan_list = match network_list_networks() {
             Ok(ssids) => {
@@ -361,6 +368,7 @@ impl NetworkListContext {
         }
     }
 }
+*/
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CpuStat {
