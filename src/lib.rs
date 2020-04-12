@@ -240,6 +240,22 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let iface = "wlan0";
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
+    let url = uri!(network_detail: ssid);
+    match update_password(iface, &ssid, &pass) {
+        Ok(msg) => Flash::success(Redirect::to(url), msg),
+        Err(_) => Flash::error(
+            Redirect::to(url),
+            "Failed to update WiFi password".to_string(),
+        ),
+    }
+}
+
+/*
+#[post("/network/wifi/modify", data = "<wifi>")]
+fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
+    let iface = "wlan0";
+    let ssid = &wifi.ssid;
+    let pass = &wifi.pass;
     match network_get_id(iface, ssid) {
         Ok(id) => match network_new_password(id.as_str(), iface, pass) {
             Ok(_) => {
@@ -273,6 +289,7 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
         }
     }
 }
+*/
 
 #[get("/network/ap/activate")]
 fn deploy_ap() -> Flash<Redirect> {
