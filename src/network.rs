@@ -333,6 +333,7 @@ pub fn network_remove_wifi(id: &str, iface: &str) -> std::result::Result<String,
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
+
     let response = client.remove_wifi(id, iface).call()?;
 
     Ok(response)
@@ -374,6 +375,7 @@ pub fn network_scan_networks(iface: String) -> std::result::Result<String, Netwo
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
+
     let response = client.scan_networks(iface).call()?;
 
     Ok(response)
@@ -402,6 +404,7 @@ pub fn network_select_network(
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
+
     let response = client.select_network(id, iface).call()?;
 
     Ok(response)
@@ -428,9 +431,14 @@ pub fn forget_network(iface: String, ssid: &str) -> std::result::Result<String, 
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
+
+    info!("Performing get_id call to peach-network microservice.");
     let id = client.get_id(&iface, &ssid).call()?;
+    info!("Performing remove_wifi call to peach-network microservice.");
     client.remove_wifi(&id, &iface).call()?;
+    info!("Performing save_config call to peach-network microservice.");
     client.save_config().call()?;
+
     let response = "success".to_string();
 
     Ok(response)

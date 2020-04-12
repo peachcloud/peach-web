@@ -346,10 +346,10 @@ impl NetworkListContext {
             wlan_networks.insert(ap.ssid, "Available".to_string());
         }
         for network in wlan_list {
-            // avoid repetition by checking that ssid is not already in list
-            if !wlan_networks.contains_key(&network.ssid) {
-                wlan_networks.insert(network.ssid, "Not in range".to_string());
-            }
+            // insert ssid (with state) only if it doesn't already exist
+            wlan_networks
+                .entry(network.ssid)
+                .or_insert("Not in range".to_string());
         }
 
         NetworkListContext {
