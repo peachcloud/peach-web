@@ -23,7 +23,7 @@
                     <label class="label-small font-gray" for="netSec" title="Security protocol">SECURITY</label>
                     <p id="netSec" class="card-text" title="Security protocol in use by {{ ssid }}">{% if ap.detail %}{% if ap.detail.protocol != "" %}{{ ap.detail.protocol }}{% else %}None{% endif %}{% else %}Unknown{% endif %}</p>
                     <label class="label-small font-gray" for="netSig" title="Signal Strength">SIGNAL</label>
-                    <p id="netSig" class="card-text" title="Signal strength of WiFi access point">{% if ap.detail %}{{ ap.detail.signal_level }}%{% else %}Unknown{% endif %}</p>
+                    <p id="netSig" class="card-text" title="Signal strength of WiFi access point">{% if ap.signal %}{{ ap.signal }}%{% else %}Unknown{% endif %}</p>
                 </div>
             </div>
             <!-- BUTTONS -->
