@@ -124,9 +124,8 @@ impl NetworkDetailContext {
         for ap in wlan_scan {
             let ssid = ap.ssid.clone();
             let rssi = ap.signal_level.clone();
-            // remove leading `-` from rssi
-            let rssi_stripped = &rssi[1..];
-            let rssi_parsed = rssi_stripped.parse::<i32>().unwrap();
+            // parse the string to a signed integer (for math)
+            let rssi_parsed = rssi.parse::<i32>().unwrap();
             // perform rssi (dBm) to quality (%) conversion
             let quality_percent = 2 * (rssi_parsed + 100);
             let ap_detail = AccessPoint {
