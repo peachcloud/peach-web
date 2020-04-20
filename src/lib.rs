@@ -46,6 +46,8 @@ use rocket_contrib::templates::Template;
 // WEB PAGE ROUTES
 
 //  [GET]       /                               Home
+//  [GET]       /device/reboot                  Reboot device
+//  [GET]       /device/shutdown                Shutdown device
 //  [GET]       /network/ap/activate            Activate WiFi access point mode
 //  [GET]       /network                        Network overview
 //  [GET]       /network/wifi                   List of networks
@@ -57,6 +59,7 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/forget            Remove WiFi*
 //  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
 //  [POST]      /network/wifi/modify            Modify network password*
+//  [GET]       /shutdown                       Shutdown menu
 //
 //  * not yet working 100%
 
@@ -311,6 +314,37 @@ fn deploy_client() -> Flash<Redirect> {
     match network_activate_client() {
         Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi client."),
         Err(_) => Flash::error(Redirect::to("/network"), "Failed to activate WiFi client."),
+    }
+}
+
+#[get("/shutdown")]
+fn shutdown_menu(flash: Option<FlashMessage>) -> Template {
+    let mut context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("shutdown", &context)
+}
+
+#[get("/device/reboot")]
+fn reboot_cmd() -> Flash<Redirect> {
+    match device_reboot() {
+        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Rebooting the device."),
+        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to reboot the device."),
+    }
+}
+
+#[get("/device/shutdown")]
+fn shutdown_cmd() -> Flash<Redirect> {
+    match device_shutdown() {
+        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Shutting down the device."),
+        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to shutdown the device."),
     }
 }
 
@@ -576,8 +610,7 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
 // reboot the device
 #[post("/api/v1/device/reboot")]
 fn reboot_device() -> Json<JsonResponse> {
-    let reboot = device_reboot();
-    match reboot {
+    match device_reboot() {
         Ok(_) => {
             debug!("Going down for reboot...");
             let status = "success".to_string();
@@ -596,8 +629,7 @@ fn reboot_device() -> Json<JsonResponse> {
 // shutdown the device
 #[post("/api/v1/device/shutdown")]
 fn shutdown_device() -> Json<JsonResponse> {
-    let shutdown = device_shutdown();
-    match shutdown {
+    match device_shutdown() {
         Ok(_) => {
             debug!("Going down for shutdown...");
             let status = "success".to_string();
@@ -686,6 +718,9 @@ fn rocket() -> rocket::Rocket {
                 network_card,            // WEB ROUTE
                 network_detail,          // WEB ROUTE
                 network_list,            // WEB ROUTE
+                reboot_cmd,              // WEB ROUTE
+                shutdown_cmd,            // WEB ROUTE
+                shutdown_menu,           // WEB ROUTE
                 activate_ap,             // JSON API
                 activate_client,         // JSON API
                 add_wifi,                // JSON API
@@ -696,7 +731,7 @@ fn rocket() -> rocket::Rocket {
                 return_state,            // JSON API
                 return_status,           // JSON API
                 reboot_device,           // JSON API
-                //remove_wifi,             // JSON API
+                //remove_wifi,           // JSON API
                 scan_networks,   // JSON API
                 shutdown_device, // JSON API
                 ping_pong,       // JSON API
