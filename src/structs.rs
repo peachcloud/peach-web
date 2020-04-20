@@ -123,9 +123,16 @@ impl NetworkDetailContext {
         let mut wlan_networks = HashMap::new();
         for ap in wlan_scan {
             let ssid = ap.ssid.clone();
+            let rssi = ap.signal_level.clone();
+            // remove leading `-` from rssi
+            let rssi_stripped = &rssi[1..];
+            let rssi_parsed = rssi_stripped.parse::<i32>().unwrap();
+            // perform rssi (dBm) to quality (%) conversion
+            let quality_percent = 2 * (rssi_parsed + 100);
             let ap_detail = AccessPoint {
                 detail: Some(ap),
                 state: "Available".to_string(),
+                signal: Some(quality_percent),
             };
             wlan_networks.insert(ssid, ap_detail);
         }
@@ -136,6 +143,7 @@ impl NetworkDetailContext {
                 let net_detail = AccessPoint {
                     detail: None,
                     state: "Not in range".to_string(),
+                    signal: None,
                 };
                 wlan_networks.insert(ssid, net_detail);
             }
@@ -451,6 +459,7 @@ pub struct Scan {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AccessPoint {
     pub detail: Option<Scan>,
+    pub signal: Option<i32>,
     pub state: String,
 }
 
