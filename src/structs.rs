@@ -62,7 +62,7 @@ impl NetworkDetailContext {
             }
             Err(_) => Vec::new(),
         };
-        let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
+        let wlan_rssi = match network_get_rssi_percent("wlan0".to_string()) {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
@@ -230,7 +230,7 @@ impl NetworkContext {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let wlan_rssi = match network_get_rssi("wlan0".to_string()) {
+        let wlan_rssi = match network_get_rssi_percent("wlan0".to_string()) {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
