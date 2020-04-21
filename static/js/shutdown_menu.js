@@ -23,7 +23,7 @@ PEACH_DEVICE.reboot = function() {
         var rebootDevice = document.getElementById('reboot');
         if (rebootDevice) {
             rebootDevice.addEventListener('click', function(e) {
-                // prevent form submission (default behavior)
+                // prevent redirect on button press (default behavior)
                 e.preventDefault();
                 // write reboot flash message
                 PEACH_DEVICE.flashMsg("success", "Rebooting the device...")
@@ -104,9 +104,11 @@ PEACH_DEVICE.flashMsg = function(status, msg) {
         // add json response message to flash message div
         var flashMsg = document.createTextNode(msg);
         flashDiv.appendChild(flashMsg);
-        // insert the flash message div above the three icon grid div
-        var gridDiv = document.getElementById("gridDiv");
-        gridDiv.parentNode.insertBefore(flashDiv, gridDiv);
+        // insert the flash message div below the button div
+        var buttonDiv = document.getElementById("buttonDiv");
+        // flashDiv will be added to the end since buttonDiv is the last
+        // child within the parent element (card-container div)
+        buttonDiv.parentNode.insertBefore(flashDiv, buttonDiv.nextSibling);
     }
 }
 
