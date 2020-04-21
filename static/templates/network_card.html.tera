@@ -164,6 +164,6 @@
                     </div>
                 </div>
             </div>
-            <script type="text/javascript" src="js/network_card.js"></script>
+            <script type="text/javascript" src="/js/network_card.js"></script>
             {% endif %}
 {% endblock %}
