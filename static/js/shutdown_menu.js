@@ -26,7 +26,7 @@ PEACH_DEVICE.reboot = function() {
                 // prevent redirect on button press (default behavior)
                 e.preventDefault();
                 // write reboot flash message
-                PEACH_DEVICE.flashMsg("success", "Rebooting the device...")
+                PEACH_DEVICE.flashMsg("success", "Rebooting the device...");
                 // send reboot_device POST request
                 fetch("/api/v1/device/reboot", {
                     method: "post",
@@ -57,7 +57,7 @@ PEACH_DEVICE.shutdown = function() {
                 // prevent form submission (default behavior)
                 e.preventDefault();
                 // write shutdown flash message
-                PEACH_DEVICE.flashMsg("success", "Shutting down the device...")
+                PEACH_DEVICE.flashMsg("success", "Shutting down the device...");
                 // send shutdown_device POST request
                 fetch("/api/v1/device/shutdown", {
                     method: "post",
