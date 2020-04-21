@@ -48,7 +48,7 @@ PEACH_NETWORK.activateAp = function() {
                         PEACH_NETWORK.apOnline();
                     }
                 })
-            });
+            }, false);
         }
     });
 }
@@ -81,7 +81,7 @@ PEACH_NETWORK.activateClient = function() {
                         PEACH_NETWORK.clientOnline();
                     }
                 })
-            });
+            }, false);
         }
     });
 }
