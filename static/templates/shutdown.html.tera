@@ -7,9 +7,9 @@
             <h1 class="bold center center-text title-medium">Shutdown Device</h1>
             <!-- BUTTONS -->
             <div id="buttonDiv">
-              <a id="reboot" class="button center" href="/device/reboot" title="Reboot Device">Reboot</a>
-              <a id="shutdown" class="button center" href="/device/shutdown" title="Shutdown Device">Shutdown</a>
-              <a id="cancel" class="button center" href="/" title="Cancel">Cancel</a>
+              <a id="rebootBtn" class="button center" href="/device/reboot" title="Reboot Device">Reboot</a>
+              <a id="shutdownBtn" class="button center" href="/device/shutdown" title="Shutdown Device">Shutdown</a>
+              <a id="cancelBtn" class="button center" href="/" title="Cancel">Cancel</a>
             </div>
             <!-- FLASH MESSAGE -->
             <!-- check for flash message and display accordingly -->

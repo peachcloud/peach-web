@@ -20,7 +20,7 @@ var PEACH_DEVICE = {};
 // catch click of 'Reboot' button and make POST request
 PEACH_DEVICE.reboot = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var rebootDevice = document.getElementById('reboot');
+        var rebootDevice = document.getElementById('rebootBtn');
         if (rebootDevice) {
             rebootDevice.addEventListener('click', function(e) {
                 // prevent redirect on button press (default behavior)
@@ -43,7 +43,7 @@ PEACH_DEVICE.reboot = function() {
                     // write json response message to ui
                     PEACH_DEVICE.flashMsg(jsonData.status, jsonData.msg);
                 })
-            });
+            }, false);
         }
     });
 }
@@ -51,7 +51,7 @@ PEACH_DEVICE.reboot = function() {
 // catch click of 'Shutdown' button and make POST request
 PEACH_DEVICE.shutdown = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var shutdownDevice = document.getElementById('shutdown');
+        var shutdownDevice = document.getElementById('shutdownBtn');
         if (shutdownDevice) {
             shutdownDevice.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
@@ -74,7 +74,7 @@ PEACH_DEVICE.shutdown = function() {
                     // write json response message to ui
                     PEACH_DEVICE.flashMsg(jsonData.status, jsonData.msg);
                 })
-            });
+            }, false);
         }
     });
 }
