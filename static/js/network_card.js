@@ -175,8 +175,8 @@ PEACH_NETWORK.flashMsg = function(status, msg) {
 }
 
 var networkInstance = PEACH_NETWORK;
-
-/* networkInstance.activateAp(); */
+networkInstance.activateAp();
+networkInstance.activateClient();
 
 /*
 
