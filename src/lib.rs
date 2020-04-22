@@ -614,7 +614,7 @@ fn reboot_device() -> Json<JsonResponse> {
         Ok(_) => {
             debug!("Going down for reboot...");
             let status = "success".to_string();
-            let msg = "Rebooting the device.".to_string();
+            let msg = "Going down for reboot.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
         Err(_) => {
@@ -633,7 +633,7 @@ fn shutdown_device() -> Json<JsonResponse> {
         Ok(_) => {
             debug!("Going down for shutdown...");
             let status = "success".to_string();
-            let msg = "Shutting down the device.".to_string();
+            let msg = "Going down for shutdown.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
         Err(_) => {
