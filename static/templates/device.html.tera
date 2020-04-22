@@ -12,18 +12,22 @@
                 <span style="width: 20%;">CPU Usage - 20% of total capacity</span>
               </div>
             </meter>
-            <p class="card-text">Memory 35%</p>
-            <meter value="35" min="0" max="100" title="Percent">
+            {% if mem_stats %}
+            <p class="card-text">Memory {{ mem_stats.used / mem_stats.total * 100 }}%</p>
+            <meter value="{{ mem_stats.used / 1024 }}" min="0" max="{{ mem_stats.total / 1024 }}" title="Memory usage">
               <div class="meter-gauge">
-                <span style="width: 35%;">Memory Usage - 35% of total capacity</span>
+                  <span style="width: {{ mem_stats.used / mem_stats.total * 100 }}%;">Memory Usage</span>
               </div>
             </meter>
+            {% else %}
+            <p class="card-text">Memory usage data unavailable</p>
+            {% endif %}
             <p class="card-text">Disk 80%</p>
             <meter value="80" min="0" max="100" title="Percent">
               <div class="meter-gauge">
                 <span style="width: 80%;">Disk Usage - 96GB out of 120GB</span>
               </div>
-            </meter><h1 class="bold center center-text title-medium">Shutdown Device</h1>
+            </meter>
             <!-- FLASH MESSAGE -->
             <!-- check for flash message and display accordingly -->
             {% if flash_msg and flash_name == "success" %}
