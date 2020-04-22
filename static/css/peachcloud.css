@@ -75,6 +75,7 @@ body {
 .button {
     background-color: var(--moon-gray);
     border: 1px solid var(--near-black);
+    border-radius: var(--border-radius-2);
     /* Needed to render inputs & buttons of equal width */
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -107,7 +108,7 @@ body {
     min-height: 50vh;
     max-height: 90vh;
     /* width: 90%; */
-    width: var(--max-width-5);
+    /* width: var(--max-width-5); */
     position: relative;
     /* box-shadow: var(--box-shadow-3); */
     /* margin-top: 1rem; */
@@ -569,7 +570,7 @@ body {
  */
 
 main {
-    /* width: 300px; */
+    min-width: var(--max-width-5);
     display: flex;
     flex-grow: 1;
     /* align-items: center; */
