@@ -1,5 +1,13 @@
 {% extends "nav" %}
 
+{# ASSIGN VARIABLES #}
+{# ---------------- #}
+{% if mem_stats %}
+{% set mem_usage_percent = mem_stats.used / mem_stats.total * 100 | round %}
+{% set mem_used = mem_stats.used / 1024 | round %}
+{% set mem_total = mem_stats.total / 1024 | round %}
+{% endif %}
+
 {% block card %}
         <!-- DEVICE MENU / STATISTICS VIEW -->
         <div class="card center">
@@ -13,10 +21,10 @@
               </div>
             </meter>
             {% if mem_stats %}
-            <p class="card-text">Memory {{ mem_stats.used / mem_stats.total * 100 | round }}%</p>
-            <meter value="{{ mem_stats.used / 1024 | round }}" min="0" max="{{ mem_stats.total / 1024 | round }}" title="Memory usage">
+            <p class="card-text">Memory {{ mem_usage_percent }}%</p>
+            <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
               <div class="meter-gauge">
-                  <span style="width: {{ mem_stats.used / mem_stats.total * 100 | round }}%;">Memory Usage</span>
+                  <span style="width: {{ mem_usage_percent }}%;">Memory Usage</span>
               </div>
             </meter>
             {% else %}
