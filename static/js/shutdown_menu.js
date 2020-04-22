@@ -113,3 +113,5 @@ PEACH_DEVICE.flashMsg = function(status, msg) {
 }
 
 var deviceInstance = PEACH_DEVICE;
+deviceInstance.reboot();
+deviceInstance.shutdown();
