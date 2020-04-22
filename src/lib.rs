@@ -18,6 +18,7 @@ extern crate websocket;
 mod device;
 mod error;
 mod network;
+mod stats;
 mod structs;
 #[cfg(test)]
 mod tests;
@@ -30,8 +31,8 @@ use crate::device::*;
 use crate::error::BoxError;
 use crate::network::*;
 use crate::structs::{
-    FlashContext, JsonResponse, NetworkAddContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext, Ssid, WiFi,
+    DeviceContext, FlashContext, JsonResponse, NetworkAddContext, NetworkContext,
+    NetworkDetailContext, NetworkListContext, Ssid, WiFi,
 };
 use crate::ws::*;
 
@@ -46,6 +47,7 @@ use rocket_contrib::templates::Template;
 // WEB PAGE ROUTES
 
 //  [GET]       /                               Home
+//  [GET]       /device                         Device statistics
 //  [GET]       /device/reboot                  Reboot device
 //  [GET]       /device/shutdown                Shutdown device
 //  [GET]       /network/ap/activate            Activate WiFi access point mode
@@ -70,6 +72,21 @@ fn index() -> Template {
         flash_msg: None,
     };
     Template::render("index", &context)
+}
+
+#[get("/device")]
+fn device_stats(flash: Option<FlashMessage>) -> Template {
+    // assign context through context_builder call
+    let mut context = DeviceContext::build();
+    context.back = Some("/".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("device", &context)
 }
 
 #[get("/network")]
@@ -710,6 +727,7 @@ fn rocket() -> rocket::Rocket {
                 add_credentials,         // WEB ROUTE
                 deploy_ap,               // WEB ROUTE
                 deploy_client,           // WEB ROUTE
+                device_stats,            // WEB ROUTE
                 forget_wifi,             // WEB ROUTE
                 network_modify_password, // WEB ROUTE
                 modify_password,         // WEB ROUTE
@@ -731,7 +749,7 @@ fn rocket() -> rocket::Rocket {
                 return_state,            // JSON API
                 return_status,           // JSON API
                 reboot_device,           // JSON API
-                //remove_wifi,           // JSON API
+                //remove_wifi,              // JSON API
                 scan_networks,   // JSON API
                 shutdown_device, // JSON API
                 ping_pong,       // JSON API

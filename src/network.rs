@@ -571,60 +571,60 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
 }
 
 jsonrpc_client!(pub struct PeachNetworkClient {
-    /// Creates a JSON-RPC request to activate the access point.
+    /// JSON-RPC request to activate the access point.
     pub fn activate_ap(&mut self) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to activate the wireless client (wlan0).
+    /// JSON-RPC request to activate the wireless client (wlan0).
     pub fn activate_client(&mut self) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to save credentials for an access point.
+    /// JSON-RPC request to save credentials for an access point.
     pub fn add_wifi(&mut self, ssid: String, pass: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the ID for the given interface and SSID.
+    /// JSON-RPC request to get the ID for the given interface and SSID.
     pub fn get_id(&mut self, iface: &str, ssid: &str) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the IP address for the given interface.
+    /// JSON-RPC request to get the IP address for the given interface.
     pub fn get_ip(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the average signal strength (dBm) for the given interface.
+    /// JSON-RPC request to get the average signal strength (dBm) for the given interface.
     pub fn get_rssi(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the average signal quality (%) for the given interface.
+    /// JSON-RPC request to get the average signal quality (%) for the given interface.
     pub fn get_rssi_percent(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the SSID of the currently-connected network for the given interface.
+    /// JSON-RPC request to get the SSID of the currently-connected network for the given interface.
     pub fn get_ssid(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the state for the given interface.
+    /// JSON-RPC request to get the state for the given interface.
     pub fn get_state(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the status of the given interface.
+    /// JSON-RPC request to get the status of the given interface.
     pub fn get_status(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to get the network traffic for the given interface.
+    /// JSON-RPC request to get the network traffic for the given interface.
     pub fn get_traffic(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to list all networks saved in `wpa_supplicant.conf`.
+    /// JSON-RPC request to list all networks saved in `wpa_supplicant.conf`.
     pub fn list_networks(&mut self) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to set a new network password for the given interface and ID.
+    /// JSON-RPC request to set a new network password for the given interface and ID.
     pub fn new_password(&mut self, id: &str, iface: &str, pass: &str) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to reread the wpa_supplicant config for the given interface.
+    /// JSON-RPC request to reread the wpa_supplicant config for the given interface.
     pub fn reconfigure_wifi(&mut self) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to reconnect WiFi for the given interface.
+    /// JSON-RPC request to reconnect WiFi for the given interface.
     pub fn reconnect_wifi(&mut self, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to remove the credentials for the given network from the wpa_supplicant config.
+    /// JSON-RPC request to remove the credentials for the given network from the wpa_supplicant config.
     pub fn remove_wifi(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to save network configuration updates to file.
+    /// JSON-RPC request to save network configuration updates to file.
     pub fn save_config(&mut self) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to select the network for the given interface and ID.
+    /// JSON-RPC request to select the network for the given interface and ID.
     pub fn select_network(&mut self, id: String, iface: String) -> RpcRequest<String>;
 
-    /// Creates a JSON-RPC request to list all networks in range of the given interface.
+    /// JSON-RPC request to list all networks in range of the given interface.
     pub fn scan_networks(&mut self, iface: String) -> RpcRequest<String>;
 });

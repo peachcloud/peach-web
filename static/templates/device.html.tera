@@ -1,0 +1,42 @@
+{% extends "nav" %}
+
+{% block card %}
+        <!-- DEVICE MENU / STATISTICS VIEW -->
+        <div class="card center">
+          <div class="card-container">
+            <!-- HACK: use class for removing top margin -->
+            <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Usage</h1>
+            <p class="card-text">CPU 20%</p>
+            <meter value="20" min="0" max="100" title="Percent">
+              <div class="meter-gauge">
+                <span style="width: 20%;">CPU Usage - 20% of total capacity</span>
+              </div>
+            </meter>
+            <p class="card-text">Memory 35%</p>
+            <meter value="35" min="0" max="100" title="Percent">
+              <div class="meter-gauge">
+                <span style="width: 35%;">Memory Usage - 35% of total capacity</span>
+              </div>
+            </meter>
+            <p class="card-text">Disk 80%</p>
+            <meter value="80" min="0" max="100" title="Percent">
+              <div class="meter-gauge">
+                <span style="width: 80%;">Disk Usage - 96GB out of 120GB</span>
+              </div>
+            </meter><h1 class="bold center center-text title-medium">Shutdown Device</h1>
+            <!-- FLASH MESSAGE -->
+            <!-- check for flash message and display accordingly -->
+            {% if flash_msg and flash_name == "success" %}
+            <!-- display success message -->
+            <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+            {% elif flash_msg and flash_name == "error" %}
+            <!-- display error message -->
+            <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+            {% endif %}
+            <!-- share ux information with the user if JS is disabled -->
+            <noscript>
+              <p class="center-text flash-message">This website will be unresponsive while the device shuts down or reboots.</p>
+            </noscript>
+          </div>
+        </div>
+{% endblock %}

@@ -4,6 +4,39 @@ use std::collections::HashMap;
 use rocket_contrib::json::JsonValue;
 
 use crate::network::*;
+use crate::stats::*;
+
+// used in /device for system statistics
+#[derive(Debug, Serialize)]
+pub struct DeviceContext {
+    pub back: Option<String>,
+    pub cpu_stat_percent: Option<CpuStatPercentages>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub load_average: Option<LoadAverage>,
+    pub mem_stats: Option<MemStat>,
+    pub uptime: Option<String>,
+}
+
+impl DeviceContext {
+    pub fn build() -> DeviceContext {
+        // convert result to Option<CpuStatPercentages>, discard any error
+        let cpu_stat_percent = cpu_stats_percent().ok();
+        let load_average = load_average().ok();
+        let mem_stats = mem_stats().ok();
+        let uptime = uptime().ok();
+
+        DeviceContext {
+            back: None,
+            cpu_stat_percent,
+            flash_name: None,
+            flash_msg: None,
+            load_average,
+            mem_stats,
+            uptime,
+        }
+    }
+}
 
 #[derive(Debug, Serialize)]
 pub struct FlashContext {
@@ -470,7 +503,7 @@ pub struct Traffic {
     pub tx_unit: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Uptime {
     pub secs: u64,
     pub nanos: u32,

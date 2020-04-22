@@ -22,3 +22,21 @@ impl From<jsonrpc_client_core::Error> for NetworkError {
         NetworkError::NetworkClient(err)
     }
 }
+
+#[derive(Debug)]
+pub enum StatsError {
+    StatsHttp(jsonrpc_client_http::Error),
+    StatsClient(jsonrpc_client_core::Error),
+}
+
+impl From<jsonrpc_client_http::Error> for StatsError {
+    fn from(err: jsonrpc_client_http::Error) -> StatsError {
+        StatsError::StatsHttp(err)
+    }
+}
+
+impl From<jsonrpc_client_core::Error> for StatsError {
+    fn from(err: jsonrpc_client_core::Error) -> StatsError {
+        StatsError::StatsClient(err)
+    }
+}

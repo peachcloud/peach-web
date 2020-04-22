@@ -3,6 +3,8 @@
 {% block card %}
             <!-- CARD -->
             <div class="card">
-                <h1>PeachCloud Home</h1>
+              <h1 class="bold center center-text title-medium">PeachCloud Home</h1>
+              <a href="/network">Network</a>
+              <a href="/device">Device</a>
             </div>
 {% endblock %}
