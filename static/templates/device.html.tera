@@ -13,10 +13,10 @@
               </div>
             </meter>
             {% if mem_stats %}
-            <p class="card-text">Memory {{ mem_stats.used / mem_stats.total * 100 }}%</p>
-            <meter value="{{ mem_stats.used / 1024 }}" min="0" max="{{ mem_stats.total / 1024 }}" title="Memory usage">
+            <p class="card-text">Memory {{ mem_stats.used / mem_stats.total * 100 | round }}%</p>
+            <meter value="{{ mem_stats.used / 1024 | round }}" min="0" max="{{ mem_stats.total / 1024 | round }}" title="Memory usage">
               <div class="meter-gauge">
-                  <span style="width: {{ mem_stats.used / mem_stats.total * 100 }}%;">Memory Usage</span>
+                  <span style="width: {{ mem_stats.used / mem_stats.total * 100 | round }}%;">Memory Usage</span>
               </div>
             </meter>
             {% else %}
