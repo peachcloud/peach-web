@@ -1,14 +1,13 @@
 {% extends "nav" %}
 
-{# ASSIGN VARIABLES #}
-{# ---------------- #}
-{% if mem_stats %}
-{% set mem_usage_percent = mem_stats.used / mem_stats.total * 100 | round %}
-{% set mem_used = mem_stats.used / 1024 | round %}
-{% set mem_total = mem_stats.total / 1024 | round %}
-{% endif %}
-
 {% block card %}
+    {# ASSIGN VARIABLES #}
+    {# ---------------- #}
+    {% if mem_stats %}
+    {% set mem_usage_percent = mem_stats.used / mem_stats.total * 100 | round %}
+    {% set mem_used = mem_stats.used / 1024 | round %}
+    {% set mem_total = mem_stats.total / 1024 | round %}
+    {% endif %}
         <!-- DEVICE MENU / STATISTICS VIEW -->
         <div class="card center">
           <div class="card-container">
