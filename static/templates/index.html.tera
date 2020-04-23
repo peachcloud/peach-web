@@ -1,10 +1,9 @@
-{% extends "nav" %}
-
-{% block card %}
+{%- extends "nav" -%}
+{%- block card %}
             <!-- CARD -->
             <div class="card">
               <h1 class="bold center center-text title-medium">PeachCloud Home</h1>
               <a href="/network">Network</a>
               <a href="/device">Device</a>
             </div>
-{% endblock %}
+{%- endblock -%}

@@ -1,6 +1,5 @@
-{% extends "base" %}
-
-{% block nav %}
+{%- extends "base" -%}
+{%- block nav -%}
         <!-- Top nav bar -->
         <nav class="nav-bar">
             <a class="nav-item" href="/">
@@ -18,7 +17,7 @@
         </nav>
         <!-- Main content container -->
         <main>
-            {% block card %}{% endblock %}
+            {%- block card -%}{%- endblock -%}
         </main>
         <!-- Bottom nav bar -->
         <nav class="nav-bar">
@@ -29,4 +28,4 @@
                 <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question mark">
             </a>
         </nav>
-{% endblock %}
+{%- endblock -%}

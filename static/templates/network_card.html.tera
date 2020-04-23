@@ -1,8 +1,8 @@
-{% extends "nav" %}
+{%- extends "nav" -%}
 
-{% block card %}
+{%- block card %}
             <!-- if ap is up, show ap card, else show wlan card -->
-            {% if ap_state == "up" %}
+            {%- if ap_state == "up" %}
             <!-- NETWORK CARD -->
             <div class="card">
                 <!-- NETWORK INFO BOX -->
@@ -33,13 +33,13 @@
                 </div>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
-                {% if flash_msg and flash_name == "success" %}
+                {%- if flash_msg and flash_name == "success" %}
                 <!-- display success message -->
                 <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
-                {% elif flash_msg and flash_name == "error" %}
+                {%- elif flash_msg and flash_name == "error" %}
                 <!-- display error message -->
                 <div class="center-text flash-message font-failure" style="margin-bottom: 0px; padding-bottom: 0px; padding-top: 0px;">{{ flash_msg }}</div>
-                {% endif %}
+                {%- endif %}
                 <!-- CARD GRID -->
                 <div class="card-container">
                     <div class="three-grid">
@@ -53,33 +53,33 @@
                         <div class="stack">
                             <img id="dataDownload" class="icon icon-medium" title="Download" src="icons/down-arrow.svg" alt="Download">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
-                                {% if ap_traffic %}
+                                {%- if ap_traffic -%}
                                 <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total in {{ ap_traffic.rx_unit }}">{{ ap_traffic.received }}</label>
                                 <label class="label-small font-near-black">{{ ap_traffic.rx_unit }}</label>
-                                {% else %}
+                                {%- else -%}
                                 <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total"></label>
                                 <label class="label-small font-near-black"></label>
-                                {% endif %}
+                                {%- endif -%}
                             </div>
                             <label class="label-small font-gray">DOWNLOAD</label>
                         </div>
                         <div class="stack">
                             <img id="dataUpload" class="icon icon-medium" title="Upload" src="icons/up-arrow.svg" alt="Upload">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
-                                {% if ap_traffic %}
+                                {%- if ap_traffic -%}
                                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total in {{ ap_traffic.tx_unit }}">{{ ap_traffic.transmitted }}</label>
                                 <label class="label-small font-near-black">{{ ap_traffic.tx_unit }}</label>
-                                {% else %}
+                                {%- else -%}
                                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total"></label>
                                 <label class="label-small font-near-black"></label>
-                                {% endif %}
+                                {%- endif -%}
                             </div>
                             <label class="label-small font-gray">UPLOAD</label>
                         </div>
                     </div>
                 </div>
             </div>
-            {% else %}
+            {%- else %}
             <!-- NETWORK CARD -->
             <div class="card">
                 <!-- NETWORK INFO BOX -->
@@ -88,13 +88,13 @@
                     <!-- left column -->
                     <!-- network mode icon with label -->
                     <div class="grid-column-1">
-                    {% if wlan_state == "up" %}
+                    {%- if wlan_state == "up" -%}
                         <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg" alt="WiFi online">
                         <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">ONLINE</label>
-                    {% else %}
+                    {%- else -%}
                         <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg" alt="WiFi offline">
                         <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">OFFLINE</label>
-                    {% endif %}
+                    {%- endif -%}
                     </div>
                     <!-- right column -->
                     <!-- network mode, ssid & ip with labels -->
@@ -115,13 +115,13 @@
                 </div>
                 <!-- FLASH MESSAGE -->
                 <!-- check for flash message and display accordingly -->
-                {% if flash_msg and flash_name == "success" %}
+                {%- if flash_msg and flash_name == "success" %}
                 <!-- display success message -->
                 <div id="flashMsg" class="center-text flash-message font-success">{{ flash_msg }}</div>
-                {% elif flash_msg and flash_name == "error" %}
+                {%- elif flash_msg and flash_name == "error" %}
                 <!-- display error message -->
                 <div id="flashMsg" class="center-text flash-message font-failure">{{ flash_msg }}</div>
-                {% endif %}
+                {%- endif %}
                 <div id="gridDiv" class="card-container">
                     <!-- CARD GRID -->
                     <!-- row of icons representing network statistics -->
@@ -136,28 +136,28 @@
                         <div class="stack">
                             <img id="dataDownload" class="icon icon-medium" alt="Download" title="WiFi download total" src="icons/down-arrow.svg">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
-                                {% if wlan_traffic %}
+                                {%- if wlan_traffic %}
                                 <!-- display wlan traffic data -->
                                 <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total in {{ wlan_traffic.rx_unit }}">{{ wlan_traffic.received }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
-                                {% else %}
+                                {%- else %}
                                 <!-- no wlan traffic data to display -->
                                 <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total"></label>
                                 <label class="label-small font-near-black"></label>
-                                {% endif %}
+                                {%- endif -%}
                             </div>
                             <label class="label-small font-gray">DOWNLOAD</label>
                         </div>
                         <div class="stack">
                             <img id="dataUpload" class="icon icon-medium" alt="Upload" title="WiFi upload total" src="icons/up-arrow.svg">
                             <div class="flex-grid" style="padding-top: 0.5rem;">
-                                {% if wlan_traffic %}
+                                {%- if wlan_traffic -%}
                                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
                                 <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
-                                {% else %}
+                                {%- else -%}
                                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total"></label>
                                 <label class="label-small font-near-black"></label>
-                                {% endif %}
+                                {%- endif -%}
                             </div>
                             <label class="label-small font-gray">UPLOAD</label>
                         </div>
@@ -165,5 +165,5 @@
                 </div>
             </div>
             <script type="text/javascript" src="/js/network_card.js"></script>
-            {% endif %}
-{% endblock %}
+            {%- endif -%}
+{%- endblock -%}

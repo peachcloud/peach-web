@@ -1,11 +1,10 @@
-{% extends "nav" %}
-
-{% block card %}
+{%- extends "nav" -%}
+{%- block card -%}
         <div class="card">
             <div class="card-container">
                 <h1 class="bold center-text title-medium">404: Page Not Found</h1>
-                <p style="padding-left: 0.5rem;">No PeachCloud resource exists for this URL.</p>
-                <p style="padding-left: 0.5rem;">Click the PeachCloud logo in the top-left of your screen to return to Home.</p>
+                <p>No PeachCloud resource exists for this URL.</p>
+                <p>Click the PeachCloud logo in the top-left of your screen to return to Home.</p>
             </div>
         </div>
-{% endblock %}
+{%- endblock -%}
