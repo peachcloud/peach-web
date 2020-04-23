@@ -13,7 +13,7 @@
     {% endif %}
     {% if disk_stats %}
     {% for disk in disk_stats %}
-    {% set disk_usage_percent = disk.used_percentage %}
+    {% set_global disk_usage_percent = disk.used_percentage %}
     {% endfor %}
     {% endif %}
         <!-- DEVICE MENU / STATISTICS VIEW -->
