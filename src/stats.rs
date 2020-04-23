@@ -5,7 +5,7 @@ use std::env;
 use jsonrpc_client_http::HttpTransport;
 
 use crate::error::StatsError;
-use crate::structs::{CpuStatPercentages, LoadAverage, MemStat, Uptime};
+use crate::structs::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Uptime};
 
 // TODO: Replace unwraps with snafu errors
 
@@ -26,6 +26,25 @@ pub fn cpu_stats_percent() -> std::result::Result<CpuStatPercentages, StatsError
     let c: CpuStatPercentages = serde_json::from_str(&response).unwrap();
 
     Ok(c)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-stats`
+/// `disk_usage` method.
+///
+pub fn disk_usage() -> std::result::Result<DiskUsage, StatsError> {
+    debug!("Creating HTTP transport for stats client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr = env::var("PEACH_STATS_SERVER").unwrap_or_else(|_| "127.0.0.1:5113".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_stats service.");
+    let mut client = PeachStatsClient::new(transport_handle);
+
+    let response = client.disk_usage().call()?;
+    let d: DiskUsage = serde_json::from_str(&response).unwrap();
+
+    Ok(d)
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
@@ -89,6 +108,9 @@ pub fn uptime() -> std::result::Result<String, StatsError> {
 jsonrpc_client!(pub struct PeachStatsClient {
     /// JSON-RPC request to get measurement of current CPU statistics.
     pub fn cpu_stats_percent(&mut self) -> RpcRequest<String>;
+
+    /// JSON-RPC request to get measurement of current disk usage statistics.
+    pub fn disk_usage(&mut self) -> RpcRequest<String>;
 
     /// JSON-RPC request to get measurement of current load average statistics.
     pub fn load_average(&mut self) -> RpcRequest<String>;

@@ -11,6 +11,7 @@ use crate::stats::*;
 pub struct DeviceContext {
     pub back: Option<String>,
     pub cpu_stat_percent: Option<CpuStatPercentages>,
+    pub disk_stats: Vec<DiskUsage>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub load_average: Option<LoadAverage>,
@@ -22,13 +23,24 @@ impl DeviceContext {
     pub fn build() -> DeviceContext {
         // convert result to Option<CpuStatPercentages>, discard any error
         let cpu_stat_percent = cpu_stats_percent().ok();
+        let disk_usage = disk_usage().ok();
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
         let uptime = uptime().ok();
 
+        let mut disk_stats = Vec::new();
+
+        // select only the partition we're interested in: /dev/mmcblk0p2 ("/")
+        for disk in disk_usage {
+            if disk.mountpoint == "/" {
+                disk_stats.push(disk);
+            }
+        }
+
         DeviceContext {
             back: None,
             cpu_stat_percent,
+            disk_stats,
             flash_name: None,
             flash_msg: None,
             load_average,
