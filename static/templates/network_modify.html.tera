@@ -1,5 +1,5 @@
 {%- extends "nav" -%}
-{%- block card -%}
+{%- block card %}
         <!-- NETWORK MODIFY AP PASSWORD FORM -->
         <div class="card center">
           <div class="card-container">

@@ -1,65 +1,65 @@
 {%- extends "nav" -%}
 {%- block card -%}
-    {%- if wlan_networks -%}
-    {%- for ssid, ap in wlan_networks -%}
-        {# select only the access point we are interested in #}
-        {%- if ssid == selected %}
-        <!-- NETWORK CARD -->
-        <div class="card center">
-            <!-- NETWORK INFO BOX -->
-            <div class="two-grid" title="PeachCloud network mode and status">
-                <!-- left column -->
-                <!-- NETWORK STATUS ICON -->
-                <div class="grid-column-1">
-                    <img id="wifiIcon" class="center icon" src="/icons/wifi.svg" alt="WiFi icon">
-                    <label class="center label-small font-gray" for="wifiIcon" title="Access Point Status">{% if ssid == wlan_ssid %}CONNECTED{% elif ap.state == "Available" %}AVAILABLE{% else %}NOT IN RANGE{% endif %}</label>
-                </div>
-                <!-- right column -->
-                <!-- NETWORK DETAILED INFO -->
-                <div class="grid-column-2">
-                    <label class="label-small font-gray" for="netSsid" title="WiFi network SSID">SSID</label>
-                    <p id="netSsid" class="card-text" title="SSID">{{ ssid }}</p>
-                    <label class="label-small font-gray" for="netSec" title="Security protocol">SECURITY</label>
-                    <p id="netSec" class="card-text" title="Security protocol in use by {{ ssid }}">{% if ap.detail %}{% if ap.detail.protocol != "" %}{{ ap.detail.protocol }}{% else %}None{% endif %}{% else %}Unknown{% endif %}</p>
-                    <label class="label-small font-gray" for="netSig" title="Signal Strength">SIGNAL</label>
-                    <p id="netSig" class="card-text" title="Signal strength of WiFi access point">{% if ap.signal %}{{ ap.signal }}%{% else %}Unknown{% endif %}</p>
-                </div>
-            </div>
-            <!-- BUTTONS -->
-            <div class="card-container" style="padding-top: 0;">
-                {%- if wlan_ssid == selected -%}
-                <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
-                {%- elif wlan_ssid != selected and ap.state == "Available" -%}
-                <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Connect</a>
-                {%- endif -%}
-                {%- if saved_aps -%}
-                {# Loop through the list of AP's with saved credentials #}
-                {%- for ap in saved_aps -%}
-                {# If the selected access point appears in the list, #}
-                {# display the Modify and Forget buttons.            #}
-                {%- if ap.ssid == selected -%}
-                <a class="button center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
-                <form id="wifiForget" action="/network/wifi/forget" method="post">
-                    <!-- hidden element: allows ssid to be sent in request -->
-                    <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
-                    <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
-                </form>
-                {%- endif -%}
-                {%- endfor -%}
-                {%- endif -%}
-                <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
-                <!-- FLASH MESSAGE -->
-                <!-- check for flash message and display accordingly -->
-                {%- if flash_msg and flash_name == "success" %}
-                <!-- display success message -->
-                <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}</div>
-                {%- elif flash_msg and flash_name == "error" %}
-                <!-- display error message -->
-                <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}</div>
-                {%- endif -%}
-            </div>
+  {%- if wlan_networks -%}
+  {%- for ssid, ap in wlan_networks -%}
+    {# select only the access point we are interested in #}
+    {%- if ssid == selected %}
+    <!-- NETWORK CARD -->
+    <div class="card center">
+      <!-- NETWORK INFO BOX -->
+      <div class="two-grid" title="PeachCloud network mode and status">
+        <!-- left column -->
+        <!-- NETWORK STATUS ICON -->
+        <div class="grid-column-1">
+          <img id="wifiIcon" class="center icon" src="/icons/wifi.svg" alt="WiFi icon">
+          <label class="center label-small font-gray" for="wifiIcon" title="Access Point Status">{% if ssid == wlan_ssid %}CONNECTED{% elif ap.state == "Available" %}AVAILABLE{% else %}NOT IN RANGE{% endif %}</label>
         </div>
+        <!-- right column -->
+        <!-- NETWORK DETAILED INFO -->
+        <div class="grid-column-2">
+          <label class="label-small font-gray" for="netSsid" title="WiFi network SSID">SSID</label>
+          <p id="netSsid" class="card-text" title="SSID">{{ ssid }}</p>
+          <label class="label-small font-gray" for="netSec" title="Security protocol">SECURITY</label>
+          <p id="netSec" class="card-text" title="Security protocol in use by {{ ssid }}">{% if ap.detail %}{% if ap.detail.protocol != "" %}{{ ap.detail.protocol }}{% else %}None{% endif %}{% else %}Unknown{% endif %}</p>
+          <label class="label-small font-gray" for="netSig" title="Signal Strength">SIGNAL</label>
+          <p id="netSig" class="card-text" title="Signal strength of WiFi access point">{% if ap.signal %}{{ ap.signal }}%{% else %}Unknown{% endif %}</p>
+        </div>
+      </div>
+      <!-- BUTTONS -->
+      <div class="card-container" style="padding-top: 0;">
+      {%- if wlan_ssid == selected -%}
+        <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
+      {%- elif wlan_ssid != selected and ap.state == "Available" -%}
+        <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Connect</a>
+      {%- endif -%}
+      {%- if saved_aps -%}
+      {# Loop through the list of AP's with saved credentials #}
+      {%- for ap in saved_aps -%}
+      {# If the selected access point appears in the list, #}
+      {# display the Modify and Forget buttons.            #}
+      {%- if ap.ssid == selected -%}
+        <a class="button center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
+        <form id="wifiForget" action="/network/wifi/forget" method="post">
+          <!-- hidden element: allows ssid to be sent in request -->
+          <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+          <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
+        </form>
+      {%- endif -%}
+      {%- endfor -%}
+      {%- endif -%}
+        <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
+        <!-- FLASH MESSAGE -->
+        <!-- check for flash message and display accordingly -->
+        {%- if flash_msg and flash_name == "success" %}
+        <!-- display success message -->
+        <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}</div>
+        {%- elif flash_msg and flash_name == "error" %}
+        <!-- display error message -->
+        <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}</div>
         {%- endif -%}
-    {%- endfor -%}
+        </div>
+      </div>
     {%- endif -%}
+  {%- endfor -%}
+  {%- endif -%}
 {%- endblock -%}

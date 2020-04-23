@@ -1,16 +1,16 @@
 <!doctype html>
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>PeachCloud</title>
-        <meta name="description" content="PeachCloud Network">
-        <meta name="author" content="glyph">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/peachcloud.css">
-        <style>@import url("/css/_variables.css");</style>
-    </head>
-    <body style="background-color: var(--moon-gray);">
-        {% block nav %}{% endblock %}
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <title>PeachCloud</title>
+    <meta name="description" content="PeachCloud Network">
+    <meta name="author" content="glyph">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/peachcloud.css">
+    <style>@import url("/css/_variables.css");</style>
+  </head>
+  <body style="background-color: var(--moon-gray);">
+    {% block nav %}{% endblock %}
+  </body>
 </html>

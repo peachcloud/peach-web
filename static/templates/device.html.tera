@@ -14,7 +14,7 @@
     {% for disk in disk_stats -%}
     {% set_global disk_usage_percent = disk.used_percentage -%}
     {% endfor -%}
-    {% endif -%}
+    {%- endif %}
         <!-- DEVICE MENU / STATISTICS VIEW -->
         <div class="card center">
           <div class="card-container">
@@ -68,4 +68,4 @@
             </noscript>
           </div>
         </div>
-{%- endblock -%}
+{% endblock -%}

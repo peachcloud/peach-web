@@ -1,5 +1,5 @@
 {%- extends "nav" -%}
-{%- block card -%}
+{%- block card %}
         <div class="card">
             <div class="card-container">
                 <h1 class="bold center-text title-medium">404: Page Not Found</h1>
