@@ -23,12 +23,22 @@ impl DeviceContext {
     pub fn build() -> DeviceContext {
         // convert result to Option<CpuStatPercentages>, discard any error
         let cpu_stat_percent = cpu_stats_percent().ok();
-        let disk_usage = disk_usage().ok();
+        //let disk_usage_stats = disk_usage().ok();
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
         let uptime = uptime().ok();
 
-        let mut disk_stats = Vec::new();
+        let disk_stats = match disk_usage() {
+            Ok(disks) => {
+                let partitions: Vec<DiskUsage> = serde_json::from_str(disks.as_str())
+                    .expect("Failed to deserialize disk_usage response");
+                partitions
+            }
+            Err(_) => Vec::new(),
+        };
+
+        /*
+         * let mut disk_stats = Vec::new();
 
         // select only the partition we're interested in: /dev/mmcblk0p2 ("/")
         for disk in disk_usage {
@@ -36,6 +46,7 @@ impl DeviceContext {
                 disk_stats.push(disk);
             }
         }
+        */
 
         DeviceContext {
             back: None,
