@@ -15,6 +15,9 @@
     {%- set_global disk_usage_percent = disk.used_percentage -%}
     {%- endfor -%}
     {%- endif -%}
+    {% if uptime -%}
+    {% set uptime_int = uptime | int -%}
+    {%- endif -%}
       <!-- DEVICE MENU / STATISTICS VIEW -->
       <div class="card center">
         <div class="card-container">
@@ -54,10 +57,10 @@
           <p class="card-text">Disk usage data unavailable</p>
           {%- endif %}
           {# Display system uptime in minutes #}
-          {%- if uptime and uptime < 60 %}
-          <p class="card-text">Uptime {{ uptime }} minutes</p>
-          {%- elif uptime and uptime > 60 -%}
-          <p class="card-text">Uptime {{ uptime / 60 }} hours</p>
+          {%- if uptime and uptime_int < 60 %}
+          <p class="card-text">Uptime {{ uptime_int }} minutes</p>
+          {%- elif uptime and uptime_int > 60 -%}
+          <p class="card-text">Uptime {{ uptime_int / 60 }} hours</p>
           {%- else -%}
           <p class="card-text">Uptime data unavailable</p>
           {%- endif %}
