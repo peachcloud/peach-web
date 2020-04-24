@@ -1,31 +1,31 @@
 {%- extends "nav" -%}
 {%- block card %}
-        <div class="card">
-          <div class="center list-container">
-            <h1 class="bold center-text title-medium">WiFi Networks</h1>
-            <ul class="list">
-            {%- if wlan_networks -%}
-            {%- for ssid, state in wlan_networks -%}
-              <li>
-              {%- if ssid == wlan_ssid -%}
-                <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
-                  <img id="netStatus" class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi online">
-                  <p class="list-text">{{ wlan_ssid }}</p>
-                  <label class="label-small list-label font-gray" for="netStatus" title="Status">Connected</label>
-                </a>
-              {%- else -%}
-                <a class="list-item link" href="/network/wifi?ssid={{ ssid }}">
-                  <img id="netStatus" class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi offline">
-                  <p class="list-text">{{ ssid }}</p>
-                  <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ state }}</label>
-                </a>
-              {%- endif -%}
-              </li>
-              {%- endfor -%}
-              {%- else -%}
-              <li class="list-item">No networks found</li>
+      <div class="card">
+        <div class="center list-container">
+          <h1 class="bold center-text title-medium">WiFi Networks</h1>
+          <ul class="list">
+          {% if wlan_networks -%}
+          {% for ssid, state in wlan_networks -%}
+            <li>
+            {% if ssid == wlan_ssid %}
+              <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
+                <img id="netStatus" class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi online">
+                <p class="list-text">{{ wlan_ssid }}</p>
+                <label class="label-small list-label font-gray" for="netStatus" title="Status">Connected</label>
+              </a>
+            {%- else -%}
+              <a class="list-item link" href="/network/wifi?ssid={{ ssid }}">
+                <img id="netStatus" class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi offline">
+                <p class="list-text">{{ ssid }}</p>
+                <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ state }}</label>
+              </a>
             {%- endif -%}
-            </ul>
-          </div>
+            </li>
+          {%- endfor -%}
+          {% else -%}
+            <li class="list-item">No networks found</li>
+          {% endif -%}
+          </ul>
         </div>
+      </div>
 {%- endblock -%}

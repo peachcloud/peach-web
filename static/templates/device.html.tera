@@ -9,63 +9,63 @@
     {% endif -%}
     {% if cpu_stat_percent -%}
     {% set cpu_usage_percent = cpu_stat_percent.nice + cpu_stat_percent.system + cpu_stat_percent.user | round -%}
-    {% endif -%}
-    {% if disk_stats -%}
-    {% for disk in disk_stats -%}
-    {% set_global disk_usage_percent = disk.used_percentage -%}
-    {% endfor -%}
-    {%- endif %}
-        <!-- DEVICE MENU / STATISTICS VIEW -->
-        <div class="card center">
-          <div class="card-container">
-            <!-- HACK: use class for removing top margin -->
-            <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Usage</h1>
-            {# Display CPU usage meter #}
-            {%- if cpu_stat_percent -%}
-            <p class="card-text">CPU {{ cpu_usage_percent }}%</p>
-            <meter value="{{ cpu_usage_percent }}" min="0" max="100" title="CPU usage">
-              <div class="meter-gauge">
-                <span style="width: {{ cpu_usage_percent }}%;">CPU Usage</span>
-              </div>
-            </meter>
-            {%- else -%}
-            <p class="card-text">CPU usage data unavailable</p>
-            {%- endif -%}
-            {# Display memory usage meter #}
-            {%- if mem_stats -%}
-            <p class="card-text">Memory {{ mem_usage_percent }}%</p>
-            <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
-              <div class="meter-gauge">
-                  <span style="width: {{ mem_usage_percent }}%;">Memory Usage</span>
-              </div>
-            </meter>
-            {%- else -%}
-            <p class="card-text">Memory usage data unavailable</p>
-            {%- endif -%}
-            {# Display disk usage meter #}
-            {%- if disk_stats -%}
-            <p class="card-text">Disk {{ disk_usage_percent }}%</p>
-            <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
-              <div class="meter-gauge">
-                <span style="width: {{ disk_usage_percent }}%;">Disk Usage</span>
-              </div>
-            </meter>
-            {%- else -%}
-            <p class="card-text">Disk usage data unavailable</p>
-            {%- endif %}
-            <!-- FLASH MESSAGE -->
-            <!-- check for flash message and display accordingly -->
-            {%- if flash_msg and flash_name == "success" -%}
-            <!-- display success message -->
-            <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
-            {%- elif flash_msg and flash_name == "error" -%}
-            <!-- display error message -->
-            <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
-            {%- endif %}
-            <!-- share ux information with the user if JS is disabled -->
-            <noscript>
-              <p class="center-text flash-message">This website will be unresponsive while the device shuts down or reboots.</p>
-            </noscript>
-          </div>
+    {%- endif -%}
+    {%- if disk_stats -%}
+    {%- for disk in disk_stats -%}
+    {%- set_global disk_usage_percent = disk.used_percentage -%}
+    {%- endfor -%}
+    {%- endif -%}
+      <!-- DEVICE MENU / STATISTICS VIEW -->
+      <div class="card center">
+        <div class="card-container">
+          <!-- HACK: use class for removing top margin -->
+          <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Usage</h1>
+          {# Display CPU usage meter #}
+          {%- if cpu_stat_percent -%}
+          <p class="card-text">CPU {{ cpu_usage_percent }}%</p>
+          <meter value="{{ cpu_usage_percent }}" min="0" max="100" title="CPU usage">
+            <div class="meter-gauge">
+              <span style="width: {{ cpu_usage_percent }}%;">CPU Usage</span>
+            </div>
+          </meter>
+          {%- else -%}
+          <p class="card-text">CPU usage data unavailable</p>
+          {% endif -%}
+          {# Display memory usage meter #}
+          {%- if mem_stats -%}
+          <p class="card-text">Memory {{ mem_usage_percent }}%</p>
+          <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
+            <div class="meter-gauge">
+                <span style="width: {{ mem_usage_percent }}%;">Memory Usage</span>
+            </div>
+          </meter>
+          {%- else -%}
+          <p class="card-text">Memory usage data unavailable</p>
+          {% endif -%}
+          {# Display disk usage meter #}
+          {%- if disk_stats -%}
+          <p class="card-text">Disk {{ disk_usage_percent }}%</p>
+          <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
+            <div class="meter-gauge">
+              <span style="width: {{ disk_usage_percent }}%;">Disk Usage</span>
+            </div>
+          </meter>
+          {%- else -%}
+          <p class="card-text">Disk usage data unavailable</p>
+          {%- endif %}
+          <!-- FLASH MESSAGE -->
+          <!-- check for flash message and display accordingly -->
+          {%- if flash_msg and flash_name == "success" -%}
+          <!-- display success message -->
+          <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          {%- elif flash_msg and flash_name == "error" -%}
+          <!-- display error message -->
+          <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          {%- endif %}
+          <!-- share ux information with the user if JS is disabled -->
+          <noscript>
+            <p class="center-text flash-message">This website will be unresponsive while the device shuts down or reboots.</p>
+          </noscript>
         </div>
-{% endblock -%}
+      </div>
+{%- endblock %}
