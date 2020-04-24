@@ -382,54 +382,6 @@ impl NetworkListContext {
     }
 }
 
-/*
-impl NetworkListContext {
-    pub fn build() -> NetworkListContext {
-        // list of networks saved in the wpa_supplicant.conf
-        let wlan_list = match network_list_networks() {
-            Ok(ssids) => {
-                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
-                    .expect("Failed to deserialize scan_list response");
-                networks
-            }
-            Err(_) => Vec::new(),
-        };
-        // list of networks currently in range (online & accessible)
-        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
-            Ok(networks) => {
-                let scan: Vec<Networks> = serde_json::from_str(networks.as_str())
-                    .expect("Failed to deserialize scan_networks response");
-                scan
-            }
-            Err(_) => Vec::new(),
-        };
-        let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
-            Ok(ssid) => ssid,
-            Err(_) => "Not connected".to_string(),
-        };
-        // create a hashmap to combine wlan_list & wlan_scan without repetition
-        let mut wlan_networks = HashMap::new();
-        for ap in wlan_scan {
-            wlan_networks.insert(ap.ssid, "Available".to_string());
-        }
-        for network in wlan_list {
-            // insert ssid (with state) only if it doesn't already exist
-            wlan_networks
-                .entry(network.ssid)
-                .or_insert("Not in range".to_string());
-        }
-
-        NetworkListContext {
-            wlan_networks,
-            wlan_ssid,
-            flash_name: None,
-            flash_msg: None,
-            back: None,
-        }
-    }
-}
-*/
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CpuStat {
     pub user: u64,
@@ -496,17 +448,6 @@ pub struct Scan {
     pub signal_level: String,
     pub ssid: String,
 }
-
-/*
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Scan {
-    pub protocol: Option<String>,
-    pub frequency: Option<String>,
-    pub signal_level: Option<String>,
-    pub ssid: String,
-    pub state: String,
-}
-*/
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AccessPoint {

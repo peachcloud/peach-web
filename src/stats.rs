@@ -99,9 +99,9 @@ pub fn uptime() -> std::result::Result<String, StatsError> {
 
     let response = client.uptime().call()?;
     let u: Uptime = serde_json::from_str(&response).unwrap();
-    let hours = (u.secs / 60).to_string();
+    let minutes = (u.secs / 60).to_string();
 
-    Ok(hours)
+    Ok(minutes)
 }
 
 jsonrpc_client!(pub struct PeachStatsClient {
