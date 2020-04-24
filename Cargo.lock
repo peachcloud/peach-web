@@ -532,10 +532,11 @@ dependencies = [
 
 [[package]]
 name = "globwalk"
-version = "0.7.1"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53cbcf0368596897b0a3b8ff2110acf2400e80ffad4ca9238b52ff282a9b267b"
+checksum = "178270263374052c40502e9f607134947de75302c1348d1a0e31db67c1691446"
 dependencies = [
+ "bitflags 1.2.1",
  "ignore",
  "walkdir",
 ]
@@ -1059,7 +1060,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "snafu",
- "tera 1.0.2",
+ "tera 1.2.0",
  "websocket",
 ]
 
@@ -1691,9 +1692,9 @@ dependencies = [
 
 [[package]]
 name = "tera"
-version = "1.0.2"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8501ae034d1c2d2e8c29f3c259d919c11489220d8ee8a268e7e1fe3eff94c86a"
+checksum = "19d25bed9d2cf684de6ffdaa9ac35373739eeed0d6bef1de545bbe6cf571ad07"
 dependencies = [
  "chrono",
  "chrono-tz",
