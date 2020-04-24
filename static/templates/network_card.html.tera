@@ -151,10 +151,10 @@
             <div class="stack">
               <img id="dataUpload" class="icon icon-medium" alt="Upload" title="WiFi upload total" src="icons/up-arrow.svg">
               <div class="flex-grid" style="padding-top: 0.5rem;">
-              {%- if wlan_traffic -%}
+              {%- if wlan_traffic %}
                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
                 <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
-              {%- else -%}
+              {%- else %}
                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total"></label>
                 <label class="label-small font-near-black"></label>
               {%- endif %}

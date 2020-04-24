@@ -32,7 +32,7 @@
           <p class="card-text">CPU usage data unavailable</p>
           {% endif -%}
           {# Display memory usage meter #}
-          {%- if mem_stats -%}
+          {%- if mem_stats %}
           <p class="card-text">Memory {{ mem_usage_percent }}%</p>
           <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
             <div class="meter-gauge">
@@ -43,7 +43,7 @@
           <p class="card-text">Memory usage data unavailable</p>
           {% endif -%}
           {# Display disk usage meter #}
-          {%- if disk_stats -%}
+          {%- if disk_stats %}
           <p class="card-text">Disk {{ disk_usage_percent }}%</p>
           <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
             <div class="meter-gauge">
