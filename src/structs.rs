@@ -16,7 +16,7 @@ pub struct DeviceContext {
     pub flash_msg: Option<String>,
     pub load_average: Option<LoadAverage>,
     pub mem_stats: Option<MemStat>,
-    pub uptime: Option<String>,
+    pub uptime: Option<i32>,
 }
 
 impl DeviceContext {
@@ -25,7 +25,7 @@ impl DeviceContext {
         let cpu_stat_percent = cpu_stats_percent().ok();
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
-        let uptime = uptime().ok();
+        let uptime = uptime().expect("Failed to unwrap uptime");
 
         // serialize disk usage data into Vec<DiskUsage>
         let disk_usage_stats = match disk_usage() {
@@ -45,6 +45,9 @@ impl DeviceContext {
             }
         }
 
+        // parse the uptime string to a signed integer (for math)
+        let uptime_parsed = uptime.parse::<i32>().ok();
+        
         DeviceContext {
             back: None,
             cpu_stat_percent,
@@ -53,7 +56,7 @@ impl DeviceContext {
             flash_msg: None,
             load_average,
             mem_stats,
-            uptime,
+            uptime: uptime_parsed,
         }
     }
 }
