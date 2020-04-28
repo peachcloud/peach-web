@@ -58,7 +58,6 @@
           <p class="card-text">Uptime {{ uptime }} minutes</p>
           {%- elif uptime and uptime > 60 -%}
           <p class="card-text">Uptime {{ uptime / 60 }} hours</p>
-          {% endif %}
           {%- else -%}
           <p class="card-text">Uptime data unavailable</p>
           {%- endif %}

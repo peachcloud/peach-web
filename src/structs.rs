@@ -47,7 +47,7 @@ impl DeviceContext {
 
         // parse the uptime string to a signed integer (for math)
         let uptime_parsed = uptime.parse::<i32>().ok();
-        
+
         DeviceContext {
             back: None,
             cpu_stat_percent,
