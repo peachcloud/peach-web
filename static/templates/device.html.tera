@@ -22,7 +22,7 @@
           <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Usage</h1>
           {# Display CPU usage meter #}
           {%- if cpu_stat_percent -%}
-          <p class="card-text">CPU {{ cpu_usage_percent }}%</p>
+          <p class="card-text">CPU: {{ cpu_usage_percent }}%</p>
           <meter value="{{ cpu_usage_percent }}" min="0" max="100" title="CPU usage">
             <div class="meter-gauge">
               <span style="width: {{ cpu_usage_percent }}%;">CPU Usage</span>
@@ -33,7 +33,7 @@
           {% endif -%}
           {# Display memory usage meter #}
           {%- if mem_stats %}
-          <p class="card-text">Memory {{ mem_usage_percent }}%</p>
+          <p class="card-text">Memory: {{ mem_usage_percent }}%</p>
           <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
             <div class="meter-gauge">
                 <span style="width: {{ mem_usage_percent }}%;">Memory Usage</span>
@@ -44,7 +44,7 @@
           {% endif -%}
           {# Display disk usage meter #}
           {%- if disk_stats %}
-          <p class="card-text">Disk {{ disk_usage_percent }}%</p>
+          <p class="card-text">Disk: {{ disk_usage_percent }}%</p>
           <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
             <div class="meter-gauge">
               <span style="width: {{ disk_usage_percent }}%;">Disk Usage</span>
@@ -55,9 +55,10 @@
           {%- endif %}
           {# Display system uptime in minutes #}
           {%- if uptime and uptime < 60 %}
-          <p class="card-text">Uptime {{ uptime }} minutes</p>
+          <p class="card-text">Uptime: {{ uptime }} minutes</p>
+          {# Display system uptime in hours & minutes #}
           {%- elif uptime and uptime > 60 -%}
-          <p class="card-text">Uptime {{ uptime / 60 }} hours</p>
+          <p class="card-text">Uptime: {{ uptime / 60 | round(method="floor") }} hours and {{ uptime % 60 }} minutes</p>
           {%- else -%}
           <p class="card-text">Uptime data unavailable</p>
           {%- endif %}
