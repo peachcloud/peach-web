@@ -15,14 +15,17 @@
     {%- set_global disk_usage_percent = disk.used_percentage -%}
     {%- endfor -%}
     {%- endif -%}
-      <!-- DEVICE MENU / STATISTICS VIEW -->
+      <!-- DEVICE STATISTICS VIEW -->
       <div class="card center">
         <div class="card-container">
           <!-- HACK: use class for removing top margin -->
-          <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Usage</h1>
+          <h1 class="bold center center-text title-medium" style="margin-top: 0;">System Statistics</h1>
           {# Display CPU usage meter #}
           {%- if cpu_stat_percent -%}
-          <p class="card-text">CPU: {{ cpu_usage_percent }}%</p>
+          <div class="flex-grid">
+            <span class="card-text">CPU</span>
+            <span class="label-small push-right">{{ cpu_usage_percent }}%</span>
+          </div>
           <meter value="{{ cpu_usage_percent }}" min="0" max="100" title="CPU usage">
             <div class="meter-gauge">
               <span style="width: {{ cpu_usage_percent }}%;">CPU Usage</span>
@@ -33,7 +36,10 @@
           {% endif -%}
           {# Display memory usage meter #}
           {%- if mem_stats %}
-          <p class="card-text">Memory: {{ mem_usage_percent }}%</p>
+          <div class="flex-grid">
+            <span class="card-text">Memory</span>
+            <span class="label-small push-right">{{ mem_usage_percent }}% (xxx MB available)</span>
+          </div>
           <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
             <div class="meter-gauge">
                 <span style="width: {{ mem_usage_percent }}%;">Memory Usage</span>
@@ -44,7 +50,10 @@
           {% endif -%}
           {# Display disk usage meter #}
           {%- if disk_stats %}
-          <p class="card-text">Disk: {{ disk_usage_percent }}%</p>
+          <div class="flex-grid">
+            <span class="card-text">Disk</span>
+            <span class="label-small push-right">{{ disk_usage_percent }}% (xx GB available)</span>
+          </div>
           <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
             <div class="meter-gauge">
               <span style="width: {{ disk_usage_percent }}%;">Disk Usage</span>

@@ -50,6 +50,7 @@
 
 .push-right {
     margin-left: auto;
+    padding-right: 0;
 }
 
 /*
@@ -87,14 +88,9 @@ body {
     text-decoration: none;
     font-size: var(--font-size-5);
     font-family: var(--sans-serif);
-    /* width: 180px; */
-    /* min-width: 50px; */
-    /* max-width: 200px; */
     width: 80%;
     margin-top: 5px;
     margin-bottom: 5px;
-    /* padding-top: 10px; */
-    /* padding-bottom: 10px; */
 }
 
 /*
@@ -102,17 +98,9 @@ body {
  */
 
 .card {
-    /* background-color: var(--near-white); */
-    /* border-radius: var(--border-radius-4); */
-    /* min-height: var(--height-5); */
     min-height: 50vh;
     max-height: 90vh;
-    /* width: 90%; */
-    /* width: var(--max-width-5); */
     position: relative;
-    /* box-shadow: var(--box-shadow-3); */
-    /* margin-top: 1rem; */
-    /* margin-bottom: 1rem; */
 }
 
 @media only screen and (min-width: 600px) {
@@ -484,8 +472,6 @@ body {
     padding-left: 5px;
     line-height: 1.5rem;
     width: 80%;
-    /* padding: 0; */
-    /* margin: 0; */
 }
 
 /*
@@ -532,7 +518,6 @@ body {
 }
 
 .list-container {
-    /* padding: 1em; */
     width: var(--max-width-5);
 }
 
@@ -573,7 +558,6 @@ main {
     min-width: var(--max-width-5);
     display: flex;
     flex-grow: 1;
-    /* align-items: center; */
     justify-content: center;
 }
 
@@ -614,7 +598,6 @@ meter::-webkit-meter-optimum-value {
 
 /* Firefox styling */
 meter::-moz-meter-bar {
-    /* background: linear-gradient(90deg, var(--green), var(--red)); */
     background: var(--blue);
     background-size: 100% 100%;
     box-shadow: 0 5px 5px -5px #999 inset;
