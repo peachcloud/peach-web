@@ -15,7 +15,7 @@
     {%- for disk in disk_stats -%}
     {%- set_global disk_usage_percent = disk.used_percentage -%}
     {# Calculate free disk space in megabytes #}
-    {%- set disk_free = disk.one_k_blocks_free / 1024 | round -%}
+    {%- set_global disk_free = disk.one_k_blocks_free / 1024 | round -%}
     {%- endfor -%}
     {%- endif -%}
       <!-- DEVICE STATISTICS VIEW -->
