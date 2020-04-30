@@ -67,12 +67,12 @@
           {%- endif %}
           {# Display system uptime in minutes #}
           {%- if uptime and uptime < 60 %}
-          <p class="card-text">Uptime: {{ uptime }} minutes</p>
+          <p class="card-text center-text">Uptime: {{ uptime }} minutes</p>
           {# Display system uptime in hours & minutes #}
           {%- elif uptime and uptime > 60 -%}
-          <p class="card-text">Uptime: {{ uptime / 60 | round(method="floor") }} hours, {{ uptime % 60 }} minutes</p>
+          <p class="card-text center-text">Uptime: {{ uptime / 60 | round(method="floor") }} hours, {{ uptime % 60 }} minutes</p>
           {%- else -%}
-          <p class="card-text">Uptime data unavailable</p>
+          <p class="card-text center-text">Uptime data unavailable</p>
           {%- endif %}
           <!-- FLASH MESSAGE -->
           <!-- check for flash message and display accordingly -->
