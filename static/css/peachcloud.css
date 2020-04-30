@@ -107,7 +107,7 @@ body {
     .card {
         min-height: 50vh;
         max-height: 90vh;
-        width: var(--max-width-5);
+        /* width: var(--max-width-5); */
     }
 }
 
@@ -119,7 +119,6 @@ body {
     margin: 0;
     font-size: var(--font-size-5);
     padding-bottom: 0.3rem;
-    padding-right: 1rem;
 }
 
 /*
