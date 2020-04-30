@@ -41,7 +41,7 @@
           {%- if mem_stats %}
           <div class="flex-grid">
             <span class="card-text">Memory</span>
-            <span class="label-small push-right">{{ mem_usage_percent }}% ({{ mem_free }} MB available)</span>
+            <span class="label-small push-right">{{ mem_usage_percent }}% ({{ mem_free }} MB free)</span>
           </div>
           <meter value="{{ mem_used }}" min="0" max="{{ mem_total }}" title="Memory usage">
             <div class="meter-gauge">
@@ -55,7 +55,7 @@
           {%- if disk_stats %}
           <div class="flex-grid">
             <span class="card-text">Disk</span>
-            <span class="label-small push-right">{{ disk_usage_percent }}% ({% if disk_free > 1024 %}{{ disk_free / 1024 }} GB{% else %}{{ disk_free }} MB{% endif %} available)</span>
+            <span class="label-small push-right">{{ disk_usage_percent }}% ({% if disk_free > 1024 %}{{ disk_free / 1024 | round }} GB{% else %}{{ disk_free }} MB{% endif %} free)</span>
           </div>
           <meter value="{{ disk_usage_percent }}" min="0" max="100" title="Disk usage">
             <div class="meter-gauge">
