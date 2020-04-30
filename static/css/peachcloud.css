@@ -597,7 +597,7 @@ meter::-webkit-meter-optimum-value {
 
 /* Firefox styling */
 meter::-moz-meter-bar {
-    background: var(--blue);
+    background: var(--mid-gray);
     background-size: 100% 100%;
     box-shadow: 0 5px 5px -5px #999 inset;
 }
@@ -612,7 +612,7 @@ meter::-moz-meter-bar {
 
 /* Chrome styling */
 .meter-gauge > span {
-    background: var(--blue);
+    background: var(--mid-gray);
     background-size: 100% 100%;
     box-shadow: 0 5px 5px -5px #999 inset;
     display: block;
