@@ -101,6 +101,7 @@ body {
     min-height: 50vh;
     max-height: 90vh;
     position: relative;
+    width: 100%;
 }
 
 @media only screen and (min-width: 600px) {
@@ -112,7 +113,8 @@ body {
 }
 
 .card-container {
-    padding: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .card-text {
