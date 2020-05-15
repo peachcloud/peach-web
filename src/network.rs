@@ -556,7 +556,7 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
         // insert ssid (with state) only if it doesn't already exist
         wlan_networks
             .entry(network.ssid)
-            .or_insert("Not in range".to_string());
+            .or_insert_with(|| "Not in range".to_string());
     }
 
     let context = NetworkListContext {
