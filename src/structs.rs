@@ -25,7 +25,10 @@ impl DeviceContext {
         let cpu_stat_percent = cpu_stats_percent().ok();
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
-        let uptime = uptime().expect("Failed to unwrap uptime");
+        let uptime = match uptime() {
+            Ok(mins) => mins,
+            Err(_) => "Unavailable".to_string(),
+        };
 
         // serialize disk usage data into Vec<DiskUsage>
         let disk_usage_stats = match disk_usage() {
