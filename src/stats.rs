@@ -23,7 +23,7 @@ pub fn cpu_stats_percent() -> std::result::Result<CpuStatPercentages, StatsError
     let mut client = PeachStatsClient::new(transport_handle);
 
     let response = client.cpu_stats_percent().call()?;
-    let c: CpuStatPercentages = serde_json::from_str(&response).unwrap();
+    let c: CpuStatPercentages = serde_json::from_str(&response)?;
 
     Ok(c)
 }
@@ -60,7 +60,7 @@ pub fn load_average() -> std::result::Result<LoadAverage, StatsError> {
     let mut client = PeachStatsClient::new(transport_handle);
 
     let response = client.load_average().call()?;
-    let l: LoadAverage = serde_json::from_str(&response).unwrap();
+    let l: LoadAverage = serde_json::from_str(&response)?;
 
     Ok(l)
 }
@@ -79,7 +79,7 @@ pub fn mem_stats() -> std::result::Result<MemStat, StatsError> {
     let mut client = PeachStatsClient::new(transport_handle);
 
     let response = client.mem_stats().call()?;
-    let m: MemStat = serde_json::from_str(&response).unwrap();
+    let m: MemStat = serde_json::from_str(&response)?;
 
     Ok(m)
 }
@@ -98,7 +98,7 @@ pub fn uptime() -> std::result::Result<String, StatsError> {
     let mut client = PeachStatsClient::new(transport_handle);
 
     let response = client.uptime().call()?;
-    let u: Uptime = serde_json::from_str(&response).unwrap();
+    let u: Uptime = serde_json::from_str(&response)?;
     let minutes = (u.secs / 60).to_string();
 
     Ok(minutes)

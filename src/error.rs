@@ -27,6 +27,7 @@ impl From<jsonrpc_client_core::Error> for NetworkError {
 pub enum StatsError {
     StatsHttp(jsonrpc_client_http::Error),
     StatsClient(jsonrpc_client_core::Error),
+    StatsSerde(serde_json::error::Error),
 }
 
 impl From<jsonrpc_client_http::Error> for StatsError {
@@ -38,5 +39,11 @@ impl From<jsonrpc_client_http::Error> for StatsError {
 impl From<jsonrpc_client_core::Error> for StatsError {
     fn from(err: jsonrpc_client_core::Error) -> StatsError {
         StatsError::StatsClient(err)
+    }
+}
+
+impl From<serde_json::error::Error> for StatsError {
+    fn from(err: serde_json::error::Error) -> StatsError {
+        StatsError::StatsSerde(err)
     }
 }
