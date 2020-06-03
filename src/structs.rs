@@ -97,12 +97,12 @@ pub struct NetworkDetailContext {
 
 impl NetworkDetailContext {
     pub fn build() -> NetworkDetailContext {
-        let wlan_ip = match network_get_ip("wlan0".to_string()) {
+        let wlan_ip = match network_ip("wlan0".to_string()) {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
         // list of networks saved in wpa_supplicant.conf
-        let wlan_list = match network_list_networks() {
+        let wlan_list = match network_saved_networks() {
             Ok(ssids) => {
                 let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
@@ -113,7 +113,7 @@ impl NetworkDetailContext {
         // list of networks saved in wpa_supplicant.conf
         // HACK: we're running the same function twice (wlan_list)
         // see if we can implement clone for Vec<Networks> instead
-        let saved_aps = match network_list_networks() {
+        let saved_aps = match network_saved_networks() {
             Ok(ssids) => {
                 let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                     .expect("Failed to deserialize scan_list response");
@@ -121,12 +121,12 @@ impl NetworkDetailContext {
             }
             Err(_) => Vec::new(),
         };
-        let wlan_rssi = match network_get_rssi_percent("wlan0".to_string()) {
+        let wlan_rssi = match network_rssi_percent("wlan0".to_string()) {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
         // list of networks currently in range (online & accessible)
-        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+        let wlan_scan = match network_available_networks("wlan0".to_string()) {
             Ok(networks) => {
                 let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
@@ -134,19 +134,19 @@ impl NetworkDetailContext {
             }
             Err(_) => Vec::new(),
         };
-        let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
+        let wlan_ssid = match network_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
-        let wlan_state = match network_get_state("wlan0".to_string()) {
+        let wlan_state = match network_state("wlan0".to_string()) {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_status = match network_get_status("wlan0".to_string()) {
+        let wlan_status = match network_status("wlan0".to_string()) {
             Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_traffic = match network_get_traffic("wlan0".to_string()) {
+        let wlan_traffic = match network_traffic("wlan0".to_string()) {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit
@@ -248,19 +248,19 @@ pub struct NetworkContext {
 
 impl NetworkContext {
     pub fn build() -> NetworkContext {
-        let ap_ip = match network_get_ip("ap0".to_string()) {
+        let ap_ip = match network_ip("ap0".to_string()) {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let ap_ssid = match network_get_ssid("ap0".to_string()) {
+        let ap_ssid = match network_ssid("ap0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not currently activated".to_string(),
         };
-        let ap_state = match network_get_state("ap0".to_string()) {
+        let ap_state = match network_state("ap0".to_string()) {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let ap_traffic = match network_get_traffic("ap0".to_string()) {
+        let ap_traffic = match network_traffic("ap0".to_string()) {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit
@@ -292,15 +292,15 @@ impl NetworkContext {
             }
             Err(_) => None,
         };
-        let wlan_ip = match network_get_ip("wlan0".to_string()) {
+        let wlan_ip = match network_ip("wlan0".to_string()) {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let wlan_rssi = match network_get_rssi_percent("wlan0".to_string()) {
+        let wlan_rssi = match network_rssi_percent("wlan0".to_string()) {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
-        let wlan_scan = match network_scan_networks("wlan0".to_string()) {
+        let wlan_scan = match network_available_networks("wlan0".to_string()) {
             Ok(networks) => {
                 let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
@@ -308,19 +308,19 @@ impl NetworkContext {
             }
             Err(_) => None,
         };
-        let wlan_ssid = match network_get_ssid("wlan0".to_string()) {
+        let wlan_ssid = match network_ssid("wlan0".to_string()) {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
-        let wlan_state = match network_get_state("wlan0".to_string()) {
+        let wlan_state = match network_state("wlan0".to_string()) {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_status = match network_get_status("wlan0".to_string()) {
+        let wlan_status = match network_status("wlan0".to_string()) {
             Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_traffic = match network_get_traffic("wlan0".to_string()) {
+        let wlan_traffic = match network_traffic("wlan0".to_string()) {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit

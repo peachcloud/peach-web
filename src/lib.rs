@@ -138,7 +138,7 @@ fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 }
 
 #[get("/network/wifi/add")]
-fn network_add(flash: Option<FlashMessage>) -> Template {
+fn network_add_wifi(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
     // set back icon link to network route
     context.back = Some("/network".to_string());
@@ -178,20 +178,20 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     let ssid = &wifi.ssid;
     let pass = wifi.pass.to_string();
     let ssid_copy = ssid.to_string();
-    let add = network_add_wifi(ssid_copy, pass);
+    let add = network_add(ssid_copy, pass);
     match add {
         Ok(_) => {
             debug!("Added WiFi credentials to wpa_supplicant config file.");
             // run RECONFIGURE to force reread of wpa_supplicant config
             // wpa_supplicant needs to be running
             // if it's not, we catch the error and activate client mode
-            match network_reconfigure_wifi() {
+            match network_reconfigure() {
                 Ok(_) => {
                     debug!("Reread wpa_supplicant configuration from file.");
-                    match network_get_id("wlan0", ssid) {
-                        Ok(id) => match network_select_network(id, "wlan0".to_string()) {
-                            Ok(_) => debug!("Selected chosen network."),
-                            Err(_) => warn!("Failed to select chosen network."),
+                    match network_id("wlan0", ssid) {
+                        Ok(id) => match network_connect(id, "wlan0".to_string()) {
+                            Ok(_) => debug!("Connected to chosen network."),
+                            Err(_) => warn!("Failed to connect to chosen network."),
                         },
                         Err(_) => warn!("Failed to retrieve the network ID."),
                     }
@@ -276,11 +276,11 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let iface = "wlan0";
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
-    match network_get_id(iface, ssid) {
-        Ok(id) => match network_new_password(id.as_str(), iface, pass) {
+    match network_id(iface, ssid) {
+        Ok(id) => match network_modify(id.as_str(), iface, pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
-                match network_save_config() {
+                match network_save() {
                     Ok(_) => {
                         debug!("WiFi configuration saved.");
                         let url = format!("/network/wifi?ssid={}", ssid);
@@ -426,12 +426,12 @@ fn activate_client() -> Json<JsonResponse> {
 #[get("/api/v1/network/ip")]
 fn return_ip() -> Json<JsonResponse> {
     // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = match network_get_ip("wlan0".to_string()) {
+    let wlan_ip = match network_ip("wlan0".to_string()) {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
     // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = match network_get_ip("ap0".to_string()) {
+    let ap_ip = match network_ip("ap0".to_string()) {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
@@ -448,7 +448,7 @@ fn return_ip() -> Json<JsonResponse> {
 #[get("/api/v1/network/rssi")]
 fn return_rssi() -> Json<JsonResponse> {
     // retrieve rssi for connected network
-    match network_get_rssi("wlan0".to_string()) {
+    match network_rssi("wlan0".to_string()) {
         Ok(rssi) => {
             let status = "success".to_string();
             let data = json!(rssi);
@@ -465,7 +465,7 @@ fn return_rssi() -> Json<JsonResponse> {
 #[get("/api/v1/network/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
     // retrieve ssid for connected network
-    match network_get_ssid("wlan0".to_string()) {
+    match network_ssid("wlan0".to_string()) {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -482,12 +482,12 @@ fn return_ssid() -> Json<JsonResponse> {
 #[get("/api/v1/network/state")]
 fn return_state() -> Json<JsonResponse> {
     // retrieve state of wlan0 or set to x.x.x.x if not found
-    let wlan_state = match network_get_state("wlan0".to_string()) {
+    let wlan_state = match network_state("wlan0".to_string()) {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
     // retrieve state for ap0 or set to x.x.x.x if not found
-    let ap_state = match network_get_state("ap0".to_string()) {
+    let ap_state = match network_state("ap0".to_string()) {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
@@ -504,7 +504,7 @@ fn return_state() -> Json<JsonResponse> {
 #[get("/api/v1/network/status")]
 fn return_status() -> Json<JsonResponse> {
     // retrieve status info for wlan0 interface
-    match network_get_status("wlan0".to_string()) {
+    match network_status("wlan0".to_string()) {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -521,7 +521,7 @@ fn return_status() -> Json<JsonResponse> {
 #[get("/api/v1/network/wifi")]
 fn scan_networks() -> Json<JsonResponse> {
     // retrieve scan results for access-points within range of wlan0
-    match network_scan_networks("wlan0".to_string()) {
+    match network_available_networks("wlan0".to_string()) {
         Ok(networks) => {
             let status = "success".to_string();
             let data = json!(networks);
@@ -540,11 +540,11 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
     let ssid = wifi.ssid.to_string();
     let pass = wifi.pass.to_string();
-    let add = network_add_wifi(ssid, pass);
+    let add = network_add(ssid, pass);
     match add {
         Ok(_) => {
             debug!("Added WiFi credentials.");
-            match network_reconnect_wifi("wlan0".to_string()) {
+            match network_reconnect("wlan0".to_string()) {
                 Ok(_) => debug!("Reconnected wlan0 interface."),
                 Err(_) => warn!("Failed to reconnect the wlan0 interface."),
             }
@@ -588,11 +588,11 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
     let iface = "wlan0";
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
-    match network_get_id(iface, ssid) {
-        Ok(id) => match network_new_password(id.as_str(), iface, pass) {
+    match network_id(iface, ssid) {
+        Ok(id) => match network_modify(id.as_str(), iface, pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
-                match network_save_config() {
+                match network_save() {
                     Ok(_) => {
                         debug!("WiFi configuration saved.");
                         // json response for successful update
@@ -686,13 +686,13 @@ fn build_json_response(
 // fetch network id, remove credentials and save config
 fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
     debug!("Fetching ID for given interface and SSID");
-    match network_get_id(iface, ssid) {
+    match network_id(iface, ssid) {
         Ok(id) => {
             debug!("Access point ID: {}", id);
-            match network_remove_wifi(&id, iface) {
+            match network_delete(&id, iface) {
                 Ok(_) => {
                     debug!("WiFi credentials removed for chosen network.");
-                    match network_save_config() {
+                    match network_save() {
                         Ok(_) => Ok("Network configuration updated.".to_string()),
                         Err(_) => Err("Failed to save network configuration.".to_string()),
                     }
@@ -731,8 +731,8 @@ fn rocket() -> rocket::Rocket {
                 forget_wifi,             // WEB ROUTE
                 network_modify_password, // WEB ROUTE
                 modify_password,         // WEB ROUTE
-                network_add,             // WEB ROUTE
                 network_add_ssid,        // WEB ROUTE
+                network_add_wifi,        // WEB ROUTE
                 network_card,            // WEB ROUTE
                 network_detail,          // WEB ROUTE
                 network_list,            // WEB ROUTE
