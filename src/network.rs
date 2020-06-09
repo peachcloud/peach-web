@@ -220,6 +220,26 @@ pub fn network_modify(
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `ping` method, which serves as a means of determining availability of the
+/// microservice (ie. there will be no response if `peach-network` is not
+/// running).
+///
+pub fn network_ping() -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+    let response = client.ping().call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `reconfigure` method.
 ///
 pub fn network_reconfigure() -> std::result::Result<String, NetworkError> {
@@ -593,6 +613,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// JSON-RPC request to set a new network password for the given interface and ID.
     pub fn modify(&mut self, id: &str, iface: &str, pass: &str) -> RpcRequest<String>;
+
+    /// JSON-RPC request to check peach-network availability.
+    pub fn ping(&mut self) -> RpcRequest<String>;
 
     /// JSON-RPC request to reread the wpa_supplicant config for the given interface.
     pub fn reconfigure(&mut self) -> RpcRequest<String>;

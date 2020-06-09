@@ -384,6 +384,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [POST]       /api/v1/network/wifi/forget         Forget / remove network*
 //  [POST]       /api/v1/network/wifi/modify         Modify network password*
 //  [GET]        /api/v1/ping
+//  [GET]        /api/v1/ping/network                Ping `peach-network`
 //  [POST]       /api/v1/device/reboot               Reboot device
 //  [POST]       /api/v1/device/shutdown             Shutdown device
 //
@@ -672,6 +673,25 @@ fn ping_pong() -> Json<JsonResponse> {
     Json(build_json_response(status, None, Some(msg)))
 }
 
+// status route: check availability of `peach-network` microservice
+#[get("/api/v1/ping/network")]
+fn ping_network() -> Json<JsonResponse> {
+    match network_ping() {
+        Ok(_) => {
+            debug!("peach-network responded successfully");
+            let status = "success".to_string();
+            let msg = "peach-network is available.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("peach-network failed to respond");
+            let status = "error".to_string();
+            let msg = "peach-network is unavailable.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 // HELPER FUNCTIONS
 
 fn build_json_response(
@@ -743,6 +763,8 @@ fn rocket() -> rocket::Rocket {
                 activate_client,         // JSON API
                 add_wifi,                // JSON API
                 new_password,            // JSON API
+                ping_pong,               // JSON API
+                ping_network,            // JSON API
                 return_ip,               // JSON API
                 return_rssi,             // JSON API
                 return_ssid,             // JSON API
@@ -752,7 +774,6 @@ fn rocket() -> rocket::Rocket {
                 //remove_wifi,              // JSON API
                 scan_networks,   // JSON API
                 shutdown_device, // JSON API
-                ping_pong,       // JSON API
             ],
         )
         .register(catchers![not_found])
