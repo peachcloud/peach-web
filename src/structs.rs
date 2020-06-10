@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use rocket_contrib::json::JsonValue;
 
 use crate::network::*;
+use crate::oled::oled_ping;
 use crate::stats::*;
 
 // used in /device for system statistics
@@ -16,6 +17,9 @@ pub struct DeviceContext {
     pub flash_msg: Option<String>,
     pub load_average: Option<LoadAverage>,
     pub mem_stats: Option<MemStat>,
+    pub network_ping: String,
+    pub oled_ping: String,
+    pub stats_ping: String,
     pub uptime: Option<i32>,
 }
 
@@ -25,6 +29,18 @@ impl DeviceContext {
         let cpu_stat_percent = cpu_stats_percent().ok();
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
+        let network_ping = match network_ping() {
+            Ok(_) => "Networking online".to_string(),
+            Err(_) => "Networking offline".to_string(),
+        };
+        let oled_ping = match oled_ping() {
+            Ok(_) => "OLED online".to_string(),
+            Err(_) => "OLED offline".to_string(),
+        };
+        let stats_ping = match stats_ping() {
+            Ok(_) => "Statistics online".to_string(),
+            Err(_) => "Statistics offline".to_string(),
+        };
         let uptime = match uptime() {
             Ok(mins) => mins,
             Err(_) => "Unavailable".to_string(),
@@ -59,6 +75,9 @@ impl DeviceContext {
             flash_msg: None,
             load_average,
             mem_stats,
+            network_ping,
+            oled_ping,
+            stats_ping,
             uptime: uptime_parsed,
         }
     }
