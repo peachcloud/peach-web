@@ -18,6 +18,7 @@ extern crate websocket;
 mod device;
 mod error;
 mod network;
+mod oled;
 mod stats;
 mod structs;
 #[cfg(test)]
@@ -30,6 +31,8 @@ use std::{env, thread};
 use crate::device::*;
 use crate::error::BoxError;
 use crate::network::*;
+use crate::oled::oled_ping;
+use crate::stats::stats_ping;
 use crate::structs::{
     DeviceContext, FlashContext, JsonResponse, NetworkAddContext, NetworkContext,
     NetworkDetailContext, NetworkListContext, Ssid, WiFi,
@@ -381,12 +384,14 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/status
 //  [GET]        /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi
-//  [POST]       /api/v1/network/wifi/forget         Forget / remove network*
-//  [POST]       /api/v1/network/wifi/modify         Modify network password*
+//  [POST]       /api/v1/network/wifi/forget        Forget / remove network*
+//  [POST]       /api/v1/network/wifi/modify        Modify network password*
 //  [GET]        /api/v1/ping
-//  [GET]        /api/v1/ping/network                Ping `peach-network`
-//  [POST]       /api/v1/device/reboot               Reboot device
-//  [POST]       /api/v1/device/shutdown             Shutdown device
+//  [GET]        /api/v1/ping/network               Ping `peach-network`
+//  [GET]        /api/v1/ping/oled                  Ping `peach-oled`
+//  [GET]        /api/v1/ping/stats                 Ping `peach-stats`
+//  [POST]       /api/v1/device/reboot              Reboot device
+//  [POST]       /api/v1/device/shutdown            Shutdown device
 //
 //  * not yet added or not yet working 100%
 
@@ -692,6 +697,44 @@ fn ping_network() -> Json<JsonResponse> {
     }
 }
 
+// status route: check availability of `peach-oled` microservice
+#[get("/api/v1/ping/oled")]
+fn ping_oled() -> Json<JsonResponse> {
+    match oled_ping() {
+        Ok(_) => {
+            debug!("peach-oled responded successfully");
+            let status = "success".to_string();
+            let msg = "peach-oled is available.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("peach-oled failed to respond");
+            let status = "error".to_string();
+            let msg = "peach-oled is unavailable.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+// status route: check availability of `peach-stats` microservice
+#[get("/api/v1/ping/stats")]
+fn ping_stats() -> Json<JsonResponse> {
+    match stats_ping() {
+        Ok(_) => {
+            debug!("peach-stats responded successfully");
+            let status = "success".to_string();
+            let msg = "peach-stats is available.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("peach-stats failed to respond");
+            let status = "error".to_string();
+            let msg = "peach-stats is unavailable.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 // HELPER FUNCTIONS
 
 fn build_json_response(
@@ -765,6 +808,8 @@ fn rocket() -> rocket::Rocket {
                 new_password,            // JSON API
                 ping_pong,               // JSON API
                 ping_network,            // JSON API
+                ping_oled,               // JSON API
+                ping_stats,              // JSON API
                 return_ip,               // JSON API
                 return_rssi,             // JSON API
                 return_ssid,             // JSON API

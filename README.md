@@ -42,7 +42,10 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/wifi` | GET | | Returns scan results for in-range access-points |
 | `network/wifi` | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
-| `ping` | GET | | Returns `pong!` |
+| `ping` | GET | | Returns `pong!` if `peach-web` is running |
+| `ping/network` | GET | | Returns `pong!` if `peach-network` microservice is running |
+| `ping/oled` | GET | | Returns `pong!` if `peach-oled` microservice is running |
+| `ping/stats` | GET | | Returns `pong!` if `peach-stats` microservice is running |
 
 ### Environment
 
