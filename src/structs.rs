@@ -116,7 +116,7 @@ pub struct NetworkDetailContext {
 
 impl NetworkDetailContext {
     pub fn build() -> NetworkDetailContext {
-        let wlan_ip = match network_ip("wlan0".to_string()) {
+        let wlan_ip = match network_ip("wlan0") {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
@@ -140,12 +140,12 @@ impl NetworkDetailContext {
             }
             Err(_) => Vec::new(),
         };
-        let wlan_rssi = match network_rssi_percent("wlan0".to_string()) {
+        let wlan_rssi = match network_rssi_percent("wlan0") {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
         // list of networks currently in range (online & accessible)
-        let wlan_scan = match network_available_networks("wlan0".to_string()) {
+        let wlan_scan = match network_available_networks("wlan0") {
             Ok(networks) => {
                 let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
@@ -153,19 +153,19 @@ impl NetworkDetailContext {
             }
             Err(_) => Vec::new(),
         };
-        let wlan_ssid = match network_ssid("wlan0".to_string()) {
+        let wlan_ssid = match network_ssid("wlan0") {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
-        let wlan_state = match network_state("wlan0".to_string()) {
+        let wlan_state = match network_state("wlan0") {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_status = match network_status("wlan0".to_string()) {
+        let wlan_status = match network_status("wlan0") {
             Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_traffic = match network_traffic("wlan0".to_string()) {
+        let wlan_traffic = match network_traffic("wlan0") {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit
@@ -267,19 +267,19 @@ pub struct NetworkContext {
 
 impl NetworkContext {
     pub fn build() -> NetworkContext {
-        let ap_ip = match network_ip("ap0".to_string()) {
+        let ap_ip = match network_ip("ap0") {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let ap_ssid = match network_ssid("ap0".to_string()) {
+        let ap_ssid = match network_ssid("ap0") {
             Ok(ssid) => ssid,
             Err(_) => "Not currently activated".to_string(),
         };
-        let ap_state = match network_state("ap0".to_string()) {
+        let ap_state = match network_state("ap0") {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let ap_traffic = match network_traffic("ap0".to_string()) {
+        let ap_traffic = match network_traffic("ap0") {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit
@@ -311,15 +311,15 @@ impl NetworkContext {
             }
             Err(_) => None,
         };
-        let wlan_ip = match network_ip("wlan0".to_string()) {
+        let wlan_ip = match network_ip("wlan0") {
             Ok(ip) => ip,
             Err(_) => "x.x.x.x".to_string(),
         };
-        let wlan_rssi = match network_rssi_percent("wlan0".to_string()) {
+        let wlan_rssi = match network_rssi_percent("wlan0") {
             Ok(rssi) => Some(rssi),
             Err(_) => None,
         };
-        let wlan_scan = match network_available_networks("wlan0".to_string()) {
+        let wlan_scan = match network_available_networks("wlan0") {
             Ok(networks) => {
                 let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
                     .expect("Failed to deserialize scan_networks response");
@@ -327,19 +327,19 @@ impl NetworkContext {
             }
             Err(_) => None,
         };
-        let wlan_ssid = match network_ssid("wlan0".to_string()) {
+        let wlan_ssid = match network_ssid("wlan0") {
             Ok(ssid) => ssid,
             Err(_) => "Not connected".to_string(),
         };
-        let wlan_state = match network_state("wlan0".to_string()) {
+        let wlan_state = match network_state("wlan0") {
             Ok(state) => state,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_status = match network_status("wlan0".to_string()) {
+        let wlan_status = match network_status("wlan0") {
             Ok(status) => status,
             Err(_) => "Interface unavailable".to_string(),
         };
-        let wlan_traffic = match network_traffic("wlan0".to_string()) {
+        let wlan_traffic = match network_traffic("wlan0") {
             Ok(traffic) => {
                 let mut t = traffic;
                 // modify traffic values & assign measurement unit

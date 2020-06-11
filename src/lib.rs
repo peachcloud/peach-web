@@ -179,9 +179,8 @@ fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
     let ssid = &wifi.ssid;
-    let pass = wifi.pass.to_string();
-    let ssid_copy = ssid.to_string();
-    let add = network_add(ssid_copy, pass);
+    let pass = &wifi.pass;
+    let add = network_add(ssid, pass);
     match add {
         Ok(_) => {
             debug!("Added WiFi credentials to wpa_supplicant config file.");
@@ -192,7 +191,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
                 Ok(_) => {
                     debug!("Reread wpa_supplicant configuration from file.");
                     match network_id("wlan0", &ssid) {
-                        Ok(id) => match network_connect(id, "wlan0".to_string()) {
+                        Ok(id) => match network_connect(&id, "wlan0") {
                             Ok(_) => debug!("Connected to chosen network."),
                             Err(_) => warn!("Failed to connect to chosen network."),
                         },
@@ -226,10 +225,9 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 
 #[post("/network/wifi/forget", data = "<network>")]
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
-    let iface = "wlan0".to_string();
     let ssid = &network.ssid;
     let url = uri!(network_list);
-    match forget_network(iface, &ssid) {
+    match forget_network("wlan0", &ssid) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -260,11 +258,10 @@ fn network_modify_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Templa
 
 #[post("/network/wifi/modify", data = "<wifi>")]
 fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
-    let iface = "wlan0";
-    let ssid = wifi.ssid.to_string();
-    let pass = wifi.pass.to_string();
-    let url = uri!(network_detail: &ssid);
-    match update_password(iface, ssid, pass) {
+    let ssid = &wifi.ssid;
+    let pass = &wifi.pass;
+    let url = uri!(network_detail: ssid);
+    match update_password("wlan0", ssid, pass) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -343,7 +340,7 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/status
 //  [GET]        /api/v1/network/wifi
 //  [POST]       /api/v1/network/wifi
-//  [POST]       /api/v1/network/wifi/forget        Forget / remove network*
+//  [POST]       /api/v1/network/wifi/forget        Forget / remove network
 //  [POST]       /api/v1/network/wifi/modify        Modify network password*
 //  [GET]        /api/v1/ping
 //  [GET]        /api/v1/ping/network               Ping `peach-network`
@@ -391,12 +388,12 @@ fn activate_client() -> Json<JsonResponse> {
 #[get("/api/v1/network/ip")]
 fn return_ip() -> Json<JsonResponse> {
     // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = match network_ip("wlan0".to_string()) {
+    let wlan_ip = match network_ip("wlan0") {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
     // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = match network_ip("ap0".to_string()) {
+    let ap_ip = match network_ip("ap0") {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
@@ -413,7 +410,7 @@ fn return_ip() -> Json<JsonResponse> {
 #[get("/api/v1/network/rssi")]
 fn return_rssi() -> Json<JsonResponse> {
     // retrieve rssi for connected network
-    match network_rssi("wlan0".to_string()) {
+    match network_rssi("wlan0") {
         Ok(rssi) => {
             let status = "success".to_string();
             let data = json!(rssi);
@@ -430,7 +427,7 @@ fn return_rssi() -> Json<JsonResponse> {
 #[get("/api/v1/network/ssid")]
 fn return_ssid() -> Json<JsonResponse> {
     // retrieve ssid for connected network
-    match network_ssid("wlan0".to_string()) {
+    match network_ssid("wlan0") {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -447,12 +444,12 @@ fn return_ssid() -> Json<JsonResponse> {
 #[get("/api/v1/network/state")]
 fn return_state() -> Json<JsonResponse> {
     // retrieve state of wlan0 or set to x.x.x.x if not found
-    let wlan_state = match network_state("wlan0".to_string()) {
+    let wlan_state = match network_state("wlan0") {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
     // retrieve state for ap0 or set to x.x.x.x if not found
-    let ap_state = match network_state("ap0".to_string()) {
+    let ap_state = match network_state("ap0") {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
@@ -469,7 +466,7 @@ fn return_state() -> Json<JsonResponse> {
 #[get("/api/v1/network/status")]
 fn return_status() -> Json<JsonResponse> {
     // retrieve status info for wlan0 interface
-    match network_status("wlan0".to_string()) {
+    match network_status("wlan0") {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -486,7 +483,7 @@ fn return_status() -> Json<JsonResponse> {
 #[get("/api/v1/network/wifi")]
 fn scan_networks() -> Json<JsonResponse> {
     // retrieve scan results for access-points within range of wlan0
-    match network_available_networks("wlan0".to_string()) {
+    match network_available_networks("wlan0") {
         Ok(networks) => {
             let status = "success".to_string();
             let data = json!(networks);
@@ -503,13 +500,13 @@ fn scan_networks() -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
-    let ssid = wifi.ssid.to_string();
-    let pass = wifi.pass.to_string();
+    let ssid = &wifi.ssid;
+    let pass = &wifi.pass;
     let add = network_add(ssid, pass);
     match add {
         Ok(_) => {
             debug!("Added WiFi credentials.");
-            match network_reconnect("wlan0".to_string()) {
+            match network_reconnect("wlan0") {
                 Ok(_) => debug!("Reconnected wlan0 interface."),
                 Err(_) => warn!("Failed to reconnect the wlan0 interface."),
             }
@@ -536,7 +533,7 @@ fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     match network_id(iface, ssid) {
-        Ok(id) => match network_modify(id.as_str(), iface, pass) {
+        Ok(id) => match network_modify(&id, iface, pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
                 match network_save() {
@@ -734,9 +731,8 @@ fn rocket() -> rocket::Rocket {
                 return_state,            // JSON API
                 return_status,           // JSON API
                 reboot_device,           // JSON API
-                //remove_wifi,              // JSON API
-                scan_networks,   // JSON API
-                shutdown_device, // JSON API
+                scan_networks,           // JSON API
+                shutdown_device,         // JSON API
             ],
         )
         .register(catchers![not_found])

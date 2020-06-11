@@ -105,8 +105,8 @@ pub fn oled_power(power: bool) -> std::result::Result<(), MenuError> {
 pub fn oled_write(
     x_coord: i32,
     y_coord: i32,
-    string: String,
-    font_size: String,
+    string: &str,
+    font_size: &str,
 ) -> std::result::Result<String, MenuError> {
     debug!("Creating HTTP transport for OLED client.");
     let transport = HttpTransport::new().standalone()?;
@@ -140,5 +140,5 @@ jsonrpc_client!(pub struct PeachOledClient {
     pub fn power(&mut self, power: bool) -> RpcRequest<String>;
 
     /// Creates a JSON-RPC request to write to the OLED display.
-    pub fn write(&mut self, x_coord: i32, y_coord: i32, string: String, font_size: String) -> RpcRequest<String>;
+    pub fn write(&mut self, x_coord: i32, y_coord: i32, string: &str, font_size: &str) -> RpcRequest<String>;
 });
