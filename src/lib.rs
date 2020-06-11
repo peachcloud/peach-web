@@ -228,7 +228,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let iface = "wlan0".to_string();
     let ssid = &network.ssid;
-    let url = uri!(network_detail: ssid);
+    let url = uri!(network_list);
     match forget_network(iface, &ssid) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(_) => Flash::error(

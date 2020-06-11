@@ -138,6 +138,8 @@ pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, Netw
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
+    // WEIRD BUG: switch the order of the parameters if this method doesn't work.
+    // see `forget_network` method below for explanation.
     let response = client.delete(id, iface).call()?;
 
     Ok(response)
@@ -475,7 +477,10 @@ pub fn forget_network(iface: String, ssid: &str) -> std::result::Result<String, 
     info!("Performing id call to peach-network microservice.");
     let id = client.id(&iface, &ssid).call()?;
     info!("Performing delete call to peach-network microservice.");
-    client.delete(&id, &iface).call()?;
+    // WEIRD BUG: the parameters below are technically in the wrong order:
+    // it should be id first and then iface, but somehow they get twisted.
+    // i don't understand computers.
+    client.delete(&iface, &id).call()?;
     info!("Performing save call to peach-network microservice.");
     client.save().call()?;
 
