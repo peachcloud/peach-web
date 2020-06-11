@@ -191,7 +191,7 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
             match network_reconfigure() {
                 Ok(_) => {
                     debug!("Reread wpa_supplicant configuration from file.");
-                    match network_id("wlan0", ssid) {
+                    match network_id("wlan0", &ssid) {
                         Ok(id) => match network_connect(id, "wlan0".to_string()) {
                             Ok(_) => debug!("Connected to chosen network."),
                             Err(_) => warn!("Failed to connect to chosen network."),
@@ -261,10 +261,10 @@ fn network_modify_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Templa
 #[post("/network/wifi/modify", data = "<wifi>")]
 fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let iface = "wlan0";
-    let ssid = &wifi.ssid;
-    let pass = &wifi.pass;
-    let url = uri!(network_detail: ssid);
-    match update_password(iface, &ssid, &pass) {
+    let ssid = wifi.ssid.to_string();
+    let pass = wifi.pass.to_string();
+    let url = uri!(network_detail: &ssid);
+    match update_password(iface, ssid, pass) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -272,47 +272,6 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
         ),
     }
 }
-
-/*
-#[post("/network/wifi/modify", data = "<wifi>")]
-fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
-    let iface = "wlan0";
-    let ssid = &wifi.ssid;
-    let pass = &wifi.pass;
-    match network_id(iface, ssid) {
-        Ok(id) => match network_modify(id.as_str(), iface, pass) {
-            Ok(_) => {
-                debug!("WiFi password updated for chosen network.");
-                match network_save() {
-                    Ok(_) => {
-                        debug!("WiFi configuration saved.");
-                        let url = format!("/network/wifi?ssid={}", ssid);
-                        Flash::success(Redirect::to(url), "Updated WiFi password.")
-                    }
-                    Err(_) => {
-                        warn!("Failed to save WiFi configuration updates.");
-                        let url = format!("/network/wifi?ssid={}", ssid);
-                        Flash::error(
-                            Redirect::to(url),
-                            "Failed to save WiFi configuration updates.",
-                        )
-                    }
-                }
-            }
-            Err(_) => {
-                warn!("Failed to update WiFi password.");
-                let url = format!("/network/wifi?ssid={}", ssid);
-                Flash::error(Redirect::to(url), "Failed to update WiFi password.")
-            }
-        },
-        Err(_) => {
-            warn!("Failed to retrieve the network ID for given SSID.");
-            let url = format!("/network/wifi?ssid={}", ssid);
-            Flash::error(Redirect::to(url), "Failed to retrieve the network ID.")
-        }
-    }
-}
-*/
 
 #[get("/network/ap/activate")]
 fn deploy_ap() -> Flash<Redirect> {
@@ -571,24 +530,6 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     }
 }
 
-/*
-#[post("/api/v1/network/wifi/forget", data = "<network>")]
-fn remove_wifi(network: Form<Ssid>) -> Json<JsonResponse> {
-    let ssid = &network.ssid;
-    let iface = "wlan0";
-    match forget_network(ssid, iface) {
-        Ok(msg) => {
-            let status = "success".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-        Err(e) => {
-            let status = "error".to_string();
-            Json(build_json_response(status, None, Some(e)))
-        }
-    }
-}
-*/
-
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
 fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
     let iface = "wlan0";
@@ -744,29 +685,6 @@ fn build_json_response(
 ) -> JsonResponse {
     JsonResponse { status, data, msg }
 }
-
-/*
-// fetch network id, remove credentials and save config
-fn forget_network(iface: &str, ssid: &str) -> Result<String, String> {
-    debug!("Fetching ID for given interface and SSID");
-    match network_id(iface, ssid) {
-        Ok(id) => {
-            debug!("Access point ID: {}", id);
-            match network_delete(&id, iface) {
-                Ok(_) => {
-                    debug!("WiFi credentials removed for chosen network.");
-                    match network_save() {
-                        Ok(_) => Ok("Network configuration updated.".to_string()),
-                        Err(_) => Err("Failed to save network configuration.".to_string()),
-                    }
-                }
-                Err(_) => Err("Failed to remove network configuration.".to_string()),
-            }
-        }
-        Err(_) => Err("Failed to retrieve network ID.".to_string()),
-    }
-}
-*/
 
 #[catch(404)]
 fn not_found() -> Template {

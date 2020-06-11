@@ -490,18 +490,18 @@ pub fn forget_network(iface: String, ssid: &str) -> std::result::Result<String, 
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
-/// `id`, `modify` and `save` methods.
+/// `id`, `delete`, `save` and `add` methods.
 ///
 /// # Arguments
 ///
-/// * `iface` - A String containing the network interface identifier.
-/// * `ssid` - A string slice containing the SSID of a network.
-/// * `pass` - A string slice containing the password for a network.
+/// * `iface` - A string slice containing the network interface identifier.
+/// * `ssid` - A String containing the SSID of a network.
+/// * `pass` - A String containing the password for a network.
 ///
 pub fn update_password(
     iface: &str,
-    ssid: &str,
-    pass: &str,
+    ssid: String,
+    pass: String,
 ) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -513,12 +513,20 @@ pub fn update_password(
     info!("Creating client for peach_network service.");
     let mut client = PeachNetworkClient::new(transport_handle);
 
+    // get the id of the network
     info!("Performing id call to peach-network microservice.");
     let id = client.id(&iface, &ssid).call()?;
-    info!("Performing modify call to peach-network microservice.");
-    client.modify(&id, &iface, &pass).call()?;
+    // delete the old credentials
+    // WEIRD BUG: the parameters below are technically in the wrong order:
+    // it should be id first and then iface, but somehow they get twisted.
+    // i don't understand computers.
+    client.delete(&iface, &id).call()?;
+    // save the updates to wpa_supplicant.conf
     info!("Performing save call to peach-network microservice.");
     client.save().call()?;
+    // add the new credentials
+    info!("Performing add call to peach-network microservice.");
+    client.add(ssid, pass).call()?;
 
     let response = "success".to_string();
 
