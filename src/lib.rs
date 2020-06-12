@@ -61,6 +61,7 @@ use rocket_contrib::templates::Template;
 //  [GET]       /network/wifi/add               Add WiFi form
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
+//  [POST]      /network/wifi/connect           Connect to WiFi access point
 //  [POST]      /network/wifi/forget            Remove WiFi*
 //  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
 //  [POST]      /network/wifi/modify            Modify network password*
@@ -178,34 +179,9 @@ fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 #[post("/network/wifi/add", data = "<wifi>")]
 fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
-    let ssid = &wifi.ssid;
-    let pass = &wifi.pass;
-    let add = network_add(ssid, pass);
-    match add {
+    match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials to wpa_supplicant config file.");
-            // run RECONFIGURE to force reread of wpa_supplicant config
-            // wpa_supplicant needs to be running
-            // if it's not, we catch the error and activate client mode
-            match network_reconfigure() {
-                Ok(_) => {
-                    debug!("Reread wpa_supplicant configuration from file.");
-                    match network_id("wlan0", &ssid) {
-                        Ok(id) => match network_connect(&id, "wlan0") {
-                            Ok(_) => debug!("Connected to chosen network."),
-                            Err(_) => warn!("Failed to connect to chosen network."),
-                        },
-                        Err(_) => warn!("Failed to retrieve the network ID."),
-                    }
-                }
-                Err(_) => {
-                    warn!("Failed to force reread of wpa_supplicant configuration from file.");
-                    match network_activate_client() {
-                        Ok(_) => debug!("Activated WiFi client."),
-                        Err(_) => warn!("Failed to activate WiFi client."),
-                    }
-                }
-            }
             let context = FlashContext {
                 flash_name: Some("success".to_string()),
                 flash_msg: Some("Added WiFi credentials".to_string()),
@@ -223,10 +199,23 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     }
 }
 
+#[post("/network/wifi/connect", data = "<network>")]
+fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
+    let ssid = &network.ssid;
+    let url = uri!(network_detail: ssid);
+    match network_id("wlan0", &ssid) {
+        Ok(id) => match network_connect(&id, "wlan0") {
+            Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network."),
+            Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network."),
+        },
+        Err(_) => Flash::error(Redirect::to(url), "Failed to retrieve the network ID."),
+    }
+}
+
 #[post("/network/wifi/forget", data = "<network>")]
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network_list);
+    let url = uri!(network_detail: ssid);
     match forget_network("wlan0", &ssid) {
         Ok(msg) => Flash::success(Redirect::to(url), msg),
         Err(_) => Flash::error(
@@ -338,8 +327,9 @@ fn files(file: PathBuf) -> Option<NamedFile> {
 //  [GET]        /api/v1/network/ssid
 //  [GET]        /api/v1/network/state
 //  [GET]        /api/v1/network/status
-//  [GET]        /api/v1/network/wifi
-//  [POST]       /api/v1/network/wifi
+//  [GET]        /api/v1/network/wifi               Retrieve available networks
+//  [POST]       /api/v1/network/wifi               Add WiFi AP credentials
+//  [POST]       /api/v1/network/wifi/connect       Connect to WiFi access point
 //  [POST]       /api/v1/network/wifi/forget        Forget / remove network
 //  [POST]       /api/v1/network/wifi/modify        Modify network password*
 //  [GET]        /api/v1/ping
@@ -401,9 +391,7 @@ fn return_ip() -> Json<JsonResponse> {
         "wlan0": wlan_ip,
         "ap0": ap_ip
     });
-
     let status = "success".to_string();
-
     Json(build_json_response(status, Some(data), None))
 }
 
@@ -457,9 +445,7 @@ fn return_state() -> Json<JsonResponse> {
         "wlan0": wlan_state,
         "ap0": ap_state
     });
-
     let status = "success".to_string();
-
     Json(build_json_response(status, Some(data), None))
 }
 
@@ -500,20 +486,12 @@ fn scan_networks() -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi", data = "<wifi>")]
 fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
-    let ssid = &wifi.ssid;
-    let pass = &wifi.pass;
-    let add = network_add(ssid, pass);
-    match add {
+    match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials.");
-            match network_reconnect("wlan0") {
-                Ok(_) => debug!("Reconnected wlan0 interface."),
-                Err(_) => warn!("Failed to reconnect the wlan0 interface."),
-            }
             // json response for successful update
             let status = "success".to_string();
             let data = json!("WiFi credentials added.");
-
             Json(build_json_response(status, Some(data), None))
         }
         Err(_) => {
@@ -521,19 +499,40 @@ fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
             // json response for failed update
             let status = "error".to_string();
             let msg = "Failed to add WiFi credentials.".to_string();
-
             Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[post("/api/v1/network/wifi/connect", data = "<ssid>")]
+fn connect_ap(ssid: Form<Ssid>) -> Json<JsonResponse> {
+    // retrieve the id for the given network ssid
+    match network_id("wlan0", &ssid.ssid) {
+        // attempt connection with the given network
+        Ok(id) => match network_connect(&id, "wlan0") {
+            Ok(_) => {
+                let status = "success".to_string();
+                let data = json!("Connected to chosen network.");
+                Json(build_json_response(status, Some(data), None))
+            }
+            Err(_) => {
+                let status = "error".to_string();
+                let data = json!("Failed to connect to chosen network.");
+                Json(build_json_response(status, Some(data), None))
+            }
+        },
+        Err(_) => {
+            let status = "error".to_string();
+            let data = json!("Failed to retrieve the network ID.");
+            Json(build_json_response(status, Some(data), None))
         }
     }
 }
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
 fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
-    let iface = "wlan0";
-    let ssid = &wifi.ssid;
-    let pass = &wifi.pass;
-    match network_id(iface, ssid) {
-        Ok(id) => match network_modify(&id, iface, pass) {
+    match network_id("wlan0", &wifi.ssid) {
+        Ok(id) => match network_modify(&id, "wlan0", &wifi.pass) {
             Ok(_) => {
                 debug!("WiFi password updated for chosen network.");
                 match network_save() {
@@ -612,7 +611,6 @@ fn ping_pong() -> Json<JsonResponse> {
     // ping pong
     let status = "success".to_string();
     let msg = "pong!".to_string();
-
     Json(build_json_response(status, None, Some(msg)))
 }
 
@@ -703,6 +701,7 @@ fn rocket() -> rocket::Rocket {
                 index,                   // WEB ROUTE
                 files,                   // WEB ROUTE
                 add_credentials,         // WEB ROUTE
+                connect_wifi,            // WEB ROUTE
                 deploy_ap,               // WEB ROUTE
                 deploy_client,           // WEB ROUTE
                 device_stats,            // WEB ROUTE
@@ -720,6 +719,7 @@ fn rocket() -> rocket::Rocket {
                 activate_ap,             // JSON API
                 activate_client,         // JSON API
                 add_wifi,                // JSON API
+                connect_ap,              // JSON API
                 new_password,            // JSON API
                 ping_pong,               // JSON API
                 ping_network,            // JSON API
