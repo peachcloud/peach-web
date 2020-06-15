@@ -216,6 +216,15 @@ fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     }
 }
 
+#[get("/network/wifi/disconnect")]
+fn disconnect_wifi() -> Flash<Redirect> {
+    let url = uri!(network_card);
+    match network_disconnect("wlan0") {
+        Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network."),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network."),
+    }
+}
+
 #[post("/network/wifi/forget", data = "<network>")]
 fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
@@ -343,6 +352,7 @@ fn rocket() -> rocket::Rocket {
                 files,                   // WEB ROUTE
                 add_credentials,         // WEB ROUTE
                 connect_wifi,            // WEB ROUTE
+                disconnect_wifi,         // WEB ROUTE
                 deploy_ap,               // WEB ROUTE
                 deploy_client,           // WEB ROUTE
                 device_stats,            // WEB ROUTE
@@ -361,6 +371,7 @@ fn rocket() -> rocket::Rocket {
                 activate_client,         // JSON API
                 add_wifi,                // JSON API
                 connect_ap,              // JSON API
+                disconnect_ap,           // JSON API
                 new_password,            // JSON API
                 ping_pong,               // JSON API
                 ping_network,            // JSON API

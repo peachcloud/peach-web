@@ -147,6 +147,30 @@ pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, Netw
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `disconnect` method, which disconnectis the current network connection for
+/// the given interface.
+///
+/// # Arguments
+///
+/// * `iface` - A string slice containing the network interface identifier.
+///
+pub fn network_disconnect(iface: &str) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+
+    let response = client.disconnect(iface).call()?;
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `id` method.
 ///
 /// # Arguments
@@ -542,7 +566,7 @@ pub fn update_password(
     Ok(response)
 }
 
-/// This function retries the data required to build the NetworkListContext
+/// This function retrieves the data required to build the NetworkListContext
 /// object. Creates a JSON-RPC client with http transport and calls the
 /// `peach-network` `saved_networks`, `available_networks` and `ssid` methods.
 ///
@@ -580,6 +604,7 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
         }
         Err(_) => Vec::new(),
     };
+
     let wlan_ssid = match client.ssid(iface).call() {
         Ok(ssid) => ssid,
         Err(_) => "Not connected".to_string(),
@@ -626,6 +651,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// JSON-RPC request to delete the credentials for the given network from the wpa_supplicant config.
     pub fn delete(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
+
+    /// JSON-RPC request to disconnect the network for the given interface.
+    pub fn disconnect(&mut self, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to get the ID for the given interface and SSID.
     pub fn id(&mut self, iface: &str, ssid: &str) -> RpcRequest<String>;
