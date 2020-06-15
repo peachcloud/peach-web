@@ -30,7 +30,11 @@
       {%- if wlan_ssid == selected -%}
         <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
       {%- elif wlan_ssid != selected and ap.state == "Available" -%}
-        <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Connect</a>
+        <form id="wifiConnect" action="/network/wifi/connect" method="post">
+          <!-- hidden element: allows ssid to be sent in request -->
+          <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+          <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
+        </form>
       {%- endif -%}
       {%- if saved_aps -%}
       {# Loop through the list of AP's with saved credentials #}
@@ -44,6 +48,9 @@
           <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
           <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
         </form>
+      {%- else -%}
+      {# Display the Add button to allow AP credentials to be saved #}
+        <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Add</a>
       {%- endif -%}
       {%- endfor -%}
       {%- endif -%}
