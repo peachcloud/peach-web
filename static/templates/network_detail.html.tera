@@ -29,12 +29,6 @@
       <div class="card-container" style="padding-top: 0;">
       {%- if wlan_ssid == selected -%}
         <a class="button center" href="/network/wifi/disconnect">Disconnect</a>
-      {%- elif wlan_ssid != selected and ap.state == "Available" -%}
-        <form id="wifiConnect" action="/network/wifi/connect" method="post">
-          <!-- hidden element: allows ssid to be sent in request -->
-          <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
-          <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
-        </form>
       {%- endif -%}
       {%- if saved_aps -%}
       {# Loop through the list of AP's with saved credentials #}
@@ -42,6 +36,13 @@
       {# If the selected access point appears in the list, #}
       {# display the Modify and Forget buttons.            #}
       {%- if ap.ssid == selected -%}
+        {%- if wlan_ssid != selected and ap.state == "Available" -%}
+          <form id="wifiConnect" action="/network/wifi/connect" method="post">
+            <!-- hidden element: allows ssid to be sent in request -->
+            <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+            <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
+          </form>
+        {%- endif -%}
         <a class="button center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
         <form id="wifiForget" action="/network/wifi/forget" method="post">
           <!-- hidden element: allows ssid to be sent in request -->
