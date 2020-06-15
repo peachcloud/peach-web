@@ -181,6 +181,11 @@ pub fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
     match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials.");
+            // force reread of wpa_supplicant.conf file with new credentials
+            match network_reconfigure() {
+                Ok(_) => debug!("Successfully reconfigured wpa_supplicant."),
+                Err(_) => warn!("Failed to reconfigure wpa_supplicant."),
+            }
             // json response for successful update
             let status = "success".to_string();
             let data = json!("WiFi credentials added.");

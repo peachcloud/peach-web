@@ -180,7 +180,12 @@ fn add_credentials(wifi: Form<WiFi>) -> Template {
     // generate and write wifi config to wpa_supplicant
     match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
-            debug!("Added WiFi credentials to wpa_supplicant config file.");
+            debug!("Added WiFi credentials.");
+            // force reread of wpa_supplicant.conf file with new credentials
+            match network_reconfigure() {
+                Ok(_) => debug!("Successfully reconfigured wpa_supplicant."),
+                Err(_) => warn!("Failed to reconfigure wpa_supplicant."),
+            }
             let context = FlashContext {
                 flash_name: Some("success".to_string()),
                 flash_msg: Some("Added WiFi credentials".to_string()),
