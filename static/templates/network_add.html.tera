@@ -18,7 +18,7 @@
             <!-- display error message -->
             <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
             {%- endif -%}
-            <input id="addWifi" class="button center" title="Connect" type="submit" value="Connect">
+            <input id="addWifi" class="button center" title="Add" type="submit" value="Add">
             <a class="button center" href="/network" title="Cancel">Cancel</a>
           </form>
           <!-- share ux information with the user if JS is disabled -->
