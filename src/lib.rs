@@ -177,7 +177,21 @@ fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 
 #[post("/network/wifi/add", data = "<wifi>")]
 fn add_credentials(wifi: Form<WiFi>) -> Template {
-    // generate and write wifi config to wpa_supplicant
+    // check if the credentials already exist for this access point
+    // note: this is nicer but it's an unstable feature:
+    //       if check_saved_aps(&wifi.ssid).contains(true)
+    // use unwrap_or instead, set value to false if err is returned
+    let creds_exist = check_saved_aps(&wifi.ssid).unwrap_or(false);
+    if creds_exist {
+        let context = FlashContext {
+            flash_name: Some("error".to_string()),
+            flash_msg: Some("Network credentials already exist for this access point".to_string()),
+        };
+        // return early from handler with "creds already exist" message
+        return Template::render("network_add", &context);
+    };
+
+    // if credentials not found, generate and write wifi config to wpa_supplicant
     match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials.");

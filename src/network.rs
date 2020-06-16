@@ -485,8 +485,42 @@ pub fn network_traffic(iface: &str) -> std::result::Result<Traffic, NetworkError
     Ok(t)
 }
 
-// BUNDLED METHODS
+// BUNDLED METHODS & HELPER FUNCTIONS
 //  - perform multiple RPC calls with one transport
+
+/// Helper function to determine if a given SSID already exists in the
+/// `wpa_supplicant.conf` file, indicating that network credentials have already
+/// been added for that access point. Creates a JSON-RPC client with http
+/// transport and calls the `peach-network` `saved_networks` method. Returns a
+/// boolean expression inside a Result type.
+///
+/// # Arguments
+///
+/// * `ssid` - A string slice containing the SSID of a network.
+///
+pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
+    // retrieve a list of access points with saved credentials
+    let saved_aps = match network_saved_networks() {
+        Ok(ssids) => {
+            let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
+                .expect("Failed to deserialize saved_networks response");
+            networks
+        }
+        // return an empty vector if there are no saved access point credentials
+        Err(_) => Vec::new(),
+    };
+
+    // loop through the access points in the list
+    for network in saved_aps {
+        // return true if the access point ssid matches the given ssid
+        if network.ssid == ssid {
+            return Ok(true);
+        }
+    }
+
+    // return false if no matches are found
+    Ok(false)
+}
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `id`, `delete` and `save` methods.
