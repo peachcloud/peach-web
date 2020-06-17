@@ -24,15 +24,13 @@ use rocket_contrib::json::{Json, JsonValue};
 //  [POST]       /api/v1/network/wifi/connect       Connect to WiFi access point
 //  [GET]        /api/v1/network/wifi/disconnect    Disconnect WiFi access point
 //  [POST]       /api/v1/network/wifi/forget        Forget / remove network
-//  [POST]       /api/v1/network/wifi/modify        Modify network password*
+//  [POST]       /api/v1/network/wifi/modify        Modify network password
 //  [GET]        /api/v1/ping
 //  [GET]        /api/v1/ping/network               Ping `peach-network`
 //  [GET]        /api/v1/ping/oled                  Ping `peach-oled`
 //  [GET]        /api/v1/ping/stats                 Ping `peach-stats`
 //  [POST]       /api/v1/device/reboot              Reboot device
 //  [POST]       /api/v1/device/shutdown            Shutdown device
-//
-//  * needs testing
 
 #[post("/api/v1/network/activate_ap")]
 pub fn activate_ap() -> Json<JsonResponse> {

@@ -63,10 +63,8 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/connect           Connect to WiFi access point
 //  [POST]      /network/wifi/forget            Remove WiFi
 //  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
-//  [POST]      /network/wifi/modify            Modify network password*
+//  [POST]      /network/wifi/modify            Modify network password
 //  [GET]       /shutdown                       Shutdown menu
-//
-//  * needs testing
 
 #[get("/")]
 fn index() -> Template {
@@ -244,7 +242,7 @@ fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
     match forget_network("wlan0", &ssid) {
-        Ok(msg) => Flash::success(Redirect::to(url), msg),
+        Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed."),
         Err(_) => Flash::error(
             Redirect::to(url),
             "Failed to remove WiFi credentials".to_string(),
@@ -278,7 +276,7 @@ fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let pass = &wifi.pass;
     let url = uri!(network_detail: ssid);
     match update_password("wlan0", ssid, pass) {
-        Ok(msg) => Flash::success(Redirect::to(url), msg),
+        Ok(_) => Flash::success(Redirect::to(url), "WiFi password updated.".to_string()),
         Err(_) => Flash::error(
             Redirect::to(url),
             "Failed to update WiFi password".to_string(),
