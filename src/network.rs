@@ -587,6 +587,7 @@ pub fn update_password(
     // WEIRD BUG: the parameters below are technically in the wrong order:
     // it should be id first and then iface, but somehow they get twisted.
     // i don't understand computers.
+    info!("Performing delete call to peach-network microservice.");
     client.delete(&iface, &id).call()?;
     // save the updates to wpa_supplicant.conf
     info!("Performing save call to peach-network microservice.");
@@ -594,6 +595,9 @@ pub fn update_password(
     // add the new credentials
     info!("Performing add call to peach-network microservice.");
     client.add(ssid, pass).call()?;
+    // reconfigure wpa_supplicant with latest addition to config
+    info!("Performing reconfigure call to peach-network microservice.");
+    client.reconfigure().call()?;
 
     let response = "success".to_string();
 

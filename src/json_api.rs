@@ -32,7 +32,7 @@ use rocket_contrib::json::{Json, JsonValue};
 //  [POST]       /api/v1/device/reboot              Reboot device
 //  [POST]       /api/v1/device/shutdown            Shutdown device
 //
-//  * not yet added or not yet working 100%
+//  * needs testing
 
 #[post("/api/v1/network/activate_ap")]
 pub fn activate_ap() -> Json<JsonResponse> {
@@ -244,39 +244,43 @@ pub fn disconnect_ap() -> Json<JsonResponse> {
     }
 }
 
+#[post("/api/v1/network/wifi/forget", data = "<network>")]
+pub fn forget_ap(network: Form<Ssid>) -> Json<JsonResponse> {
+    let ssid = &network.ssid;
+    match forget_network("wlan0", &ssid) {
+        Ok(_) => {
+            debug!("Removed WiFi credentials for chosen network.");
+            let status = "success".to_string();
+            let msg = "WiFi network credentials removed.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Failed to remove WiFi credentials.");
+            let status = "error".to_string();
+            let msg = "Failed to remove WiFi network credentials.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
 pub fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
-    match network_id("wlan0", &wifi.ssid) {
-        Ok(id) => match network_modify(&id, "wlan0", &wifi.pass) {
-            Ok(_) => {
-                debug!("WiFi password updated for chosen network.");
-                match network_save() {
-                    Ok(_) => {
-                        debug!("WiFi configuration saved.");
-                        // json response for successful update
-                        let status = "success".to_string();
-                        let msg = "WiFi password updated.".to_string();
-                        Json(build_json_response(status, None, Some(msg)))
-                    }
-                    Err(_) => {
-                        warn!("Failed to save WiFi configuration updates.");
-                        let status = "error".to_string();
-                        let msg = "Failed to save WiFi configuration updates.".to_string();
-                        Json(build_json_response(status, None, Some(msg)))
-                    }
-                }
-            }
-            Err(_) => {
-                warn!("Failed to update WiFi password.");
-                let status = "error".to_string();
-                let msg = "Failed to update WiFi password.".to_string();
-                Json(build_json_response(status, None, Some(msg)))
-            }
-        },
+    let ssid = &wifi.ssid;
+    let pass = &wifi.pass;
+    // we are using a helper function (`update_password`) to delete the old
+    // credentials and add the new ones. this is because the wpa_cli method
+    // for updating the password does not work.
+    match update_password("wlan0", ssid, pass) {
+        Ok(_) => {
+            debug!("WiFi password updated for chosen network.");
+            let status = "success".to_string();
+            let msg = "WiFi password updated.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
         Err(_) => {
-            warn!("Failed to retrieve the network ID for given SSID.");
+            warn!("Failed to update WiFi password.");
             let status = "error".to_string();
-            let msg = "Failed to retrieve network ID.".to_string();
+            let msg = "Failed to update WiFi password.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }

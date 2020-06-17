@@ -61,12 +61,12 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/connect           Connect to WiFi access point
-//  [POST]      /network/wifi/forget            Remove WiFi*
+//  [POST]      /network/wifi/forget            Remove WiFi
 //  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
 //  [POST]      /network/wifi/modify            Modify network password*
 //  [GET]       /shutdown                       Shutdown menu
 //
-//  * not yet working 100%
+//  * needs testing
 
 #[get("/")]
 fn index() -> Template {
@@ -371,13 +371,13 @@ fn rocket() -> rocket::Rocket {
                 deploy_client,           // WEB ROUTE
                 device_stats,            // WEB ROUTE
                 forget_wifi,             // WEB ROUTE
-                network_modify_password, // WEB ROUTE
                 modify_password,         // WEB ROUTE
                 network_add_ssid,        // WEB ROUTE
                 network_add_wifi,        // WEB ROUTE
                 network_card,            // WEB ROUTE
                 network_detail,          // WEB ROUTE
                 network_list,            // WEB ROUTE
+                network_modify_password, // WEB ROUTE
                 reboot_cmd,              // WEB ROUTE
                 shutdown_cmd,            // WEB ROUTE
                 shutdown_menu,           // WEB ROUTE
@@ -386,6 +386,7 @@ fn rocket() -> rocket::Rocket {
                 add_wifi,                // JSON API
                 connect_ap,              // JSON API
                 disconnect_ap,           // JSON API
+                forget_ap,               // JSON API
                 new_password,            // JSON API
                 ping_pong,               // JSON API
                 ping_network,            // JSON API
