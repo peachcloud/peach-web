@@ -119,6 +119,8 @@ pub fn network_connect(id: &str, iface: &str) -> std::result::Result<String, Net
     Ok(response)
 }
 
+/*
+// NOTE: this method is not currently in use
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `delete` method, which removes the credentials of the given network
 /// from the wpa_configuration file.
@@ -145,6 +147,7 @@ pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, Netw
 
     Ok(response)
 }
+*/
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `disconnect` method, which disconnectis the current network connection for
@@ -217,6 +220,8 @@ pub fn network_ip(iface: &str) -> std::result::Result<String, NetworkError> {
     Ok(response)
 }
 
+/*
+// NOTE: this method is not currently in use
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `modify` method, which replaces the old network access point password
 /// with a new one. The access point is identified by ID on a given interface.
@@ -245,6 +250,7 @@ pub fn network_modify(
 
     Ok(response)
 }
+*/
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `ping` method, which serves as a means of determining availability of the
@@ -285,6 +291,8 @@ pub fn network_reconfigure() -> std::result::Result<String, NetworkError> {
     Ok(response)
 }
 
+/*
+// NOTE: this method is not currently in use
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `reconnect` method.
 ///
@@ -307,6 +315,7 @@ pub fn network_reconnect(iface: &str) -> std::result::Result<String, NetworkErro
 
     Ok(response)
 }
+*/
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `rssi` method.
@@ -354,6 +363,7 @@ pub fn network_rssi_percent(iface: &str) -> std::result::Result<String, NetworkE
     Ok(response)
 }
 
+/*
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `save` method.
 ///
@@ -372,6 +382,7 @@ pub fn network_save() -> std::result::Result<String, NetworkError> {
 
     Ok(response)
 }
+*/
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `saved_networks` method, which returns a list of networks saved in
@@ -700,7 +711,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn ip(&mut self, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to set a new network password for the given interface and ID.
-    pub fn modify(&mut self, id: &str, iface: &str, pass: &str) -> RpcRequest<String>;
+    //pub fn modify(&mut self, id: &str, iface: &str, pass: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to check peach-network availability.
     pub fn ping(&mut self) -> RpcRequest<String>;
@@ -709,7 +720,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn reconfigure(&mut self) -> RpcRequest<String>;
 
     /// JSON-RPC request to reconnect WiFi for the given interface.
-    pub fn reconnect(&mut self, iface: &str) -> RpcRequest<String>;
+    //pub fn reconnect(&mut self, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to get the average signal strength (dBm) for the given interface.
     pub fn rssi(&mut self, iface: &str) -> RpcRequest<String>;

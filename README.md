@@ -12,11 +12,14 @@ The peach-web stack currently consists of [Rocket](https://rocket.rs/) (Rust web
 
 _Note: This is a work-in-progress._
 
-### WEB APP ROUTES
+### WEB ROUTES (`src/routes.rs`)
 
 | Endpoint | Method | Parameters | Description |
 | --- | --- | --- | --- |
 | `/` | GET | | Home |
+| `/device` | GET | | Device status overview |
+| `/device/reboot` | GET | | Reboot device |
+| `/device/shutdown` | GET | | Shutdown device |
 | `/network` | GET | | Network status overview |
 | `/network/ap/activate` | GET | | Activate WiFi access point mode |
 | `/network/wifi` | GET | | List of networks |
@@ -24,14 +27,21 @@ _Note: This is a work-in-progress._
 | `/network/wifi/activate` | GET | | Activate WiFi client mode |
 | `/network/wifi/add` | GET | `ssid` (optional - prepopulation value of SSID in form) | Add a WiFi network |
 | `/network/wifi/add` | POST | `ssid` & `pass` | Submit form to add a WiFi network |
+| `/network/wifi/connect` | POST | `ssid` | Connect to the given WiFi network |
+| `/network/wifi/disconnect` | GET | | Disconnect from currently associated WiFi network |
 | `/network/wifi/forget` | POST | `ssid` | Submit form to forget a saved WiFi network |
+| `/network/wifi/modify?<ssid>` | GET | `ssid` | Form for updating a WiFi network password |
+| `/network/wifi/modify` | POST | `ssid` & `pass` | Submit form to update a WiFi network password |
+| `/shutdown` | GET | | Shutdown menu |
 
-### JSON API
+### JSON API (`src/json_api.rs`)
 
 All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the table below to keep the table compact.
 
 | Endpoint | Method | Parameters | Description |
 | --- | --- | --- | --- |
+| `device/reboot` | POST | | Reboot device |
+| `device/shutdown` | POST | | Shutdown device |
 | `network/activate_ap` | POST | | Activate WiFi access point mode |
 | `network/activate_client` | POST | | Activate WiFi client mode |
 | `network/ip` | GET | | Returns IP address values for wlan0 & ap0 interfaces |
@@ -41,7 +51,10 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/status` | GET | | Returns status object for connected WiFi network |
 | `network/wifi` | GET | | Returns scan results for in-range access-points |
 | `network/wifi` | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
+| `network/wifi/connect` | POST | `ssid` | Submit SSID to connect to a given WiFi network |
+| `network/wifi/disconnect` | GET | | Disconnect from the currently associated WiFi network |
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
+| `network/wifi/modify` | POST | `ssid` & `pass` | Submit SSID & password to update the credentials for given WiFi network |
 | `ping` | GET | | Returns `pong!` if `peach-web` is running |
 | `ping/network` | GET | | Returns `pong!` if `peach-network` microservice is running |
 | `ping/oled` | GET | | Returns `pong!` if `peach-oled` microservice is running |

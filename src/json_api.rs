@@ -12,6 +12,8 @@ use rocket_contrib::json::{Json, JsonValue};
 
 // API ROUTES
 
+//  [POST]       /api/v1/device/reboot              Reboot device
+//  [POST]       /api/v1/device/shutdown            Shutdown device
 //  [POST]       /api/v1/network/activate_ap
 //  [POST]       /api/v1/network/activate_client
 //  [GET]        /api/v1/network/ip
@@ -29,8 +31,44 @@ use rocket_contrib::json::{Json, JsonValue};
 //  [GET]        /api/v1/ping/network               Ping `peach-network`
 //  [GET]        /api/v1/ping/oled                  Ping `peach-oled`
 //  [GET]        /api/v1/ping/stats                 Ping `peach-stats`
-//  [POST]       /api/v1/device/reboot              Reboot device
-//  [POST]       /api/v1/device/shutdown            Shutdown device
+
+// reboot the device
+#[post("/api/v1/device/reboot")]
+pub fn reboot_device() -> Json<JsonResponse> {
+    match device_reboot() {
+        Ok(_) => {
+            debug!("Going down for reboot...");
+            let status = "success".to_string();
+            let msg = "Going down for reboot.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Reboot failed");
+            let status = "error".to_string();
+            let msg = "Failed to reboot the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+// shutdown the device
+#[post("/api/v1/device/shutdown")]
+pub fn shutdown_device() -> Json<JsonResponse> {
+    match device_shutdown() {
+        Ok(_) => {
+            debug!("Going down for shutdown...");
+            let status = "success".to_string();
+            let msg = "Going down for shutdown.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Shutdown failed");
+            let status = "error".to_string();
+            let msg = "Failed to shutdown the device.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
 
 #[post("/api/v1/network/activate_ap")]
 pub fn activate_ap() -> Json<JsonResponse> {
@@ -279,44 +317,6 @@ pub fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
             warn!("Failed to update WiFi password.");
             let status = "error".to_string();
             let msg = "Failed to update WiFi password.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-    }
-}
-
-// reboot the device
-#[post("/api/v1/device/reboot")]
-pub fn reboot_device() -> Json<JsonResponse> {
-    match device_reboot() {
-        Ok(_) => {
-            debug!("Going down for reboot...");
-            let status = "success".to_string();
-            let msg = "Going down for reboot.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-        Err(_) => {
-            warn!("Reboot failed");
-            let status = "error".to_string();
-            let msg = "Failed to reboot the device.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-    }
-}
-
-// shutdown the device
-#[post("/api/v1/device/shutdown")]
-pub fn shutdown_device() -> Json<JsonResponse> {
-    match device_shutdown() {
-        Ok(_) => {
-            debug!("Going down for shutdown...");
-            let status = "success".to_string();
-            let msg = "Going down for shutdown.".to_string();
-            Json(build_json_response(status, None, Some(msg)))
-        }
-        Err(_) => {
-            warn!("Shutdown failed");
-            let status = "error".to_string();
-            let msg = "Failed to shutdown the device.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }
