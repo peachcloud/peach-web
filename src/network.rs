@@ -672,11 +672,11 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
     }
 
     let context = NetworkListContext {
+        back: None,
+        flash_msg: None,
+        flash_name: None,
         wlan_networks,
         wlan_ssid,
-        flash_name: None,
-        flash_msg: None,
-        back: None,
     };
 
     Ok(context)

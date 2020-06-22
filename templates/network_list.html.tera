@@ -23,7 +23,7 @@
             </li>
           {%- endfor %}
           {% else -%}
-            <li class="list-item">No networks found</li>
+            <li class="list-item">No networks found. Enable WiFi client mode to view saved and available networks.</li>
           {% endif -%}
           </ul>
         </div>

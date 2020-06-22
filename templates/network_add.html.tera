@@ -27,4 +27,5 @@
           </noscript>
         </div>
       </div>
+      <script type="text/javascript" src="/js/network_add.js"></script>
 {%- endblock -%}
