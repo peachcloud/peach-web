@@ -25,9 +25,9 @@ PEACH_DEVICE.add = function() {
                 // prevent redirect on button press (default behavior)
                 e.preventDefault();
                 // capture the ssid value
-                var ssid = $("#ssid").val();
+                var ssid = document.getElementById("ssid").value;
                 // capture the password value
-                var pass = $("#pass").val();
+                var pass = document.getElementById("pass").value;
                 // send add_wifi POST request
                 fetch("/api/v1/network/wifi", {
                     method: "post",
