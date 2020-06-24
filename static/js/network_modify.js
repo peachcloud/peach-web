@@ -1,30 +1,31 @@
 /*
 
-behavioural layer for the `network_add.html.tera` template,
-corresponding to the web route `/network/wifi/add`
+behavioural layer for the `network_modify.html.tera` template,
+corresponding to the web route `/network/wifi/modify` and the
+json route `/api/v1/network/wifi/modify`
 
- - intercept button click for add (form submission of credentials)
+ - intercept button click for modify (form submission of credentials)
  - perform json api call
  - update the dom
 
 methods:
 
- PEACH_NETWORK.add();
+ PEACH_NETWORK.modify();
  PEACH_NETWORK.flashMsg(status, msg);
 
 */
 
 var PEACH_NETWORK = {};
 
-// catch click of 'Add' button and make POST request
-PEACH_NETWORK.add = function() {
+// catch click of 'Save' button and make POST request
+PEACH_NETWORK.modify = function() {
     document.addEventListener('DOMContentLoaded', function() {
         document.body.addEventListener('submit', function(e) {
             // prevent redirect on button press (default behavior)
             e.preventDefault();
             // capture form data
             var formElement = document.querySelector("form");
-            // create form data object from the wifiCreds form element
+            // create form data object from the wifiModify form element
             var formData = new FormData(formElement);
             var object = {};
             // assign ssid and pass from form
@@ -33,8 +34,8 @@ PEACH_NETWORK.add = function() {
             });
             // perform json serialization
             var jsonData = JSON.stringify(object);
-            // send add_wifi POST request
-            fetch("/api/v1/network/wifi", {
+            // send new_password POST request
+            fetch("/api/v1/network/wifi/modify", {
                 method: "post",
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,5 +86,5 @@ PEACH_NETWORK.flashMsg = function(status, msg) {
     }
 }
 
-var addInstance = PEACH_NETWORK;
-addInstance.add();
+var modifyInstance = PEACH_NETWORK;
+modifyInstance.modify();

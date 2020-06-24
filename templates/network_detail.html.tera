@@ -39,11 +39,11 @@
       {# Set 'in_list' to true to allow correct Add button display #}
       {% set_global in_list = true %}
       {%- if wlan_ssid != selected and ap.state == "Available" -%}
-          <form id="wifiConnect" action="/network/wifi/connect" method="post">
-            <!-- hidden element: allows ssid to be sent in request -->
-            <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
-            <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
-          </form>
+        <form id="wifiConnect" action="/network/wifi/connect" method="post">
+          <!-- hidden element: allows ssid to be sent in request -->
+          <input id="ssid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+          <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
+        </form>
         {%- endif -%}
         <a class="button center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
         <form id="wifiForget" action="/network/wifi/forget" method="post">

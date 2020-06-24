@@ -7,7 +7,6 @@ use crate::oled::oled_ping;
 use crate::stats::stats_ping;
 use crate::structs::{JsonResponse, Ssid, WiFi};
 
-use rocket::request::Form;
 use rocket_contrib::json::{Json, JsonValue};
 
 // API ROUTES
@@ -213,7 +212,7 @@ pub fn scan_networks() -> Json<JsonResponse> {
 }
 
 #[post("/api/v1/network/wifi", data = "<wifi>")]
-pub fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
+pub fn add_wifi(wifi: Json<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
     match network_add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
@@ -239,7 +238,7 @@ pub fn add_wifi(wifi: Form<WiFi>) -> Json<JsonResponse> {
 }
 
 #[post("/api/v1/network/wifi/connect", data = "<ssid>")]
-pub fn connect_ap(ssid: Form<Ssid>) -> Json<JsonResponse> {
+pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     // retrieve the id for the given network ssid
     match network_id("wlan0", &ssid.ssid) {
         // attempt connection with the given network
@@ -281,7 +280,7 @@ pub fn disconnect_ap() -> Json<JsonResponse> {
 }
 
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
-pub fn forget_ap(network: Form<Ssid>) -> Json<JsonResponse> {
+pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
     match forget_network("wlan0", &ssid) {
         Ok(_) => {
@@ -300,7 +299,7 @@ pub fn forget_ap(network: Form<Ssid>) -> Json<JsonResponse> {
 }
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
-pub fn new_password(wifi: Form<WiFi>) -> Json<JsonResponse> {
+pub fn new_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     // we are using a helper function (`update_password`) to delete the old

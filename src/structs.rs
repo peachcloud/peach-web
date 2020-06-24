@@ -461,7 +461,7 @@ pub struct Networks {
     pub ssid: String,
 }
 
-#[derive(Debug, FromForm, UriDisplayQuery)]
+#[derive(Debug, Deserialize, FromForm, UriDisplayQuery)]
 pub struct Ssid {
     pub ssid: String,
 }
@@ -495,7 +495,7 @@ pub struct Uptime {
     pub nanos: u32,
 }
 
-#[derive(Debug, FromForm)]
+#[derive(Debug, Deserialize, FromForm)]
 pub struct WiFi {
     pub ssid: String,
     pub pass: String,
