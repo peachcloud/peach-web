@@ -28,17 +28,10 @@ PEACH_NETWORK.connect = function() {
                 e.preventDefault();
                 // retrieve ssid value and append to form data object
                 var ssid = document.getElementById('connectSsid').value;
-                // create empty form data object
-                var formData = new FormData();
-                // append the ssid value from the form
-                formData.append("ssid", ssid);
-                var object = {};
-                // assign ssid from form
-                formData.forEach(function(value, key){
-                    object[key] = value;
-                });
+                // create key:value pair
+                var ssidData = { ssid: ssid };
                 // perform json serialization
-                var jsonData = JSON.stringify(object);
+                var jsonData = JSON.stringify(ssidData);
                 // send add_wifi POST request
                 fetch("/api/v1/network/wifi/connect", {
                     method: "post",
@@ -94,19 +87,12 @@ PEACH_NETWORK.forget = function() {
             forgetWifi.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
-                // retrieve ssid value and append to form data object
+                // retrieve ssid value
                 var ssid = document.getElementById('forgetSsid').value;
-                // create empty form data object
-                var formData = new FormData();
-                // append the ssid value from the form
-                formData.append("ssid", ssid);
-                var object = {};
-                // assign ssid from form
-                formData.forEach(function(value, key){
-                    object[key] = value;
-                });
+                // create key:value pair
+                var ssidData = { ssid: ssid };
                 // perform json serialization
-                var jsonData = JSON.stringify(object);
+                var jsonData = JSON.stringify(ssidData);
                 // send forget_ap POST request
                 fetch("/api/v1/network/wifi/forget", {
                     method: "post",
