@@ -82,13 +82,13 @@ PEACH_NETWORK.disconnect = function() {
 // catch click of 'Forget' button (form) and make POST request
 PEACH_NETWORK.forget = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var forgetWifi = document.getElementById('forgetWifi');
-        if (forgetWifi) {
-            forgetWifi.addEventListener('click', function(e) {
+        var forgetForm = document.forms('wifiForget');
+        if (forgetForm) {
+            forgetForm.addEventListener('submit', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
                 // retrieve ssid value
-                var ssid = document.getElementById('forgetSsid').value;
+                var ssid = forgetForm.getElementById('forgetSsid').value;
                 // create key:value pair
                 var ssidData = { ssid: ssid };
                 // perform json serialization
