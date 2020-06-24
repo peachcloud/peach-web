@@ -48,7 +48,7 @@ PEACH_NETWORK.connect = function() {
                     PEACH_NETWORK.flashMsg(jsonData.status, jsonData.msg);
                 })
             }, false);
-        });
+        };
     });
 }
 
@@ -62,7 +62,7 @@ PEACH_NETWORK.disconnect = function() {
                 e.preventDefault();
                 // send disconnect_wifi POST request (no body data required)
                 fetch("/api/v1/network/wifi/disconnect", {
-                    method: "post",
+                    method: "get",
                     headers: {
                         'Content-Type': 'application/json',
                     }
@@ -75,20 +75,20 @@ PEACH_NETWORK.disconnect = function() {
                     PEACH_NETWORK.flashMsg(jsonData.status, jsonData.msg);
                 })
             }, false);
-        });
+        };
     });
 }
 
 // catch click of 'Forget' button (form) and make POST request
 PEACH_NETWORK.forget = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var forgetForm = document.forms('wifiForget');
-        if (forgetForm) {
-            forgetForm.addEventListener('submit', function(e) {
+        var forgetWifi = document.getElementById('forgetWifi');
+        if (forgetWifi) {
+            forgetWifi.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
                 // retrieve ssid value
-                var ssid = forgetForm.getElementById('forgetSsid').value;
+                var ssid = document.getElementById('forgetSsid').value;
                 // create key:value pair
                 var ssidData = { ssid: ssid };
                 // perform json serialization
@@ -109,7 +109,7 @@ PEACH_NETWORK.forget = function() {
                     PEACH_NETWORK.flashMsg(jsonData.status, jsonData.msg);
                 })
             }, false);
-        });
+        };
     });
 }
 
