@@ -28,7 +28,7 @@ _Note: This is a work-in-progress._
 | `/network/wifi/add` | GET | `ssid` (optional - prepopulation value of SSID in form) | Add a WiFi network |
 | `/network/wifi/add` | POST | `ssid` & `pass` | Submit form to add a WiFi network |
 | `/network/wifi/connect` | POST | `ssid` | Connect to the given WiFi network |
-| `/network/wifi/disconnect` | GET | | Disconnect from currently associated WiFi network |
+| `/network/wifi/disconnect` | POST | `ssid` | Disconnect from currently associated WiFi network |
 | `/network/wifi/forget` | POST | `ssid` | Submit form to forget a saved WiFi network |
 | `/network/wifi/modify?<ssid>` | GET | `ssid` | Form for updating a WiFi network password |
 | `/network/wifi/modify` | POST | `ssid` & `pass` | Submit form to update a WiFi network password |
@@ -52,7 +52,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/wifi` | GET | | Returns scan results for in-range access-points |
 | `network/wifi` | POST | `ssid` & `pass` | Submit SSID & password to create new WiFi connection |
 | `network/wifi/connect` | POST | `ssid` | Submit SSID to connect to a given WiFi network |
-| `network/wifi/disconnect` | GET | | Disconnect from the currently associated WiFi network |
+| `network/wifi/disconnect` | POST | `ssid` | Disconnect from the currently associated WiFi network |
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
 | `network/wifi/modify` | POST | `ssid` & `pass` | Submit SSID & password to update the credentials for given WiFi network |
 | `ping` | GET | | Returns `pong!` if `peach-web` is running |

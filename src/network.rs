@@ -534,6 +534,40 @@ pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
+/// `id` and `disable` methods.
+///
+/// # Arguments
+///
+/// * `iface` - A string slice containing the network interface identifier.
+/// * `ssid` - A string slice containing the SSID of a network.
+///
+pub fn network_disable(
+    iface: &str,
+    ssid: &str,
+) -> std::result::Result<String, NetworkError> {
+    debug!("Creating HTTP transport for network client.");
+    let transport = HttpTransport::new().standalone()?;
+    let http_addr =
+        env::var("PEACH_NETWORK_SERVER").unwrap_or_else(|_| "127.0.0.1:5110".to_string());
+    let http_server = format!("http://{}", http_addr);
+    debug!("Creating HTTP transport handle on {}.", http_server);
+    let transport_handle = transport.handle(&http_server)?;
+    info!("Creating client for peach_network service.");
+    let mut client = PeachNetworkClient::new(transport_handle);
+
+    // get the id of the network
+    info!("Performing id call to peach-network microservice.");
+    let id = client.id(&iface, &ssid).call()?;
+    // disable the network
+    info!("Performing disable call to peach-network microservice.");
+    client.disable(&id, &iface).call()?;
+
+    let response = "success".to_string();
+
+    Ok(response)
+}
+
+/// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `id`, `delete` and `save` methods.
 ///
 /// # Arguments
@@ -700,6 +734,9 @@ jsonrpc_client!(pub struct PeachNetworkClient {
 
     /// JSON-RPC request to delete the credentials for the given network from the wpa_supplicant config.
     pub fn delete(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
+
+    /// JSON-RPC request to disable the network for the given interface and ID.
+    pub fn disable(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to disconnect the network for the given interface.
     pub fn disconnect(&mut self, iface: &str) -> RpcRequest<String>;

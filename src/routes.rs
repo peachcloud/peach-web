@@ -30,7 +30,7 @@ use rocket_contrib::templates::Template;
 //  [POST]      /network/wifi/add               WiFi form submission
 //  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
 //  [POST]      /network/wifi/connect           Connect to WiFi access point
-//  [GET]       /network/wifi/disconnect        Disconnect from WiFi access point
+//  [POST]      /network/wifi/disconnect        Disconnect from WiFi access point
 //  [POST]      /network/wifi/forget            Remove WiFi
 //  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
 //  [POST]      /network/wifi/modify            Modify network password
@@ -237,10 +237,11 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     }
 }
 
-#[get("/network/wifi/disconnect")]
-pub fn disconnect_wifi() -> Flash<Redirect> {
+#[post("/network/wifi/disconnect", data = "<network>")]
+pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
+    let ssid = &network.ssid;
     let url = uri!(network_card);
-    match network_disconnect("wlan0") {
+    match network_disable("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network."),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network."),
     }

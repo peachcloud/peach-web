@@ -29,7 +29,11 @@
       <div class="card-container" style="padding-top: 0;">
         <div id="buttonDiv">
         {%- if wlan_ssid == selected -%}
-          <a id="wifiDisconnect" class="button center" href="/network/wifi/disconnect">Disconnect</a>
+          <form id="wifiDisconnect" action="/network/wifi/disconnect" method="post">
+            <!-- hidden element: allows ssid to be sent in request -->
+            <input id="disconnectSsid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+            <input id="disconnectWifi" class="button center" title="Disconnect from Network" type="submit" value="Disconnect">
+          </form>
         {%- endif -%}
         {%- if saved_aps -%}
         {# Loop through the list of AP's with saved credentials #}

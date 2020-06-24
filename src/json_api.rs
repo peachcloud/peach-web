@@ -23,7 +23,7 @@ use rocket_contrib::json::{Json, JsonValue};
 //  [GET]        /api/v1/network/wifi               Retrieve available networks
 //  [POST]       /api/v1/network/wifi               Add WiFi AP credentials
 //  [POST]       /api/v1/network/wifi/connect       Connect to WiFi access point
-//  [GET]        /api/v1/network/wifi/disconnect    Disconnect WiFi access point
+//  [POST]        /api/v1/network/wifi/disconnect   Disconnect WiFi access point
 //  [POST]       /api/v1/network/wifi/forget        Forget / remove network
 //  [POST]       /api/v1/network/wifi/modify        Modify network password
 //  [GET]        /api/v1/ping
@@ -262,10 +262,10 @@ pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     }
 }
 
-#[get("/api/v1/network/wifi/disconnect")]
-pub fn disconnect_ap() -> Json<JsonResponse> {
-    // attempt disconnection from current network for wlan0 interface
-    match network_disconnect("wlan0") {
+#[post("/api/v1/network/wifi/disconnect", data = "<ssid>")]
+pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
+    // attempt to disable the current network for wlan0 interface
+    match network_disable("wlan0", &ssid.ssid) {
         Ok(_) => {
             let status = "success".to_string();
             let data = json!("Disconnected from WiFi network.");

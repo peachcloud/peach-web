@@ -55,17 +55,24 @@ PEACH_NETWORK.connect = function() {
 // catch click of 'Disconnect' button and make POST request
 PEACH_NETWORK.disconnect = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        var disconnectWifi = document.getElementById('wifiDisconnect');
+        var disconnectWifi = document.getElementById('disconnectWifi');
         if (disconnectWifi) {
             disconnectWifi.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
-                // send disconnect_wifi POST request (no body data required)
+                // retrieve ssid value and append to form data object
+                var ssid = document.getElementById('disconnectSsid').value;
+                // create key:value pair
+                var ssidData = { ssid: ssid };
+                // perform json serialization
+                var jsonData = JSON.stringify(ssidData);
+                // send disconnect_wifi POST request
                 fetch("/api/v1/network/wifi/disconnect", {
-                    method: "get",
+                    method: "post",
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    body: jsonData
                 })
                 .then( (response) => {
                     return response.json()
