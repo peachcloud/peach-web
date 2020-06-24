@@ -147,8 +147,8 @@ pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, Netw
 
     Ok(response)
 }
-*/
 
+// NOTE: this method is not currently in use
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `disconnect` method, which disconnectis the current network connection for
 /// the given interface.
@@ -172,6 +172,7 @@ pub fn network_disconnect(iface: &str) -> std::result::Result<String, NetworkErr
 
     Ok(response)
 }
+*/
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `id` method.
@@ -541,10 +542,7 @@ pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
 ///
-pub fn network_disable(
-    iface: &str,
-    ssid: &str,
-) -> std::result::Result<String, NetworkError> {
+pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -739,7 +737,7 @@ jsonrpc_client!(pub struct PeachNetworkClient {
     pub fn disable(&mut self, id: &str, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to disconnect the network for the given interface.
-    pub fn disconnect(&mut self, iface: &str) -> RpcRequest<String>;
+    //pub fn disconnect(&mut self, iface: &str) -> RpcRequest<String>;
 
     /// JSON-RPC request to get the ID for the given interface and SSID.
     pub fn id(&mut self, iface: &str, ssid: &str) -> RpcRequest<String>;
