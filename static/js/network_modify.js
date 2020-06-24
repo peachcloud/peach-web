@@ -1,8 +1,6 @@
 /*
 
-behavioural layer for the `network_modify.html.tera` template,
-corresponding to the web route `/network/wifi/modify` and the
-json route `/api/v1/network/wifi/modify`
+behavioural layer for the `network_modify.html.tera` template
 
  - intercept button click for modify (form submission of credentials)
  - perform json api call
