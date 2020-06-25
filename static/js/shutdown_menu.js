@@ -85,6 +85,8 @@ PEACH_DEVICE.flashMsg = function(status, msg) {
     var elementClass;
     if (status === "success") {
         elementClass = "center-text flash-message font-success";
+    } else if (status === "info") {
+        elementClass = "center-text flash-message font-info";
     } else {
         elementClass = "center-text flash-message font-failure";
     };
