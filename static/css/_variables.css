@@ -157,6 +157,7 @@
 
 /* PEACHCLOUD-SPECIFIC VARIABLES */
 
+  --color-info: var(--blue);
   --color-success: var(--green);
   --color-warning: var(--orange);
   --color-failure: var(--red);

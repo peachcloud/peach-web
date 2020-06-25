@@ -413,6 +413,10 @@ body {
     color: var(--silver);
 }
 
+.font-info {
+    color: var(--color-info);
+}
+
 .font-success {
     color: var(--color-success);
 }

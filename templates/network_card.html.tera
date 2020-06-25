@@ -118,6 +118,9 @@
         {%- if flash_msg and flash_name == "success" %}
         <!-- display success message -->
         <div id="flashMsg" class="center-text flash-message font-success">{{ flash_msg }}</div>
+        {%- elif flash_msg and flash_name == "info" %}
+        <!-- display info message -->
+        <div id="flashMsg" class="center-text flash-message font-info">{{ flash_msg }}</div>
         {%- elif flash_msg and flash_name == "error" %}
         <!-- display error message -->
         <div id="flashMsg" class="center-text flash-message font-failure">{{ flash_msg }}</div>

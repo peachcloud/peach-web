@@ -32,6 +32,8 @@ PEACH_NETWORK.modify = function() {
             });
             // perform json serialization
             var jsonData = JSON.stringify(object);
+            // write in-progress status message to ui
+            PEACH_NETWORK.flashMsg("info", "Updating WiFi password...");
             // send new_password POST request
             fetch("/api/v1/network/wifi/modify", {
                 method: "post",

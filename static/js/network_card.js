@@ -28,6 +28,8 @@ PEACH_NETWORK.activateAp = function() {
             deployAP.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
+                // write in-progress status message to ui
+                PEACH_NETWORK.flashMsg("info", "Deploying access point...");
                 // send activate_ap POST request
                 fetch("/api/v1/network/activate_ap", {
                     method: "post",
@@ -61,6 +63,8 @@ PEACH_NETWORK.activateClient = function() {
             enableWifi.addEventListener('click', function(e) {
                 // prevent form submission (default behavior)
                 e.preventDefault();
+                // write in-progress status message to ui
+                PEACH_NETWORK.flashMsg("info", "Enabling WiFi client...");
                 // send activate_ap POST request
                 fetch("/api/v1/network/activate_client", {
                     method: "post",

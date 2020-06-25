@@ -32,6 +32,8 @@ PEACH_NETWORK.connect = function() {
                 var ssidData = { ssid: ssid };
                 // perform json serialization
                 var jsonData = JSON.stringify(ssidData);
+                // write in-progress status message to ui
+                PEACH_NETWORK.flashMsg("info", "Connecting to access point...");
                 // send add_wifi POST request
                 fetch("/api/v1/network/wifi/connect", {
                     method: "post",
@@ -66,6 +68,8 @@ PEACH_NETWORK.disconnect = function() {
                 var ssidData = { ssid: ssid };
                 // perform json serialization
                 var jsonData = JSON.stringify(ssidData);
+                // write in-progress status message to ui
+                PEACH_NETWORK.flashMsg("info", "Disconnecting from access point...");
                 // send disconnect_wifi POST request
                 fetch("/api/v1/network/wifi/disconnect", {
                     method: "post",
@@ -100,6 +104,8 @@ PEACH_NETWORK.forget = function() {
                 var ssidData = { ssid: ssid };
                 // perform json serialization
                 var jsonData = JSON.stringify(ssidData);
+                // write in-progress status message to ui
+                PEACH_NETWORK.flashMsg("info", "Removing credentials for access point...");
                 // send forget_ap POST request
                 fetch("/api/v1/network/wifi/forget", {
                     method: "post",

@@ -33,6 +33,8 @@ PEACH_NETWORK.add = function() {
             });
             // perform json serialization
             var jsonData = JSON.stringify(object);
+            // write in-progress status message to ui
+            PEACH_NETWORK.flashMsg("info", "Adding WiFi credentials...");
             // send add_wifi POST request
             fetch("/api/v1/network/wifi", {
                 method: "post",
