@@ -324,3 +324,14 @@ pub fn not_found() -> Template {
     };
     Template::render("not_found", context)
 }
+
+#[catch(500)]
+pub fn internal_error() -> Template {
+    debug!("500 Internal Server Error");
+    // HACK: this is just here to satisfy the context requirement
+    let context = FlashContext {
+        flash_name: Some("error".to_string()),
+        flash_msg: Some("Internal server error".to_string()),
+    };
+    Template::render("internal_error", context)
+}

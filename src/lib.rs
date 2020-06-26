@@ -82,7 +82,7 @@ fn rocket() -> rocket::Rocket {
                 shutdown_device,         // JSON API
             ],
         )
-        .register(catchers![not_found])
+        .register(catchers![not_found, internal_error])
         .attach(Template::fairing())
 }
 

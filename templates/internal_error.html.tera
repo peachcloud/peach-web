@@ -1,0 +1,10 @@
+{%- extends "nav" -%}
+{%- block card %}
+        <div class="card">
+            <div class="card-container">
+                <h1 class="bold center-text title-medium">500: Internal Server Error</h1>
+                <p>PeachCloud has encountered an internal error.</p>
+                <p>Click the PeachCloud logo in the top-left of your screen to return to Home.</p>
+            </div>
+        </div>
+{%- endblock -%}
