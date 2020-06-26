@@ -17,7 +17,7 @@
     </nav>
     <!-- Main content container -->
     <main>
-      {%- block card -%}{%- endblock %}
+      {%- block card -%}{%- endblock card %}
     </main>
     <!-- Bottom nav bar -->
     <nav class="nav-bar">
@@ -28,4 +28,4 @@
         <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question mark">
       </a>
     </nav>
-{%- endblock -%}
+{%- endblock nav -%}

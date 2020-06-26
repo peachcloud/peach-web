@@ -83,4 +83,4 @@
     {%- endif -%}
   {%- endfor -%}
   {%- endif -%}
-{%- endblock -%}
+{%- endblock card -%}

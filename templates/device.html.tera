@@ -93,4 +93,4 @@
           </noscript>
         </div>
       </div>
-{%- endblock %}
+{%- endblock card %}

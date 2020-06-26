@@ -28,4 +28,4 @@
           </ul>
         </div>
       </div>
-{%- endblock -%}
+{%- endblock card -%}
