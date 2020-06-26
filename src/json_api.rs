@@ -224,8 +224,8 @@ pub fn add_wifi(wifi: Json<WiFi>) -> Json<JsonResponse> {
             }
             // json response for successful update
             let status = "success".to_string();
-            let data = json!("WiFi credentials added.");
-            Json(build_json_response(status, Some(data), None))
+            let msg = "WiFi credentials added.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
@@ -245,19 +245,19 @@ pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
         Ok(id) => match network_connect(&id, "wlan0") {
             Ok(_) => {
                 let status = "success".to_string();
-                let data = json!("Connected to chosen network.");
-                Json(build_json_response(status, Some(data), None))
+                let msg = "Connected to chosen network.".to_string();
+                Json(build_json_response(status, None, Some(msg)))
             }
             Err(_) => {
                 let status = "error".to_string();
-                let data = json!("Failed to connect to chosen network.");
-                Json(build_json_response(status, Some(data), None))
+                let msg = "Failed to connect to chosen network.".to_string();
+                Json(build_json_response(status, None, Some(msg)))
             }
         },
         Err(_) => {
             let status = "error".to_string();
-            let data = json!("Failed to retrieve the network ID.");
-            Json(build_json_response(status, Some(data), None))
+            let msg = "Failed to retrieve the network ID.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
         }
     }
 }
@@ -268,13 +268,13 @@ pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     match network_disable("wlan0", &ssid.ssid) {
         Ok(_) => {
             let status = "success".to_string();
-            let data = json!("Disconnected from WiFi network.");
-            Json(build_json_response(status, Some(data), None))
+            let msg = "Disconnected from WiFi network.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
         }
         Err(_) => {
             let status = "error".to_string();
-            let data = json!("Failed to disconnect from WiFi network.");
-            Json(build_json_response(status, Some(data), None))
+            let msg = "Failed to disconnect from WiFi network.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
         }
     }
 }
