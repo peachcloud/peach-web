@@ -15,13 +15,15 @@ extern crate serde_derive;
 extern crate tera;
 extern crate websocket;
 
+mod context;
 mod device;
 mod error;
 mod json_api;
 mod network;
-mod oled;
+mod network_client;
+mod oled_client;
 mod routes;
-mod stats;
+mod stats_client;
 mod structs;
 #[cfg(test)]
 mod tests;

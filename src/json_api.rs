@@ -3,8 +3,9 @@ extern crate serde_derive;
 
 use crate::device::*;
 use crate::network::*;
-use crate::oled::oled_ping;
-use crate::stats::stats_ping;
+use crate::network_client::*;
+use crate::oled_client::oled_ping;
+use crate::stats_client::stats_ping;
 use crate::structs::{JsonResponse, Ssid, WiFi};
 
 use rocket_contrib::json::{Json, JsonValue};

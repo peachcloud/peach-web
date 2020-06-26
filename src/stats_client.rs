@@ -7,8 +7,6 @@ use jsonrpc_client_http::HttpTransport;
 use crate::error::StatsError;
 use crate::structs::{CpuStatPercentages, LoadAverage, MemStat, Uptime};
 
-// TODO: Replace unwraps with snafu errors
-
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `cpu_stats_percent` method.
 ///

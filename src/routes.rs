@@ -1,11 +1,18 @@
+// Route handlers for PeachCloud web routes.
+//
+// This module contains handlers which serve templates and static assests,
+// generate flash messages, catch errors and handle redirects for PeachCloud.
+//
 use std::path::{Path, PathBuf};
 
+use crate::context::{
+    DeviceContext, FlashContext, NetworkAddContext, NetworkContext, NetworkDetailContext,
+    NetworkListContext,
+};
 use crate::device::*;
 use crate::network::*;
-use crate::structs::{
-    DeviceContext, FlashContext, NetworkAddContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext, Ssid, WiFi,
-};
+use crate::network_client::*;
+use crate::structs::{Ssid, WiFi};
 
 use percent_encoding::percent_decode;
 
