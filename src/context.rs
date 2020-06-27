@@ -31,16 +31,16 @@ impl DeviceContext {
         let load_average = load_average().ok();
         let mem_stats = mem_stats().ok();
         let network_ping = match network_ping() {
-            Ok(_) => "Networking online".to_string(),
-            Err(_) => "Networking offline".to_string(),
+            Ok(_) => "ONLINE".to_string(),
+            Err(_) => "OFFLINE".to_string(),
         };
         let oled_ping = match oled_ping() {
-            Ok(_) => "OLED online".to_string(),
-            Err(_) => "OLED offline".to_string(),
+            Ok(_) => "ONLINE".to_string(),
+            Err(_) => "OFFLINE".to_string(),
         };
         let stats_ping = match stats_ping() {
-            Ok(_) => "Statistics online".to_string(),
-            Err(_) => "Statistics offline".to_string(),
+            Ok(_) => "ONLINE".to_string(),
+            Err(_) => "OFFLINE".to_string(),
         };
         let uptime = match uptime() {
             Ok(mins) => mins,

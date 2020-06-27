@@ -75,9 +75,32 @@
           <p class="card-text">Uptime data unavailable</p>
           {%- endif %}
           {# Display microservice status for network, oled & stats #}
-          <p class="card-text">{{ network_ping }}</p>
-          <p class="card-text">{{ oled_ping }}</p>
-          <p class="card-text">{{ stats_ping }}</p>
+          <div class="three-grid">
+            <!-- PEACH-NETWORK STATUS STACK -->
+            <div class="stack">
+              <img id="networkIcon" class="icon icon-medium" alt="Network" title="Network microservice status" src="icons/wifi.svg">
+              <div class="stack" style="padding-top: 0.5rem;">
+                <label class="label-small font-near-black">Networking</label>
+                <label class="label-small font-near-black">{{ network_ping }}</label>
+              </div>
+            </div>
+            <!-- PEACH-OLED STATUS STACK -->
+            <div class="stack">
+              <img id="oledIcon" class="icon icon-medium" alt="Display" title="OLED display microservice status" src="icons/lcd.svg">
+              <div class="stack" style="padding-top: 0.5rem;">
+                <label class="label-small font-near-black">Display</label>
+                <label class="label-small font-near-black">{{ oled_ping }}</label>
+              </div>
+            </div>
+            <!-- PEACH-STATS STATUS STACK -->
+            <div class="stack">
+              <img id="statsIcon" class="icon icon-medium" alt="Stats" title="System statistics microservice status" src="icons/chart.svg">
+              <div class="stack" style="padding-top: 0.5rem;">
+                <label class="label-small font-near-black">Statistics</label>
+                <label class="label-small font-near-black">{{ stats_ping }}</label>
+              </div>
+            </div>
+          </div>
           <!-- FLASH MESSAGE -->
           <!-- check for flash message and display accordingly -->
           {%- if flash_msg and flash_name == "success" -%}
