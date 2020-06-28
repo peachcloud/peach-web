@@ -6,7 +6,6 @@ use crate::network::*;
 use crate::network_client::*;
 use crate::oled_client::oled_ping;
 use crate::stats_client::*;
-use crate::structs::*;
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]

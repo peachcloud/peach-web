@@ -24,7 +24,6 @@ mod network_client;
 mod oled_client;
 mod routes;
 mod stats_client;
-mod structs;
 #[cfg(test)]
 mod tests;
 mod ws;

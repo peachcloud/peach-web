@@ -6,9 +6,17 @@ use crate::network::*;
 use crate::network_client::*;
 use crate::oled_client::oled_ping;
 use crate::stats_client::stats_ping;
-use crate::structs::{JsonResponse, Ssid, WiFi};
 
 use rocket_contrib::json::{Json, JsonValue};
+
+#[derive(Serialize)]
+pub struct JsonResponse {
+    pub status: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<JsonValue>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub msg: Option<String>,
+}
 
 // API ROUTES
 

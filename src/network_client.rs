@@ -8,7 +8,7 @@ use jsonrpc_client_http::HttpTransport;
 
 // -> create this error.rs
 use crate::error::NetworkError;
-use crate::structs::Traffic;
+use crate::stats_client::Traffic;
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `activate_ap` method.

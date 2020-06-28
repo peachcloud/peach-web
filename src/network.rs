@@ -11,7 +11,37 @@ use jsonrpc_client_http::HttpTransport;
 use crate::context::NetworkListContext;
 use crate::error::NetworkError;
 use crate::network_client::*;
-use crate::structs::Networks;
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AccessPoint {
+    pub detail: Option<Scan>,
+    pub signal: Option<i32>,
+    pub state: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Networks {
+    pub ssid: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Scan {
+    pub protocol: String,
+    pub frequency: String,
+    pub signal_level: String,
+    pub ssid: String,
+}
+
+#[derive(Debug, Deserialize, FromForm, UriDisplayQuery)]
+pub struct Ssid {
+    pub ssid: String,
+}
+
+#[derive(Debug, Deserialize, FromForm)]
+pub struct WiFi {
+    pub ssid: String,
+    pub pass: String,
+}
 
 /// Helper function to determine if a given SSID already exists in the
 /// `wpa_supplicant.conf` file, indicating that network credentials have already

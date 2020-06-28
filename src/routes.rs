@@ -12,7 +12,6 @@ use crate::context::{
 use crate::device::*;
 use crate::network::*;
 use crate::network_client::*;
-use crate::structs::{Ssid, WiFi};
 
 use percent_encoding::percent_decode;
 
