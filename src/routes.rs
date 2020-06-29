@@ -1,8 +1,31 @@
-// Route handlers for PeachCloud web routes.
-//
-// This module contains handlers which serve templates and static assests,
-// generate flash messages, catch errors and handle redirects for PeachCloud.
-//
+//! Route handlers for PeachCloud web routes.
+//!
+//! This module contains handlers which serve templates and static assests,
+//! generate flash messages, catch errors and handle redirects for PeachCloud.
+//!
+//! WEB ROUTES
+//!
+//! | Method | URL                         | Description                       |
+//! | ------ | --------------------------- | --------------------------------- |
+//! | GET    | /                           | Home                              |
+//! | GET    | /device                     | Device statistics                 |
+//! | GET    | /device/reboot              | Reboot device                     |
+//! | GET    | /device/shutdown            | Shutdown device                   |
+//! | GET    | /network                    | Network overview                  |
+//! | GET    | /network/ap/activate        | Activate WiFi access point mode   |
+//! | GET    | /network/wifi               | List of networks                  |
+//! | GET    | /network/wifi?<ssid>        | Details of single network         |
+//! | GET    | /network/wifi/activate      | Activate WiFi client mode         |
+//! | GET    | /network/wifi/add           | Add WiFi form                     |
+//! | POST   | /network/wifi/add           | WiFi form submission              |
+//! | GET    | /network/wifi/add?<ssid>    | Add WiFi form (SSID populated)    |
+//! | POST   | /network/wifi/connect       | Connect to WiFi access point      |
+//! | POST   | /network/wifi/disconnect    | Disconnect from WiFi access point |
+//! | POST   | /network/wifi/forget        | Remove WiFi                       |
+//! | GET    | /network/wifi/modify?<ssid> | Modify WiFi password form         |
+//! | POST   | /network/wifi/modify        | Modify network password           |
+//! | GET    | /shutdown                   | Shutdown menu                     |
+
 use std::path::{Path, PathBuf};
 
 use crate::context::{
@@ -20,27 +43,6 @@ use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, NamedFile, Redirect};
 
 use rocket_contrib::templates::Template;
-
-// WEB ROUTES
-
-//  [GET]       /                               Home
-//  [GET]       /device                         Device statistics
-//  [GET]       /device/reboot                  Reboot device
-//  [GET]       /device/shutdown                Shutdown device
-//  [GET]       /network                        Network overview
-//  [GET]       /network/ap/activate            Activate WiFi access point mode
-//  [GET]       /network/wifi                   List of networks
-//  [GET]       /network/wifi?<ssid>            Details of single network
-//  [GET]       /network/wifi/activate          Activate WiFi client mode
-//  [GET]       /network/wifi/add               Add WiFi form
-//  [POST]      /network/wifi/add               WiFi form submission
-//  [GET]       /network/wifi/add?<ssid>        Add WiFi form (SSID populated)
-//  [POST]      /network/wifi/connect           Connect to WiFi access point
-//  [POST]      /network/wifi/disconnect        Disconnect from WiFi access point
-//  [POST]      /network/wifi/forget            Remove WiFi
-//  [GET]       /network/wifi/modify?<ssid>     Modify WiFi password form
-//  [POST]      /network/wifi/modify            Modify network password
-//  [GET]       /shutdown                       Shutdown menu
 
 #[get("/")]
 pub fn index() -> Template {

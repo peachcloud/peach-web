@@ -1,3 +1,28 @@
+//! # peach-web
+//!
+//! `peach-web` provides a web interface for monitoring and interacting with the
+//! PeachCloud device. This allows administration of the single-board computer
+//! (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related
+//! plugins.
+//!
+//! ## Design
+//!
+//! `peach-web` is written primarily in Rust and presents a web interface for
+//! interacting with the device. The stack currently consists of Rocket (Rust
+//! web framework), Tera (Rust template engine inspired by Jinja2 and the Django
+//! template language), HTML, CSS and JavaScript. Additional functionality is
+//! provided by JSON-RPC clients for the `peach-network` and `peach-stats`
+//! microservices.
+//!
+//! HTML is rendered server-side. Request handlers call JSON-RPC microservices
+//! and serve HTML and assets. A JSON API is exposed for remote calls and
+//! dynamic client-side content updates via vanilla JavaScript following
+//! unobstructive design principles. A basic Websockets server is included,
+//! though is not currently utilised. Each Tera template is passed a context
+//! object. In the case of Rust, this object is a `struct` and must implement
+//! `Serialize`. The fields of the context object are available in the context
+//! of the template to be rendered.
+
 #![feature(proc_macro_hygiene, decl_macro)]
 
 extern crate get_if_addrs;
@@ -15,15 +40,15 @@ extern crate serde_derive;
 extern crate tera;
 extern crate websocket;
 
-mod context;
-mod device;
-mod error;
-mod json_api;
-mod network;
-mod network_client;
-mod oled_client;
-mod routes;
-mod stats_client;
+pub mod context;
+pub mod device;
+pub mod error;
+pub mod json_api;
+pub mod network;
+pub mod network_client;
+pub mod oled_client;
+pub mod routes;
+pub mod stats_client;
 #[cfg(test)]
 mod tests;
 mod ws;
@@ -97,6 +122,7 @@ pub fn run() -> Result<(), BoxError> {
         rocket().launch();
     });
 
+    // NOTE: websockets are not currently in use (may be in the future)
     let ws_addr = env::var("PEACH_WEB_WS").unwrap_or_else(|_| "0.0.0.0:5115".to_string());
     match websocket_server(ws_addr) {
         Ok(_) => debug!("Websocket server terminated without error."),

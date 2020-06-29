@@ -1,5 +1,5 @@
-// Network-related methods and helper functions which utilise the JSON-RPC
-// `peach-network` microservice.
+//! Provides network-related methods, data structures and helper functions which
+//! utilise the JSON-RPC `peach-network` microservice.
 
 extern crate jsonrpc_client_http;
 
@@ -52,7 +52,6 @@ pub struct WiFi {
 /// # Arguments
 ///
 /// * `ssid` - A string slice containing the SSID of a network.
-///
 pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
     // retrieve a list of access points with saved credentials
     let saved_aps = match network_saved_networks() {
@@ -84,7 +83,6 @@ pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-///
 pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -115,7 +113,6 @@ pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, N
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-///
 pub fn forget_network(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -150,7 +147,6 @@ pub fn forget_network(iface: &str, ssid: &str) -> std::result::Result<String, Ne
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
 /// * `pass` - A string slice containing the password for a network.
-///
 pub fn update_password(
     iface: &str,
     ssid: &str,
@@ -197,7 +193,6 @@ pub fn update_password(
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListContext, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;

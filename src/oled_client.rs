@@ -39,7 +39,6 @@ jsonrpc_client!(pub struct PeachOledClient {
 /// * `y_coord` - A 32 byte signed int.
 /// * `string` - A String containing the message to be displayed.
 /// * `font_size` - A String containing `6x8`, `6x12`, `8x16` or `12x16`
-///
 pub fn oled_clear() -> std::result::Result<(), MenuError> {
     debug!("Creating HTTP transport for OLED client.");
     let transport = HttpTransport::new().standalone()?;

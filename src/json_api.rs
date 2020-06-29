@@ -1,3 +1,32 @@
+//! JSON API routes for PeachCloud.
+//!
+//! This module contains handlers which allow retrieval and modification of
+//! device state via JSON.
+//!
+//! API ROUTES
+//!
+//! | Method | URL                             | Description                  |
+//! | ------ | ------------------------------- | ---------------------------- |
+//! | POST   | /api/v1/device/reboot           | Reboot device                |
+//! | POST   | /api/v1/device/shutdown         | Shutdown device              |
+//! | POST   | /api/v1/network/activate_ap     |                              |
+//! | POST   | /api/v1/network/activate_client |                              |
+//! | GET    | /api/v1/network/ip              |                              |
+//! | GET    | /api/v1/network/rssi            |                              |
+//! | GET    | /api/v1/network/ssid            |                              |
+//! | GET    | /api/v1/network/state           |                              |
+//! | GET    | /api/v1/network/status          |                              |
+//! | GET    | /api/v1/network/wifi            | Retrieve available networks  |
+//! | POST   | /api/v1/network/wifi            | Add WiFi AP credentials      |
+//! | POST   | /api/v1/network/wifi/connect    | Connect to WiFi access point |
+//! | POST   | /api/v1/network/wifi/disconnect | Disconnect WiFi access point |
+//! | POST   | /api/v1/network/wifi/forget     | Forget / remove network      |
+//! | POST   | /api/v1/network/wifi/modify     | Modify network password      |
+//! | GET    | /api/v1/ping                    |                              |
+//! | GET    | /api/v1/ping/network            | Ping `peach-network`         |
+//! | GET    | /api/v1/ping/oled               | Ping `peach-oled`            |
+//! | GET    | /api/v1/ping/stats              | Ping `peach-stats`           |
+
 extern crate jsonrpc_client_http;
 extern crate serde_derive;
 
@@ -17,28 +46,6 @@ pub struct JsonResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub msg: Option<String>,
 }
-
-// API ROUTES
-
-//  [POST]       /api/v1/device/reboot              Reboot device
-//  [POST]       /api/v1/device/shutdown            Shutdown device
-//  [POST]       /api/v1/network/activate_ap
-//  [POST]       /api/v1/network/activate_client
-//  [GET]        /api/v1/network/ip
-//  [GET]        /api/v1/network/rssi
-//  [GET]        /api/v1/network/ssid
-//  [GET]        /api/v1/network/state
-//  [GET]        /api/v1/network/status
-//  [GET]        /api/v1/network/wifi               Retrieve available networks
-//  [POST]       /api/v1/network/wifi               Add WiFi AP credentials
-//  [POST]       /api/v1/network/wifi/connect       Connect to WiFi access point
-//  [POST]        /api/v1/network/wifi/disconnect   Disconnect WiFi access point
-//  [POST]       /api/v1/network/wifi/forget        Forget / remove network
-//  [POST]       /api/v1/network/wifi/modify        Modify network password
-//  [GET]        /api/v1/ping
-//  [GET]        /api/v1/ping/network               Ping `peach-network`
-//  [GET]        /api/v1/ping/oled                  Ping `peach-oled`
-//  [GET]        /api/v1/ping/stats                 Ping `peach-stats`
 
 // reboot the device
 #[post("/api/v1/device/reboot")]

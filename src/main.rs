@@ -1,3 +1,5 @@
+//! Initialize the logger and run the application, catching any errors.
+
 extern crate peach_web;
 #[macro_use]
 extern crate log;

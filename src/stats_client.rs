@@ -1,3 +1,11 @@
+//! Perform JSON-RPC calls to the `peach-stats` microservice.
+//!
+//! This module contains a JSON-RPC client and associated data structures for
+//! making calls to the `peach-stats` microservice. Each RPC has a corresponding
+//! method which creates an HTTP transport, makes the call to the RPC
+//! microservice and returns the response to the caller. These convenience
+//! methods simplify the process of performing RPC calls from other modules.
+
 extern crate jsonrpc_client_http;
 
 use std::env;
@@ -62,7 +70,6 @@ pub struct Uptime {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `cpu_stats_percent` method.
-///
 pub fn cpu_stats_percent() -> std::result::Result<CpuStatPercentages, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
@@ -81,7 +88,6 @@ pub fn cpu_stats_percent() -> std::result::Result<CpuStatPercentages, StatsError
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `disk_usage` method.
-///
 pub fn disk_usage() -> std::result::Result<String, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
@@ -99,7 +105,6 @@ pub fn disk_usage() -> std::result::Result<String, StatsError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `cpu_stats_percent` method.
-///
 pub fn load_average() -> std::result::Result<LoadAverage, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
@@ -118,7 +123,6 @@ pub fn load_average() -> std::result::Result<LoadAverage, StatsError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `cpu_stats_percent` method.
-///
 pub fn mem_stats() -> std::result::Result<MemStat, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
@@ -137,7 +141,6 @@ pub fn mem_stats() -> std::result::Result<MemStat, StatsError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `ping` method.
-///
 pub fn stats_ping() -> std::result::Result<MemStat, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
@@ -155,8 +158,8 @@ pub fn stats_ping() -> std::result::Result<MemStat, StatsError> {
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
-/// `cpu_stats_percent` method.
-///
+/// `uptime` method. If a successful response is returned, the uptime value (in
+/// seconds) is converted to minutes before being returned to the caller.
 pub fn uptime() -> std::result::Result<String, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;

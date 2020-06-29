@@ -1,4 +1,10 @@
-// JSON-RPC client for the `peach-network` microservice.
+//! Perform JSON-RPC calls to the `peach-network` microservice.
+//!
+//! This module contains a JSON-RPC client and associated data structures for
+//! making calls to the `peach-network` microservice. Each RPC has a
+//! corresponding method which creates an HTTP transport, makes the call to the
+//! RPC microservice and returns the response to the caller. These convenience
+//! methods simplify the process of performing RPC calls from other modules.
 
 extern crate jsonrpc_client_http;
 
@@ -6,13 +12,11 @@ use std::env;
 
 use jsonrpc_client_http::HttpTransport;
 
-// -> create this error.rs
 use crate::error::NetworkError;
 use crate::stats_client::Traffic;
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `activate_ap` method.
-///
 pub fn network_activate_ap() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -31,7 +35,6 @@ pub fn network_activate_ap() -> std::result::Result<String, NetworkError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `activate_client` method.
-///
 pub fn network_activate_client() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -55,7 +58,6 @@ pub fn network_activate_client() -> std::result::Result<String, NetworkError> {
 ///
 /// * `ssid` - A string slice containing the SSID of an access point.
 /// * `pass` - A string slice containing the password for an access point.
-///
 pub fn network_add(ssid: &str, pass: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -78,7 +80,6 @@ pub fn network_add(ssid: &str, pass: &str) -> std::result::Result<String, Networ
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_available_networks(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -103,7 +104,6 @@ pub fn network_available_networks(iface: &str) -> std::result::Result<String, Ne
 ///
 /// * `id` - A string slice containing a network identifier.
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_connect(id: &str, iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -130,7 +130,6 @@ pub fn network_connect(id: &str, iface: &str) -> std::result::Result<String, Net
 ///
 /// * `id` - A string slice containing a network identifier.
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -157,7 +156,6 @@ pub fn network_delete(id: &str, iface: &str) -> std::result::Result<String, Netw
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_disconnect(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -182,7 +180,6 @@ pub fn network_disconnect(iface: &str) -> std::result::Result<String, NetworkErr
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-///
 pub fn network_id(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -205,7 +202,6 @@ pub fn network_id(iface: &str, ssid: &str) -> std::result::Result<String, Networ
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_ip(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -233,7 +229,6 @@ pub fn network_ip(iface: &str) -> std::result::Result<String, NetworkError> {
 /// * `id` - A string slice containing a network identifier.
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `pass` - A string slice containing the new password.
-///
 pub fn network_modify(
     id: &str,
     iface: &str,
@@ -258,7 +253,6 @@ pub fn network_modify(
 /// `ping` method, which serves as a means of determining availability of the
 /// microservice (ie. there will be no response if `peach-network` is not
 /// running).
-///
 pub fn network_ping() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -276,7 +270,6 @@ pub fn network_ping() -> std::result::Result<String, NetworkError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `reconfigure` method.
-///
 pub fn network_reconfigure() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -301,7 +294,6 @@ pub fn network_reconfigure() -> std::result::Result<String, NetworkError> {
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_reconnect(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -325,7 +317,6 @@ pub fn network_reconnect(iface: &str) -> std::result::Result<String, NetworkErro
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_rssi(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -348,7 +339,6 @@ pub fn network_rssi(iface: &str) -> std::result::Result<String, NetworkError> {
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_rssi_percent(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -368,7 +358,6 @@ pub fn network_rssi_percent(iface: &str) -> std::result::Result<String, NetworkE
 /*
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `save` method.
-///
 pub fn network_save() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -389,7 +378,6 @@ pub fn network_save() -> std::result::Result<String, NetworkError> {
 /// Creates a JSON-RPC client with http transport and calls the `peach-network`
 /// `saved_networks` method, which returns a list of networks saved in
 /// `wpa_supplicant.conf`.
-///
 pub fn network_saved_networks() -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -411,7 +399,6 @@ pub fn network_saved_networks() -> std::result::Result<String, NetworkError> {
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_ssid(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -434,7 +421,6 @@ pub fn network_ssid(iface: &str) -> std::result::Result<String, NetworkError> {
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_state(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -457,7 +443,6 @@ pub fn network_state(iface: &str) -> std::result::Result<String, NetworkError> {
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_status(iface: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
@@ -480,7 +465,6 @@ pub fn network_status(iface: &str) -> std::result::Result<String, NetworkError> 
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-///
 pub fn network_traffic(iface: &str) -> std::result::Result<Traffic, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;

@@ -1,3 +1,6 @@
+// NOTE: websockets are not currently in use for PeachCloud but may be in the
+// future.
+
 use std::io;
 use std::thread;
 

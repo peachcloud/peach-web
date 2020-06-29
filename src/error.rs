@@ -1,3 +1,5 @@
+//! Basic error handling for the network, OLED and stats JSON-RPC clients.
+
 extern crate jsonrpc_client_core;
 extern crate jsonrpc_client_http;
 

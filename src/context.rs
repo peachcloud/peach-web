@@ -1,5 +1,9 @@
-// Structs and methods for building Tera template context objects.
-//
+//! Build context objects for inclusion in Tera templates.
+//!
+//! Each context object is represented by a struct which implements a build
+//! method. Context objects provide the means by which application and device
+//! state are made available for rendering in the templates.
+
 use std::collections::HashMap;
 
 use crate::network::*;
@@ -96,151 +100,6 @@ pub struct NetworkAddContext {
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub selected: Option<String>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct NetworkDetailContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub saved_aps: Vec<Networks>,
-    pub selected: Option<String>,
-    pub wlan_ip: String,
-    pub wlan_networks: HashMap<String, AccessPoint>,
-    pub wlan_rssi: Option<String>,
-    pub wlan_ssid: String,
-    pub wlan_state: String,
-    pub wlan_status: String,
-    pub wlan_traffic: Option<Traffic>,
-}
-
-impl NetworkDetailContext {
-    pub fn build() -> NetworkDetailContext {
-        let wlan_ip = match network_ip("wlan0") {
-            Ok(ip) => ip,
-            Err(_) => "x.x.x.x".to_string(),
-        };
-        // list of networks saved in wpa_supplicant.conf
-        let wlan_list = match network_saved_networks() {
-            Ok(ssids) => {
-                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
-                    .expect("Failed to deserialize scan_list response");
-                networks
-            }
-            Err(_) => Vec::new(),
-        };
-        // list of networks saved in wpa_supplicant.conf
-        // HACK: we're running the same function twice (wlan_list)
-        // see if we can implement clone for Vec<Networks> instead
-        let saved_aps = match network_saved_networks() {
-            Ok(ssids) => {
-                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
-                    .expect("Failed to deserialize scan_list response");
-                networks
-            }
-            Err(_) => Vec::new(),
-        };
-        let wlan_rssi = match network_rssi_percent("wlan0") {
-            Ok(rssi) => Some(rssi),
-            Err(_) => None,
-        };
-        // list of networks currently in range (online & accessible)
-        let wlan_scan = match network_available_networks("wlan0") {
-            Ok(networks) => {
-                let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
-                    .expect("Failed to deserialize scan_networks response");
-                scan
-            }
-            Err(_) => Vec::new(),
-        };
-        let wlan_ssid = match network_ssid("wlan0") {
-            Ok(ssid) => ssid,
-            Err(_) => "Not connected".to_string(),
-        };
-        let wlan_state = match network_state("wlan0") {
-            Ok(state) => state,
-            Err(_) => "Interface unavailable".to_string(),
-        };
-        let wlan_status = match network_status("wlan0") {
-            Ok(status) => status,
-            Err(_) => "Interface unavailable".to_string(),
-        };
-        let wlan_traffic = match network_traffic("wlan0") {
-            Ok(traffic) => {
-                let mut t = traffic;
-                // modify traffic values & assign measurement unit
-                // based on received and transmitted values
-                // if received > 999 MB, convert it to GB
-                if t.received > 1_047_527_424 {
-                    t.received /= 1_073_741_824;
-                    t.rx_unit = Some("GB".to_string());
-                } else if t.received > 0 {
-                    // otherwise, convert it to MB
-                    t.received = (t.received / 1024) / 1024;
-                    t.rx_unit = Some("MB".to_string());
-                } else {
-                    t.received = 0;
-                    t.rx_unit = Some("MB".to_string());
-                }
-
-                if t.transmitted > 1_047_527_424 {
-                    t.transmitted /= 1_073_741_824;
-                    t.tx_unit = Some("GB".to_string());
-                } else if t.transmitted > 0 {
-                    t.transmitted = (t.transmitted / 1024) / 1024;
-                    t.tx_unit = Some("MB".to_string());
-                } else {
-                    t.transmitted = 0;
-                    t.tx_unit = Some("MB".to_string());
-                }
-                Some(t)
-            }
-            Err(_) => None,
-        };
-        // create a hashmap to combine wlan_list & wlan_scan without repetition
-        let mut wlan_networks = HashMap::new();
-        for ap in wlan_scan {
-            let ssid = ap.ssid.clone();
-            let rssi = ap.signal_level.clone();
-            // parse the string to a signed integer (for math)
-            let rssi_parsed = rssi.parse::<i32>().unwrap();
-            // perform rssi (dBm) to quality (%) conversion
-            let quality_percent = 2 * (rssi_parsed + 100);
-            let ap_detail = AccessPoint {
-                detail: Some(ap),
-                state: "Available".to_string(),
-                signal: Some(quality_percent),
-            };
-            wlan_networks.insert(ssid, ap_detail);
-        }
-        for network in wlan_list {
-            // avoid repetition by checking that ssid is not already in list
-            if !wlan_networks.contains_key(&network.ssid) {
-                let ssid = network.ssid.clone();
-                let net_detail = AccessPoint {
-                    detail: None,
-                    state: "Not in range".to_string(),
-                    signal: None,
-                };
-                wlan_networks.insert(ssid, net_detail);
-            }
-        }
-
-        NetworkDetailContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            saved_aps,
-            selected: None,
-            wlan_ip,
-            wlan_networks,
-            wlan_rssi,
-            wlan_ssid,
-            wlan_state,
-            wlan_status,
-            wlan_traffic,
-        }
-    }
 }
 
 #[derive(Debug, Serialize)]
@@ -388,6 +247,151 @@ impl NetworkContext {
             flash_msg: None,
             selected: None,
             back: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct NetworkDetailContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub saved_aps: Vec<Networks>,
+    pub selected: Option<String>,
+    pub wlan_ip: String,
+    pub wlan_networks: HashMap<String, AccessPoint>,
+    pub wlan_rssi: Option<String>,
+    pub wlan_ssid: String,
+    pub wlan_state: String,
+    pub wlan_status: String,
+    pub wlan_traffic: Option<Traffic>,
+}
+
+impl NetworkDetailContext {
+    pub fn build() -> NetworkDetailContext {
+        let wlan_ip = match network_ip("wlan0") {
+            Ok(ip) => ip,
+            Err(_) => "x.x.x.x".to_string(),
+        };
+        // list of networks saved in wpa_supplicant.conf
+        let wlan_list = match network_saved_networks() {
+            Ok(ssids) => {
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
+                    .expect("Failed to deserialize scan_list response");
+                networks
+            }
+            Err(_) => Vec::new(),
+        };
+        // list of networks saved in wpa_supplicant.conf
+        // HACK: we're running the same function twice (wlan_list)
+        // see if we can implement clone for Vec<Networks> instead
+        let saved_aps = match network_saved_networks() {
+            Ok(ssids) => {
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
+                    .expect("Failed to deserialize scan_list response");
+                networks
+            }
+            Err(_) => Vec::new(),
+        };
+        let wlan_rssi = match network_rssi_percent("wlan0") {
+            Ok(rssi) => Some(rssi),
+            Err(_) => None,
+        };
+        // list of networks currently in range (online & accessible)
+        let wlan_scan = match network_available_networks("wlan0") {
+            Ok(networks) => {
+                let scan: Vec<Scan> = serde_json::from_str(networks.as_str())
+                    .expect("Failed to deserialize scan_networks response");
+                scan
+            }
+            Err(_) => Vec::new(),
+        };
+        let wlan_ssid = match network_ssid("wlan0") {
+            Ok(ssid) => ssid,
+            Err(_) => "Not connected".to_string(),
+        };
+        let wlan_state = match network_state("wlan0") {
+            Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+        let wlan_status = match network_status("wlan0") {
+            Ok(status) => status,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+        let wlan_traffic = match network_traffic("wlan0") {
+            Ok(traffic) => {
+                let mut t = traffic;
+                // modify traffic values & assign measurement unit
+                // based on received and transmitted values
+                // if received > 999 MB, convert it to GB
+                if t.received > 1_047_527_424 {
+                    t.received /= 1_073_741_824;
+                    t.rx_unit = Some("GB".to_string());
+                } else if t.received > 0 {
+                    // otherwise, convert it to MB
+                    t.received = (t.received / 1024) / 1024;
+                    t.rx_unit = Some("MB".to_string());
+                } else {
+                    t.received = 0;
+                    t.rx_unit = Some("MB".to_string());
+                }
+
+                if t.transmitted > 1_047_527_424 {
+                    t.transmitted /= 1_073_741_824;
+                    t.tx_unit = Some("GB".to_string());
+                } else if t.transmitted > 0 {
+                    t.transmitted = (t.transmitted / 1024) / 1024;
+                    t.tx_unit = Some("MB".to_string());
+                } else {
+                    t.transmitted = 0;
+                    t.tx_unit = Some("MB".to_string());
+                }
+                Some(t)
+            }
+            Err(_) => None,
+        };
+        // create a hashmap to combine wlan_list & wlan_scan without repetition
+        let mut wlan_networks = HashMap::new();
+        for ap in wlan_scan {
+            let ssid = ap.ssid.clone();
+            let rssi = ap.signal_level.clone();
+            // parse the string to a signed integer (for math)
+            let rssi_parsed = rssi.parse::<i32>().unwrap();
+            // perform rssi (dBm) to quality (%) conversion
+            let quality_percent = 2 * (rssi_parsed + 100);
+            let ap_detail = AccessPoint {
+                detail: Some(ap),
+                state: "Available".to_string(),
+                signal: Some(quality_percent),
+            };
+            wlan_networks.insert(ssid, ap_detail);
+        }
+        for network in wlan_list {
+            // avoid repetition by checking that ssid is not already in list
+            if !wlan_networks.contains_key(&network.ssid) {
+                let ssid = network.ssid.clone();
+                let net_detail = AccessPoint {
+                    detail: None,
+                    state: "Not in range".to_string(),
+                    signal: None,
+                };
+                wlan_networks.insert(ssid, net_detail);
+            }
+        }
+
+        NetworkDetailContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            saved_aps,
+            selected: None,
+            wlan_ip,
+            wlan_networks,
+            wlan_rssi,
+            wlan_ssid,
+            wlan_state,
+            wlan_status,
+            wlan_traffic,
         }
     }
 }
