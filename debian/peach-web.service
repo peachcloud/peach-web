@@ -1,0 +1,16 @@
+[Unit]
+Description=Rocket web application for serving the PeachCloud web interface.
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/usr/share/peach-web
+Environment="ROCKET_ENV=prod"
+Environment="ROCKET_ADDRESS=127.0.0.1"
+Environment="ROCKET_PORT=3000"
+Environment="ROCKET_LOG=critical"
+ExecStart=/usr/bin/peach-web
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
