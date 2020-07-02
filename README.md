@@ -101,6 +101,38 @@ Run the binary:
 
 _Note: Networking functionality requires peach-network microservice to be running._
 
+### Debian Packaging
+
+A `systemd` service file and Debian maintainer scripts are included in the `debian` directory, allowing `peach-web` to be easily bundled as a Debian package (`.deb`). The `cargo-deb` [crate](https://crates.io/crates/cargo-deb) can be used to achieve this.
+
+Install `cargo-deb`:
+
+`cargo install cargo-deb`
+
+Move into the repo:
+
+`cd peach-web`
+
+Build the package:
+
+`cargo deb`
+
+The output will be written to `target/debian/peach-web_0.3.0_arm64.deb` (or similar).
+
+Install the package as follows:
+
+`sudo dpkg -i target/debian/peach-web_0.3.0_arm64.deb`
+
+The service will be automatically enabled and started.
+
+Uninstall the service:
+
+`sudo apt-get remove peach-web`
+
+Remove configuration files (not removed with `apt-get remove`):
+
+`sudo apt-get purge peach-web`
+
 ### Design
 
 `peach-web` is built on the Rocket webserver and Tera templating engine. It presents a web interface for interacting with the device. HTML is rendered server-side. Request handlers call JSON-RPC microservices and serve HTML and assets. A JSON API is exposed for remote calls and dynamic client-side content updates (via vanilla JavaScript following unobstructive design principles). Each Tera template is passed a context object. In the case of Rust, this object is a `struct` and must implement `Serialize`. The fields of the context object are available in the context of the template to be rendered.
