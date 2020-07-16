@@ -1,6 +1,6 @@
 {%- extends "nav" -%}
 {%- block card %}
-      <div class="card">
+      <div class="card center">
         <div class="center list-container">
           <h1 class="bold center-text title-medium">WiFi Networks</h1>
           <ul class="list">

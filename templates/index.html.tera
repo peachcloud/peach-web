@@ -1,25 +1,53 @@
 {%- extends "nav" -%}
 {%- block card %}
-      <!-- CARD -->
-      <div class="card">
-        <h1 class="bold center center-text title-medium">PeachCloud Home</h1>
-        <div class="two-grid">
-          <div class="stack">
-            <a href="/network">
-              <img id="configIcon" class="icon icon-medium" alt="Configuration" title="PeachCloud configuration" src="icons/cog.svg">
-            </a>
-            <div class="flex-grid" style="padding-top: 0.5rem;">
-              <label class="label-small font-near-black">CONFIGURATION</label>
-            </div>
+      <!-- RADIAL MENU -->
+      <div class="grid">
+        <!-- top-left -->
+        <!-- PEERS LINK AND ICON -->
+        <a class="top-left" href="/peers">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/users.svg">
           </div>
-          <div class="stack">
-            <a href="/device">
-              <img id="statusIcon" class="icon icon-medium" alt="Status" title="PeachCloud status" src="icons/heart-pulse.svg">
-            </a>
-            <div class="flex-grid" style="padding-top: 0.5rem;">
-              <label class="label-small font-near-black">STATUS</label>
-            </div>
+        </a>
+        <!-- top-middle -->
+        <!-- CURRENT USER LINK AND ICON -->
+        <a class="top-middle" href="/profile">
+          <div class="circle circle-small">
+            <img class="icon-100" src="icons/glyph.png">
           </div>
-        </div>
+        </a>
+        <!-- top-right -->
+        <!-- MESSAGES LINK AND ICON -->
+        <a class="top-right" href="/messages">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/envelope.svg">
+          </div>
+        </a>
+        <!-- middle -->
+        <a class="middle" href="/hello">
+          <div class="circle circle-large">
+          </div>
+        </a>
+        <!-- bottom-left -->
+        <!-- SYSTEM STATUS LINK AND ICON -->
+        <a class="bottom-left" href="/device">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/heart-pulse.svg">
+          </div>
+        </a>
+        <!-- bottom-middle -->
+        <!-- PEACHCLOUD GUIDEBOOK LINK AND ICON -->
+        <a class="bottom-middle" href="/help">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/book.svg">
+          </div>
+        </a>
+        <!-- bottom-right -->
+        <!-- SYSTEM SETTINGS LINK AND ICON -->
+        <a class="bottom-right" href="/network">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/cog.svg">
+          </div>
+        </a>
       </div>
 {%- endblock card %}

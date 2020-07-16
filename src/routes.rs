@@ -11,6 +11,7 @@
 //! | GET    | /device                     | Device statistics                 |
 //! | GET    | /device/reboot              | Reboot device                     |
 //! | GET    | /device/shutdown            | Shutdown device                   |
+//! | GET    | /help                       | Help and usage guidelines         |
 //! | GET    | /network                    | Network overview                  |
 //! | GET    | /network/ap/activate        | Activate WiFi access point mode   |
 //! | GET    | /network/wifi               | List of networks                  |
@@ -24,6 +25,9 @@
 //! | POST   | /network/wifi/forget        | Remove WiFi                       |
 //! | GET    | /network/wifi/modify?<ssid> | Modify WiFi password form         |
 //! | POST   | /network/wifi/modify        | Modify network password           |
+//! | GET    | /messages                   | Private Scuttlebutt messages      |
+//! | GET    | /peers                      | Scuttlebutt peers overview        |
+//! | GET    | /profile                    | Scuttlebutt user profile          |
 //! | GET    | /shutdown                   | Shutdown menu                     |
 
 use std::path::{Path, PathBuf};
@@ -82,6 +86,21 @@ pub fn shutdown_cmd() -> Flash<Redirect> {
         Ok(_) => Flash::success(Redirect::to("/shutdown"), "Shutting down the device."),
         Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to shutdown the device."),
     }
+}
+
+#[get("/help")]
+pub fn help(flash: Option<FlashMessage>) -> Template {
+    let mut context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("help", &context)
 }
 
 #[get("/network")]
@@ -300,6 +319,51 @@ pub fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
             "Failed to update WiFi password".to_string(),
         ),
     }
+}
+
+#[get("/messages")]
+pub fn messages(flash: Option<FlashMessage>) -> Template {
+    let mut context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("messages", &context)
+}
+
+#[get("/peers")]
+pub fn peers(flash: Option<FlashMessage>) -> Template {
+    let mut context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("peers", &context)
+}
+
+#[get("/profile")]
+pub fn profile(flash: Option<FlashMessage>) -> Template {
+    let mut context = FlashContext {
+        flash_name: None,
+        flash_msg: None,
+    };
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("profile", &context)
 }
 
 #[get("/shutdown")]
