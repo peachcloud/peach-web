@@ -5,7 +5,6 @@
  *
  * Index
  * - ALIGNMENT
- * - BODY
  * - BUTTONS
  * - CARDS
  * - CIRCLES
@@ -18,7 +17,6 @@
  * - LABELS
  * - LINKS
  * - LISTS
- * - MAIN
  * - METERS
  * - NAVIGATION
  * - RADIAL MENU
@@ -79,8 +77,8 @@
 
 @media only screen and (min-width: 600px) {
     .top-middle {
-        padding-top: 1rem;
-        place-self: start center;
+        padding-bottom: 2rem;
+        place-self: center;
     }
 }
 
@@ -96,8 +94,8 @@
 
 @media only screen and (min-width: 600px) {
     .bottom-middle {
-        padding-bottom: 1rem;
-        place-self: end center;
+        padding-top: 2rem;
+        place-self: center;
     }
 }
 
@@ -119,22 +117,6 @@
     .bottom-right {
         place-self: start;
     }
-}
-
-/*
- * BODY
- */
-
-body {
-/*    align-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--gray);
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;*/
 }
 
 /*
@@ -181,7 +163,6 @@ body {
 }
 
 .card-container {
-    /*display: flex;*/
     justify-content: center;
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -273,16 +254,6 @@ body {
     grid-template-rows: 2fr 1fr 2fr;
     height: 80vh;
 }
-
-/*@media only screen and (min-width: i600px) {
-    .grid {
-        display: grid;
-        grid-template-columns: auto 20% auto;
-        grid-template-rows: auto 40% auto;
-        height: 80vh;
-        /*margin-top: 10vh;*/
-    }
-}*/
 
 .flex-grid {
     display: flex;
@@ -566,17 +537,6 @@ body {
     justify-self: left;
     grid-column: 1;
     grid-row: 2;
-}
-
-/*
- * MAIN
- */
-
-main {
-    /*display: flex;*/
-    /*flex-grow: 1;*/
-    /*justify-content: center;*/
-    /*min-width: var(--max-width-5);*/
 }
 
 /*
