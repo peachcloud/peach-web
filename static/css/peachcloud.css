@@ -53,47 +53,72 @@
 }
 
 .top-left {
-    margin-left: auto;
-    margin-right: 0;
-    margin-top: auto;
-    margin-bottom: 0;
+    /* place-self combines align-self and justify-self */
+    place-self: end center;
+}
+
+@media only screen and (min-width: 600px) {
+    .top-left {
+        place-self: end;
+    }
 }
 
 .top-right {
-    margin-left: 0;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: 0;
+    place-self: end center;
+}
+
+@media only screen and (min-width: 600px) {
+    .top-right {
+        place-self: end start;
+    }
 }
 
 .top-middle {
-    margin: auto;
-    margin-top: 0;
+    place-self: center;
+}
+
+@media only screen and (min-width: 600px) {
+    .top-middle {
+        padding-top: 1rem;
+        place-self: start center;
+    }
 }
 
 .middle {
-    margin: auto;
+    place-self: center;
     grid-column-start: 1;
     grid-column-end: 4;
 }
 
 .bottom-middle {
-    margin: auto;
-    margin-bottom: 0;
+    place-self: center;
+}
+
+@media only screen and (min-width: 600px) {
+    .bottom-middle {
+        padding-bottom: 1rem;
+        place-self: end center;
+    }
 }
 
 .bottom-left {
-    margin-left: auto;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: auto;
+    place-self: start center;
+}
+
+@media only screen and (min-width: 600px) {
+    .bottom-left {
+        place-self: start end;
+    }
 }
 
 .bottom-right {
-    margin-left: 0;
-    margin-right: auto;
-    margin-top: 0;
-    margin-bottom: auto;
+    place-self: start center;
+}
+
+@media only screen and (min-width: 600px) {
+    .bottom-right {
+        place-self: start;
+    }
 }
 
 /*
@@ -244,13 +269,12 @@ body {
 
 .grid {
     display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto 40% auto;
+    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-rows: 2fr 1fr 2fr;
     height: 80vh;
-    /*margin-top: 10vh;*/
 }
 
-@media only screen and (min-width: 600px) {
+/*@media only screen and (min-width: i600px) {
     .grid {
         display: grid;
         grid-template-columns: auto 20% auto;
@@ -258,7 +282,7 @@ body {
         height: 80vh;
         /*margin-top: 10vh;*/
     }
-}
+}*/
 
 .flex-grid {
     display: flex;
