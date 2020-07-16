@@ -77,6 +77,8 @@ fn rocket() -> rocket::Rocket {
                 deploy_client,           // WEB ROUTE
                 device_stats,            // WEB ROUTE
                 forget_wifi,             // WEB ROUTE
+                help,                    // WEB ROUTE
+                messages,                // WEB ROUTE
                 modify_password,         // WEB ROUTE
                 network_add_ssid,        // WEB ROUTE
                 network_add_wifi,        // WEB ROUTE
@@ -84,6 +86,8 @@ fn rocket() -> rocket::Rocket {
                 network_detail,          // WEB ROUTE
                 network_list,            // WEB ROUTE
                 network_modify_password, // WEB ROUTE
+                peers,                   // WEB ROUTE
+                profile,                 // WEB ROUTE
                 reboot_cmd,              // WEB ROUTE
                 shutdown_cmd,            // WEB ROUTE
                 shutdown_menu,           // WEB ROUTE

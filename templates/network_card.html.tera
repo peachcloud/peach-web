@@ -84,7 +84,7 @@
       </div>
       {%- else %}
       <!-- NETWORK CARD -->
-      <div class="card">
+      <div class="card center">
         <!-- NETWORK INFO BOX -->
         <div id="netInfoBox" class="two-grid" title="PeachCloud network mode and status">
           <!-- NETWORK STATUS -->

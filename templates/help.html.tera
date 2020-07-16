@@ -1,0 +1,22 @@
+{%- extends "nav" -%}
+{%- block card %}
+      <!-- HELP MENU -->
+      <div class="card center">
+        <div class="card-container">
+          <h1 class="bold center center-text title-medium">PeachCloud Help</h1>
+          <!-- FLASH MESSAGE -->
+          <!-- check for flash message and display accordingly -->
+          {%- if flash_msg and flash_name == "success" %}
+          <!-- display success message -->
+          <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          {%- elif flash_msg and flash_name == "error" %}
+          <!-- display error message -->
+          <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          {%- endif %}
+          <!-- share ux information with the user if JS is disabled -->
+          <noscript>
+            <p class="center-text flash-message">This website will be unresponsive while the device shuts down or reboots.</p>
+          </noscript>
+        </div>
+      </div>
+{%- endblock card -%}

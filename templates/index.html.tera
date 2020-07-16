@@ -1,64 +1,52 @@
 {%- extends "nav" -%}
 {%- block card %}
       <!-- RADIAL MENU -->
-      <div class="radial-menu flex-grid">
-        <!-- center of menu -->
-        <div class="center center-vert radial-center-circle">
-          <a class="quarter-link" href="#top-left">
-            <div class="quarter top-left"></div>
-          </a>
-          <a class="quarter-link" href="#top-right">
-            <div class="quarter top-right flex-grid">
-              <img class="icon quarter-icon" src="icons/wifi.svg">
-            </div>
-          </a>
-          <a class="quarter-link" href="#bottom-left">
-            <div class="quarter bottom-left"></div>
-          </a>
-          <a class="quarter-link" href="#bottom-right">
-            <div class="quarter bottom-right"></div>
-          </a>
-        </div>
-        <!-- bottom-right -->
-        <!-- MESSAGES LINK AND ICON -->
-        <a href="#" class="radial-link-position degree-45">
-          <div class="radial-circle">
-            <img class="center icon icon-medium" src="icons/envelope.svg">
-          </div>
-        </a>
-        <!-- bottom-middle -->
-        <!-- PEACHCLOUD GUIDEBOOK LINK AND ICON -->
-        <a href="#" class="radial-link-position degree-90">
-          <div class="radial-circle">
-            <img class="center icon icon-medium" src="icons/book.svg">
-          </div>
-        </a>
-        <!-- bottom-left -->
-        <!-- SYSTEM SETTINGS LINK AND ICON -->
-        <a href="/network" class="radial-link-position degree-135">
-          <div class="radial-circle">
-            <img class="center icon icon-medium" src="icons/cog.svg">
-          </div>
-        </a>
+      <div class="grid">
         <!-- top-left -->
-        <!-- SYSTEM STATUS LINK AND ICON -->
-        <a href="/device" class="radial-link-position degree-225">
-          <div class="radial-circle">
-            <img class="center icon icon-medium" src="icons/heart-pulse.svg">
+        <!-- PEERS LINK AND ICON -->
+        <a class="top-left" href="/peers">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/users.svg">
           </div>
         </a>
         <!-- top-middle -->
         <!-- CURRENT USER LINK AND ICON -->
-        <a href="#" class="radial-link-position degree-270">
-          <div class="radial-circle">
-            <img class="center icon icon-100" src="icons/glyph.png">
+        <a class="top-middle" href="/profile">
+          <div class="circle circle-small">
+            <img class="icon-100" src="icons/glyph.png">
           </div>
         </a>
         <!-- top-right -->
-        <!-- PEERS LINK AND ICON -->
-        <a href="#" class="radial-link-position degree-315">
-          <div class="radial-circle">
-            <img class="center icon icon-medium" src="icons/users.svg">
+        <!-- MESSAGES LINK AND ICON -->
+        <a class="top-right" href="/messages">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/envelope.svg">
+          </div>
+        </a>
+        <!-- middle -->
+        <a class="middle" href="/hello">
+          <div class="circle circle-large">
+          </div>
+        </a>
+        <!-- bottom-left -->
+        <!-- SYSTEM STATUS LINK AND ICON -->
+        <a class="bottom-left" href="/device">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/heart-pulse.svg">
+          </div>
+        </a>
+        <!-- bottom-middle -->
+        <!-- PEACHCLOUD GUIDEBOOK LINK AND ICON -->
+        <a class="bottom-middle" href="/help">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/book.svg">
+          </div>
+        </a>
+        <!-- bottom-right -->
+        <!-- SYSTEM SETTINGS LINK AND ICON -->
+        <a class="bottom-right" href="/network">
+          <div class="circle circle-small">
+            <img class="icon-medium" src="icons/cog.svg">
           </div>
         </a>
       </div>
