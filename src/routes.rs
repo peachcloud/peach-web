@@ -277,7 +277,7 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[post("/network/wifi/forget", data = "<network>")]
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network_detail: ssid);
+    let url = uri!(network_card);
     match forget_network("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed."),
         Err(_) => Flash::error(
