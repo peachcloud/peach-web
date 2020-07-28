@@ -31,7 +31,7 @@
         {%- if wlan_ssid == selected -%}
           <form id="wifiDisconnect" action="/network/wifi/disconnect" method="post">
             <!-- hidden element: allows ssid to be sent in request -->
-            <input id="disconnectSsid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
+            <input id="disconnectSsid" name="ssid" type="text" value="{{ ssid }}" style="display: none;">
             <input id="disconnectWifi" class="button center" title="Disconnect from Network" type="submit" value="Disconnect">
           </form>
         {%- endif -%}
