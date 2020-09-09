@@ -20,6 +20,8 @@
 //! | GET    | /network/wifi/add           | Add WiFi form                     |
 //! | POST   | /network/wifi/add           | WiFi form submission              |
 //! | GET    | /network/wifi/add?<ssid>    | Add WiFi form (SSID populated)    |
+//! | GET    | /network/wifi/alert         | WiFi data alerts form             |
+//! | POST   | /network/wifi/alert         | WiFi data alerts form submission  |
 //! | POST   | /network/wifi/connect       | Connect to WiFi access point      |
 //! | POST   | /network/wifi/disconnect    | Disconnect from WiFi access point |
 //! | POST   | /network/wifi/forget        | Remove WiFi                       |
@@ -33,10 +35,11 @@
 use std::path::{Path, PathBuf};
 
 use crate::context::{
-    DeviceContext, FlashContext, NetworkAddContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext,
+    DeviceContext, FlashContext, NetworkAddContext, NetworkAlertContext, NetworkContext,
+    NetworkDetailContext, NetworkListContext,
 };
 use crate::device::*;
+use crate::monitor::*;
 use crate::network::*;
 use crate::network_client::*;
 
@@ -104,7 +107,7 @@ pub fn help(flash: Option<FlashMessage>) -> Template {
 }
 
 #[get("/network")]
-pub fn network_card(flash: Option<FlashMessage>) -> Template {
+pub fn network(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     context.back = Some("/".to_string());
@@ -132,7 +135,7 @@ pub fn deploy_ap() -> Flash<Redirect> {
 }
 
 #[get("/network/wifi")]
-pub fn network_list(flash: Option<FlashMessage>) -> Template {
+pub fn wifi_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkListContext::build();
     context.back = Some("/network".to_string());
@@ -251,6 +254,41 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
     }
 }
 
+#[get("/network/wifi/usage")]
+pub fn wifi_usage(flash: Option<FlashMessage>) -> Template {
+    let mut context = NetworkAlertContext::build();
+    // set back icon link to network route
+    context.back = Some("/network".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("network_usage", &context)
+}
+
+#[post("/network/wifi/usage", data = "<thresholds>")]
+pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
+    match update_store(thresholds.into_inner()) {
+        Ok(_) => {
+            debug!("WiFi data usage thresholds updated.");
+            Flash::success(
+                Redirect::to("/network/wifi/usage"),
+                "Updated alert thresholds and flags",
+            )
+        }
+        Err(_) => {
+            warn!("Failed to update WiFi data usage thresholds.");
+            Flash::error(
+                Redirect::to("/network/wifi/usage"),
+                "Failed to update alert thresholds and flags",
+            )
+        }
+    }
+}
+
 #[post("/network/wifi/connect", data = "<network>")]
 pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
@@ -267,7 +305,7 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[post("/network/wifi/disconnect", data = "<network>")]
 pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network_card);
+    let url = uri!(network);
     match network_disable("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network."),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network."),
@@ -277,7 +315,7 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[post("/network/wifi/forget", data = "<network>")]
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network_card);
+    let url = uri!(network);
     match forget_network("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed."),
         Err(_) => Flash::error(
@@ -288,7 +326,7 @@ pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 }
 
 #[get("/network/wifi/modify?<ssid>")]
-pub fn network_modify_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
+pub fn wifi_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // decode ssid from url
     let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
     let mut context = NetworkAddContext {
@@ -308,7 +346,7 @@ pub fn network_modify_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Te
 }
 
 #[post("/network/wifi/modify", data = "<wifi>")]
-pub fn modify_password(wifi: Form<WiFi>) -> Flash<Redirect> {
+pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     let url = uri!(network_detail: ssid);

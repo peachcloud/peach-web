@@ -22,6 +22,7 @@
 //! | POST   | /api/v1/network/wifi/disconnect | Disconnect WiFi access point |
 //! | POST   | /api/v1/network/wifi/forget     | Forget / remove network      |
 //! | POST   | /api/v1/network/wifi/modify     | Modify network password      |
+//! | POST   | /api/v1/network/wifi/usage      | Update alert thresholds      |
 //! | GET    | /api/v1/ping                    |                              |
 //! | GET    | /api/v1/ping/network            | Ping `peach-network`         |
 //! | GET    | /api/v1/ping/oled               | Ping `peach-oled`            |
@@ -31,6 +32,7 @@ extern crate jsonrpc_client_http;
 extern crate serde_derive;
 
 use crate::device::*;
+use crate::monitor::*;
 use crate::network::*;
 use crate::network_client::*;
 use crate::oled_client::oled_ping;
@@ -315,7 +317,7 @@ pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
 }
 
 #[post("/api/v1/network/wifi/modify", data = "<wifi>")]
-pub fn new_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
+pub fn modify_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     // we are using a helper function (`update_password`) to delete the old
@@ -332,6 +334,27 @@ pub fn new_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
             warn!("Failed to update WiFi password.");
             let status = "error".to_string();
             let msg = "Failed to update WiFi password.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[post("/api/v1/network/wifi/usage", data = "<thresholds>")]
+pub fn update_wifi_alerts(thresholds: Json<Threshold>) -> Json<JsonResponse> {
+    // we are using a helper function (`update_password`) to delete the old
+    // credentials and add the new ones. this is because the wpa_cli method
+    // for updating the password does not work.
+    match update_store(thresholds.into_inner()) {
+        Ok(_) => {
+            debug!("WiFi data usage thresholds updated.");
+            let status = "success".to_string();
+            let msg = "Updated alert threshold and flags.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(_) => {
+            warn!("Failed to update WiFi data usage thresholds.");
+            let status = "error".to_string();
+            let msg = "Failed to update WiFi data usage thresholds.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }
@@ -405,7 +428,7 @@ pub fn ping_stats() -> Json<JsonResponse> {
 
 // HELPER FUNCTIONS
 
-fn build_json_response(
+pub fn build_json_response(
     status: String,
     data: Option<JsonValue>,
     msg: Option<String>,

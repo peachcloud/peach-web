@@ -32,6 +32,8 @@ _Note: This is a work-in-progress._
 | `/network/wifi/forget` | POST | `ssid` | Submit form to forget a saved WiFi network |
 | `/network/wifi/modify?<ssid>` | GET | `ssid` | Form for updating a WiFi network password |
 | `/network/wifi/modify` | POST | `ssid` & `pass` | Submit form to update a WiFi network password |
+| `/network/wifi/usage` | GET | | Network data usage values and a form to update alert thresholds |
+| `/network/wifi/usage` | POST | `rx_warn`, `rx_cut`, `tx_warn`, `tx_cut`, `rx_warn_flag`, `rx_cut_flag`, `tx_warn_flag`, `tx_cut_flag` | Submit form to update alert thresholds & set flags |
 | `/shutdown` | GET | | Shutdown menu |
 
 ### JSON API (`src/json_api.rs`)
@@ -55,6 +57,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/wifi/disconnect` | POST | `ssid` | Disconnect from the currently associated WiFi network |
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
 | `network/wifi/modify` | POST | `ssid` & `pass` | Submit SSID & password to update the credentials for given WiFi network |
+| `/network/wifi/usage` | POST | `rx_warn`, `rx_cut`, `tx_warn`, `tx_cut`, `rx_warn_flag`, `rx_cut_flag`, `tx_warn_flag`, `tx_cut_flag` | Submit form to update alert thresholds & set flags |
 | `ping` | GET | | Returns `pong!` if `peach-web` is running |
 | `ping/network` | GET | | Returns `pong!` if `peach-network` microservice is running |
 | `ping/oled` | GET | | Returns `pong!` if `peach-oled` microservice is running |

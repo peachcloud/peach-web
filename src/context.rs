@@ -6,10 +6,61 @@
 
 use std::collections::HashMap;
 
+use crate::monitor::*;
 use crate::network::*;
 use crate::network_client::*;
 use crate::oled_client::oled_ping;
 use crate::stats_client::*;
+
+// use in /network/wifi/alert for traffic alerts
+#[derive(Debug, Serialize)]
+pub struct NetworkAlertContext {
+    pub alert: Alert,
+    pub back: Option<String>,
+    pub data: Data,       // stored wifi traffic in bytes
+    pub data_total: Data, // combined stored and current wifi traffic in bytes
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub threshold: Threshold,
+    pub traffic: Traffic, // current wifi traffic in bytes (since boot)
+}
+
+impl NetworkAlertContext {
+    pub fn build() -> NetworkAlertContext {
+        let alert = get_alerts().unwrap();
+        // stored wifi data values as bytes
+        let data = get_data().unwrap();
+        let threshold = get_thresholds().unwrap();
+        // current wifi traffic values as bytes
+        let traffic = match network_traffic("wlan0") {
+            Ok(t) => t,
+            Err(_) => Traffic {
+                received: 0,
+                transmitted: 0,
+                rx_unit: None,
+                tx_unit: None,
+            },
+        };
+
+        let rx_total = data.rx + traffic.received;
+        let tx_total = data.tx + traffic.transmitted;
+        let data_total = Data {
+            rx: rx_total,
+            tx: tx_total,
+        };
+
+        NetworkAlertContext {
+            alert,
+            back: None,
+            data,
+            data_total,
+            flash_name: None,
+            flash_msg: None,
+            threshold,
+            traffic,
+        }
+    }
+}
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]

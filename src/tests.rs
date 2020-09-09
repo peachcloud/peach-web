@@ -5,7 +5,7 @@ use rocket::http::{ContentType, Status};
 use rocket::local::Client;
 
 use super::rocket;
-use crate::build_json_response;
+use crate::json_api::build_json_response;
 
 // helper function to test correct retrieval and content of a file
 fn test_query_file<T>(path: &str, file: T, status: Status)
@@ -36,17 +36,22 @@ fn read_file_content(path: &str) -> Vec<u8> {
 // WEB PAGE ROUTES
 
 #[test]
-fn test_index_html() {
+fn index_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/").dispatch();
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::HTML));
     let body = response.body_string().unwrap();
-    assert!(body.contains("PeachCloud Home"));
+    assert!(body.contains("/peers"));
+    assert!(body.contains("/profile"));
+    assert!(body.contains("/messages"));
+    assert!(body.contains("/device"));
+    assert!(body.contains("/help"));
+    assert!(body.contains("/network"));
 }
 
 #[test]
-fn test_network_card_html() {
+fn network_card_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/network").dispatch();
     assert_eq!(response.status(), Status::Ok);
@@ -64,7 +69,7 @@ fn test_network_card_html() {
 }
 
 #[test]
-fn test_network_list_html() {
+fn network_list_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/network/wifi").dispatch();
     assert_eq!(response.status(), Status::Ok);
@@ -76,7 +81,7 @@ fn test_network_list_html() {
 
 // TODO: needs further testing once template has been refactored
 #[test]
-fn test_network_detail_html() {
+fn network_detail_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client.get("/network/wifi?ssid=Home").dispatch();
     assert_eq!(response.status(), Status::Ok);
@@ -86,7 +91,7 @@ fn test_network_detail_html() {
 }
 
 #[test]
-fn test_network_add_html() {
+fn network_add_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/network/wifi/add").dispatch();
     assert_eq!(response.status(), Status::Ok);
@@ -95,12 +100,12 @@ fn test_network_add_html() {
     assert!(body.contains("Add WiFi Network"));
     assert!(body.contains("SSID"));
     assert!(body.contains("Password"));
-    assert!(body.contains("Connect"));
+    assert!(body.contains("Add"));
     assert!(body.contains("Cancel"));
 }
 
 #[test]
-fn test_network_add_ssid_html() {
+fn network_add_ssid_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/network/wifi/add?ssid=Home").dispatch();
     assert_eq!(response.status(), Status::Ok);
@@ -109,12 +114,68 @@ fn test_network_add_ssid_html() {
     assert!(body.contains("Add WiFi Network"));
     assert!(body.contains("Home"));
     assert!(body.contains("Password"));
-    assert!(body.contains("Connect"));
+    assert!(body.contains("Add"));
     assert!(body.contains("Cancel"));
 }
 
 #[test]
-fn test_add_credentials() {
+fn device_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/device").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Device Status"));
+    assert!(body.contains("Networking"));
+    assert!(body.contains("Display"));
+    assert!(body.contains("Statistics"));
+}
+
+#[test]
+fn help_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/help").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("PeachCloud Help"));
+}
+
+#[test]
+fn messages_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/messages").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Private Messages"));
+}
+
+#[test]
+fn peers_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/peers").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Scuttlebutt Peers"));
+}
+
+#[test]
+fn network_usage_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/network/wifi/usage").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("WiFi"));
+    assert!(body.contains("DOWNLOAD TOTAL"));
+    assert!(body.contains("Update"));
+    assert!(body.contains("Cancel"));
+}
+
+#[test]
+fn add_credentials() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client
         .post("/network/wifi/add")
@@ -126,7 +187,7 @@ fn test_add_credentials() {
 }
 
 #[test]
-fn test_forget_wifi() {
+fn forget_wifi() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client
         .post("/network/wifi/forget")
@@ -138,7 +199,7 @@ fn test_forget_wifi() {
 }
 
 #[test]
-fn test_modify_password() {
+fn modify_password() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client
         .post("/network/wifi/modify")
@@ -150,7 +211,7 @@ fn test_modify_password() {
 }
 
 #[test]
-fn test_deploy_ap() {
+fn deploy_ap() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client.get("/network/ap/activate").dispatch();
     // check for 303 status (redirect)
@@ -159,7 +220,7 @@ fn test_deploy_ap() {
 }
 
 #[test]
-fn test_deploy_client() {
+fn deploy_client() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client.get("/network/wifi/activate").dispatch();
     // check for 303 status (redirect)
@@ -170,7 +231,7 @@ fn test_deploy_client() {
 // JSON API ROUTES
 
 #[test]
-fn test_activate_ap() {
+fn activate_ap() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client
         .post("/api/v1/network/activate_ap")
@@ -181,7 +242,7 @@ fn test_activate_ap() {
 }
 
 #[test]
-fn test_activate_client() {
+fn activate_client() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let response = client
         .post("/api/v1/network/activate_client")
@@ -192,7 +253,7 @@ fn test_activate_client() {
 }
 
 #[test]
-fn test_return_ip() {
+fn return_ip() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/ip")
@@ -206,7 +267,7 @@ fn test_return_ip() {
 }
 
 #[test]
-fn test_return_rssi() {
+fn return_rssi() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/rssi")
@@ -219,7 +280,7 @@ fn test_return_rssi() {
 }
 
 #[test]
-fn test_return_ssid() {
+fn return_ssid() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/ssid")
@@ -232,7 +293,7 @@ fn test_return_ssid() {
 }
 
 #[test]
-fn test_return_state() {
+fn return_state() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/state")
@@ -247,7 +308,7 @@ fn test_return_state() {
 }
 
 #[test]
-fn test_return_status() {
+fn return_status() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/status")
@@ -260,7 +321,7 @@ fn test_return_status() {
 }
 
 #[test]
-fn test_scan_networks() {
+fn scan_networks() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/network/wifi")
@@ -273,12 +334,12 @@ fn test_scan_networks() {
 }
 
 #[test]
-fn test_add_wifi() {
+fn add_wifi() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .post("/api/v1/network/wifi")
-        .header(ContentType::Form)
-        .body("ssid=Home&pass=Password")
+        .header(ContentType::JSON)
+        .body(r#"{ "ssid": "Home", "pass": "Password" }"#)
         .dispatch();
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::JSON));
@@ -287,35 +348,35 @@ fn test_add_wifi() {
 }
 
 #[test]
-fn test_remove_wifi() {
+fn remove_wifi() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .post("/api/v1/network/wifi/forget")
-        .header(ContentType::Form)
-        .body("ssid=Home")
+        .header(ContentType::JSON)
+        .body(r#"{ "ssid": "Home" }"#)
         .dispatch();
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::JSON));
     let body = response.body_string().unwrap();
-    assert!(body.contains("Failed to retrieve network ID."));
+    assert!(body.contains("Failed to remove WiFi network credentials."));
 }
 
 #[test]
-fn test_new_password() {
+fn new_password() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .post("/api/v1/network/wifi/modify")
-        .header(ContentType::Form)
-        .body("ssid=Home&pass=Password")
+        .header(ContentType::JSON)
+        .body(r#"{ "ssid": "Home", "pass": "Password" }"#)
         .dispatch();
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::JSON));
     let body = response.body_string().unwrap();
-    assert!(body.contains("Failed to retrieve network ID."));
+    assert!(body.contains("Failed to update WiFi password."));
 }
 
 #[test]
-fn test_ping_pong() {
+fn ping_pong() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client
         .get("/api/v1/ping")
@@ -342,7 +403,7 @@ fn test_build_json_response() {
 // FILE TESTS
 
 #[test]
-fn test_nested_file() {
+fn nested_file() {
     test_query_file(
         "/images/placeholder.txt",
         "static/images/placeholder.txt",
@@ -361,7 +422,7 @@ fn test_nested_file() {
 }
 
 #[test]
-fn test_icon_file() {
+fn icon_file() {
     test_query_file(
         "/icons/peach-icon.png",
         "static/icons/peach-icon.png",
@@ -370,14 +431,14 @@ fn test_icon_file() {
 }
 
 #[test]
-fn test_invalid_path() {
+fn invalid_path() {
     test_query_file("/thou_shalt_not_exist", None, Status::NotFound);
     test_query_file("/thou_shalt_not_exist", None, Status::NotFound);
     test_query_file("/thou/shalt/not/exist?a=b&c=d", None, Status::NotFound);
 }
 
 #[test]
-fn test_invalid_get_request() {
+fn invalid_get_request() {
     let client = Client::new(rocket()).unwrap();
 
     // try to get a path that doesn't exist

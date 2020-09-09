@@ -28,8 +28,9 @@
         <!-- BUTTONS -->
         <div id="buttons">
           <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
-          <a class="button center" id="connectWifi" href="/network/wifi/activate">Enable WiFi</a>
+          <a id="connectWifi" class="button center" href="/network/wifi/activate" title="Enable WiFi">Enable WiFi</a>
           <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+          <a id="viewUsage" class="button center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->
@@ -115,6 +116,7 @@
           <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
           <a id="deployAccessPoint" class="button center" href="/network/ap/activate" title="Deploy Access Point">Deploy Access Point</a>
           <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+          <a id="viewUsage" class="button center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->

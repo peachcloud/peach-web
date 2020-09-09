@@ -1,0 +1,105 @@
+{%- extends "nav" -%}
+{%- block card -%}
+    {# ASSIGN VARIABLES #}
+    {# ---------------- #}
+      <!-- NETWORK DATA ALERTS VIEW -->
+      <form id="wifiAlerts" action="/network/wifi/usage" class="card center" method="post">
+        <div class="card-container container">
+          <div class="center">
+            <img class="icon" alt="Download" title="WiFi download total" src="/icons/down-arrow.svg">
+          </div>
+          <div style="justify-self: center;">
+            <p class="card-text label-medium" style="padding-bottom: 0;">WiFi</p>
+            <label class="label-small font-gray">DOWNLOAD TOTAL</label>
+          </div>
+          <div style="justify-self: left;">
+            <div class="flex-grid">
+              <label id="dataDownload" class="card-text label-large" title="Data download total in MB">{{ data_total.rx / 1024 / 1024 }}</label>
+              <label class="label-small font-near-black" for="dataDownload">MB</label>
+            </div>
+          </div>
+          <div class="center">
+            <img id="rxWarnIcon" class="icon{% if threshold.rx_warn_flag == false %} icon-inactive{% endif %}" alt="Warning" title="Download warning threshold" src="/icons/alert.svg">
+          </div>
+          <div style="justify-self: center;">
+            <!-- input for download warning threshold -->
+            <label id="downWarn" class="label-small font-near-black"><input id="downWarnInput" class="alert-input" name="rx_warn" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.rx_warn }}">MB</label>
+            <label class="label-small font-gray" for="downWarn" style="padding-top: 0.25rem;">WARNING THRESHOLD</label>
+          </div>
+          <div>
+            <!-- checkbox for download warning threshold flag -->
+            <input id="downWarnCheck" name="rx_warn_flag" title="Activate download warning" type="checkbox" {% if threshold.rx_warn_flag %}checked{% endif %}>
+          </div>
+          <div class="center">
+            <img id="rxCutIcon" class="icon{% if threshold.rx_cut_flag == false %} icon-inactive{% endif %}" alt="Cutoff" title="Download cutoff threshold" src="/icons/scissor.svg">
+          </div>
+          <div style="justify-self: center;">
+            <!-- input for download cutoff threshold -->
+            <label id="downCut" class="label-small font-near-black"><input id="downCutInput" class="alert-input" name="rx_cut" placeholder="0" type="text" title="Cutoff threshold value" value="{{ threshold.rx_cut }}">MB</label>
+            <label class="label-small font-gray" for="downCut" style="padding-top: 0.25rem;">CUTOFF THRESHOLD</label>
+          </div>
+          <div>
+            <!-- checkbox for download cutoff threshold flag -->
+            <input id="downCutCheck" name="rx_cut_flag" title="Activate download cutoff" type="checkbox" {% if threshold.rx_cut_flag %}checked{% endif %}>
+          </div>
+        </div>
+        <div class="card-container container">
+          <div class="center">
+            <img class="icon" alt="Upload" title="WiFi upload total" src="/icons/up-arrow.svg">
+          </div>
+          <div style="justify-self: center;">
+            <p class="card-text label-medium" style="padding-bottom: 0;">WiFi</p>
+            <label class="label-small font-gray">UPLOAD TOTAL</label>
+          </div>
+          <div style="justify-self: left;">
+            <div class="flex-grid">
+              <label id="dataUpload" class="card-text label-large" title="Data upload total in MB">{{ data_total.tx / 1024 / 1024 }}</label>
+              <label class="label-small font-near-black" for="dataUpload">MB</label>
+            </div>
+          </div>
+          <div class="center">
+            <img id="txWarnIcon" class="icon{% if threshold.tx_warn_flag == false %} icon-inactive{% endif %}" alt="Warning" title="Warning upload threshold" src="/icons/alert.svg">
+          </div>
+          <div style="justify-self: center;">
+            <!-- input for upload warning threshold -->
+            <label id="upWarn" class="label-small font-near-black"><input id="upWarnInput" class="alert-input" name="tx_warn" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.tx_warn }}">MB</label>
+            <label class="label-small font-gray" for="upWarn" style="padding-top: 0.25rem;">WARNING THRESHOLD</label>
+          </div>
+          <div>
+            <!-- checkbox for upload warning threshold flag -->
+            <input id="upWarnCheck" name="tx_warn_flag" title="Activate upload warning" type="checkbox" {% if threshold.tx_warn_flag %}checked{% endif %}>
+          </div>
+          <div class="center">
+            <img id="txCutIcon" class="icon{% if threshold.tx_cut_flag == false %} icon-inactive{% endif %}" alt="Cutoff" title="Upload cutoff threshold" src="/icons/scissor.svg">
+          </div>
+          <div style="justify-self: center;">
+            <!-- input for upload critical threshold -->
+            <label id="upCut" class="label-small font-near-black"><input id="upCutInput" class="alert-input" name="tx_cut" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.tx_cut }}">MB</label>
+            <label class="label-small font-gray" for="upCut" style="padding-top: 0.25rem;">CUTOFF THRESHOLD</label>
+          </div>
+          <div>
+            <!-- checkbox for upload cutoff threshold flag -->
+            <input id="upCutCheck" name="tx_cut_flag" title="Activate upload cutoff" type="checkbox" {% if threshold.tx_cut_flag %}checked{% endif %}>
+          </div>
+        </div>
+        <div>
+          <div id="buttonDiv" style="grid-column-start: 1; grid-column-end: 4;">
+            <input id="updateAlerts" class="button center" title="Update" type="submit" value="Update">
+            <a class="button center" href="/network" title="Cancel">Cancel</a>
+          </div>
+        </div>
+        <!-- FLASH MESSAGE -->
+        <!-- check for flash message and display accordingly -->
+        {% if flash_msg and flash_name == "success" %}
+        <!-- display success message -->
+        <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        {%- elif flash_msg and flash_name == "info" %}
+        <!-- display info message -->
+        <div class="center-text flash-message font-info" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        {%- elif flash_msg and flash_name == "error" %}
+        <!-- display error message -->
+        <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        {%- endif -%}
+      </form>
+      <script type="text/javascript" src="/js/network_usage.js"></script>
+{%- endblock card %}
