@@ -141,7 +141,7 @@ pub fn mem_stats() -> std::result::Result<MemStat, StatsError> {
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
 /// `ping` method.
-pub fn stats_ping() -> std::result::Result<MemStat, StatsError> {
+pub fn stats_ping() -> std::result::Result<String, StatsError> {
     debug!("Creating HTTP transport for stats client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr = env::var("PEACH_STATS_SERVER").unwrap_or_else(|_| "127.0.0.1:5113".to_string());
@@ -152,9 +152,8 @@ pub fn stats_ping() -> std::result::Result<MemStat, StatsError> {
     let mut client = PeachStatsClient::new(transport_handle);
 
     let response = client.ping().call()?;
-    let m: MemStat = serde_json::from_str(&response)?;
 
-    Ok(m)
+    Ok(response)
 }
 
 /// Creates a JSON-RPC client with http transport and calls the `peach-stats`
