@@ -137,7 +137,7 @@
             <div class="stack">
               <img id="netSignal" class="icon icon-medium" alt="Signal" title="WiFi Signal (%)" src="icons/low-signal.svg">
               <div class="flex-grid" style="padding-top: 0.5rem;">
-                <label class="label-medium" for="netSignal" style="padding-right: 3px;" title="Signal strength of WiFi connection (%)">{% if wlan_rssi %}{{ wlan_rssi }}%{% endif %}</label>
+                <label class="label-medium" for="netSignal" style="padding-right: 3px;" title="Signal strength of WiFi connection (%)">{% if wlan_rssi %}{{ wlan_rssi }}{% else %}0{% endif %}%</label>
               </div>
               <label class="label-small font-gray">SIGNAL</label>
             </div>
@@ -150,8 +150,8 @@
                 <label class="label-small font-near-black">{{ wlan_traffic.rx_unit }}</label>
               {%- else %}
                 <!-- no wlan traffic data to display -->
-                <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total"></label>
-                <label class="label-small font-near-black"></label>
+                <label class="label-medium" for="dataDownload" style="padding-right: 3px;" title="Data download total">0</label>
+                <label class="label-small font-near-black">MB</label>
               {%- endif %}
               </div>
               <label class="label-small font-gray">DOWNLOAD</label>
@@ -160,11 +160,13 @@
               <img id="dataUpload" class="icon icon-medium" alt="Upload" title="WiFi upload total" src="icons/up-arrow.svg">
               <div class="flex-grid" style="padding-top: 0.5rem;">
               {%- if wlan_traffic %}
+                <!-- display wlan traffic data -->
                 <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total in {{ wlan_traffic.tx_unit }}">{{ wlan_traffic.transmitted }}</label>
                 <label class="label-small font-near-black">{{ wlan_traffic.tx_unit }}</label>
               {%- else %}
-                <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total"></label>
-                <label class="label-small font-near-black"></label>
+                <!-- no wlan traffic data to display -->
+                <label class="label-medium" for="dataUpload" style="padding-right: 3px;" title="Data upload total">0</label>
+                <label class="label-small font-near-black">MB</label>
               {%- endif %}
               </div>
               <label class="label-small font-gray">UPLOAD</label>

@@ -27,7 +27,7 @@
           <div class="three-grid" style="padding-bottom: 1rem; padding-top: 1rem;">
             <!-- PEACH-NETWORK STATUS STACK -->
             <div class="stack">
-              <img id="networkIcon" class="icon icon-medium" alt="Network" title="Network microservice status" src="icons/wifi.svg">
+              <img id="networkIcon" class="icon{% if network_ping == "OFFLINE" %} icon-inactive{% endif %} icon-medium" alt="Network" title="Network microservice status" src="icons/wifi.svg">
               <div class="stack" style="padding-top: 0.5rem;">
                 <label class="label-small font-near-black">Networking</label>
                 <label class="label-small font-near-black">{{ network_ping }}</label>
@@ -35,7 +35,7 @@
             </div>
             <!-- PEACH-OLED STATUS STACK -->
             <div class="stack">
-              <img id="oledIcon" class="icon icon-medium" alt="Display" title="OLED display microservice status" src="icons/lcd.svg">
+              <img id="oledIcon" class="icon{% if oled_ping == "OFFLINE" %} icon-inactive{% endif %} icon-medium" alt="Display" title="OLED display microservice status" src="icons/lcd.svg">
               <div class="stack" style="padding-top: 0.5rem;">
                 <label class="label-small font-near-black">Display</label>
                 <label class="label-small font-near-black">{{ oled_ping }}</label>
@@ -43,7 +43,7 @@
             </div>
             <!-- PEACH-STATS STATUS STACK -->
             <div class="stack">
-              <img id="statsIcon" class="icon icon-medium" alt="Stats" title="System statistics microservice status" src="icons/chart.svg">
+              <img id="statsIcon" class="icon{% if stats_ping == "OFFLINE" %} icon-inactive{% endif %} icon-medium" alt="Stats" title="System statistics microservice status" src="icons/chart.svg">
               <div class="stack" style="padding-top: 0.5rem;">
                 <label class="label-small font-near-black">Statistics</label>
                 <label class="label-small font-near-black">{{ stats_ping }}</label>
