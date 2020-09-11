@@ -12,7 +12,75 @@ use crate::network_client::*;
 use crate::oled_client::oled_ping;
 use crate::stats_client::*;
 
-// use in /network/wifi/alert for traffic alerts
+#[derive(Debug, Serialize)]
+pub struct HelpContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl HelpContext {
+    pub fn build() -> HelpContext {
+        HelpContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct MessageContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl MessageContext {
+    pub fn build() -> MessageContext {
+        MessageContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct PeerContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl PeerContext {
+    pub fn build() -> PeerContext {
+        PeerContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ProfileContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl ProfileContext {
+    pub fn build() -> ProfileContext {
+        ProfileContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+// used in /network/wifi/alert for traffic alerts
 #[derive(Debug, Serialize)]
 pub struct NetworkAlertContext {
     pub alert: Alert,

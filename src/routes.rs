@@ -35,8 +35,9 @@
 use std::path::{Path, PathBuf};
 
 use crate::context::{
-    DeviceContext, FlashContext, NetworkAddContext, NetworkAlertContext, NetworkContext,
-    NetworkDetailContext, NetworkListContext,
+    DeviceContext, FlashContext, HelpContext, MessageContext, NetworkAddContext,
+    NetworkAlertContext, NetworkContext, NetworkDetailContext, NetworkListContext, PeerContext,
+    ProfileContext,
 };
 use crate::device::*;
 use crate::monitor::*;
@@ -93,10 +94,8 @@ pub fn shutdown_cmd() -> Flash<Redirect> {
 
 #[get("/help")]
 pub fn help(flash: Option<FlashMessage>) -> Template {
-    let mut context = FlashContext {
-        flash_name: None,
-        flash_msg: None,
-    };
+    let mut context = HelpContext::build();
+    context.back = Some("/".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -361,10 +360,8 @@ pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
 
 #[get("/messages")]
 pub fn messages(flash: Option<FlashMessage>) -> Template {
-    let mut context = FlashContext {
-        flash_name: None,
-        flash_msg: None,
-    };
+    let mut context = MessageContext::build();
+    context.back = Some("/".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -376,10 +373,8 @@ pub fn messages(flash: Option<FlashMessage>) -> Template {
 
 #[get("/peers")]
 pub fn peers(flash: Option<FlashMessage>) -> Template {
-    let mut context = FlashContext {
-        flash_name: None,
-        flash_msg: None,
-    };
+    let mut context = PeerContext::build();
+    context.back = Some("/".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -391,10 +386,8 @@ pub fn peers(flash: Option<FlashMessage>) -> Template {
 
 #[get("/profile")]
 pub fn profile(flash: Option<FlashMessage>) -> Template {
-    let mut context = FlashContext {
-        flash_name: None,
-        flash_msg: None,
-    };
+    let mut context = ProfileContext::build();
+    context.back = Some("/".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
