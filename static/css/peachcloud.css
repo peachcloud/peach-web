@@ -197,7 +197,7 @@ body {
     display: grid;
     grid-template-columns: 2fr 5fr 2fr;
     grid-template-rows: auto;
-    grid-row-gap: 0.5rem;
+    grid-row-gap: 1rem;
     align-items: center;
     justify-items: center;
     margin-bottom: 1rem;
