@@ -241,7 +241,13 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
             .or_insert_with(|| "Not in range".to_string());
     }
 
+    let ap_state = match network_state("ap0") {
+        Ok(state) => state,
+        Err(_) => "Interface unavailable".to_string(),
+    };
+
     let context = NetworkListContext {
+        ap_state,
         back: None,
         flash_msg: None,
         flash_name: None,

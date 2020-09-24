@@ -5,10 +5,11 @@
  *
  * Index
  * - ALIGNMENT
- * - BODY
  * - BUTTONS
  * - CARDS
+ * - CAPSULES
  * - CIRCLES
+ * - COLORS
  * - GRIDS
  * - HTML
  * - FLASH MESSAGE
@@ -18,7 +19,6 @@
  * - LABELS
  * - LINKS
  * - LISTS
- * - MAIN
  * - METERS
  * - NAVIGATION
  * - RADIAL MENU
@@ -122,28 +122,10 @@
 }
 
 /*
- * BODY
- */
-/*
-body {
-    align-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--gray);
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-*/
-
-/*
  * BUTTONS
  */
 
 .button {
-    background-color: var(--moon-gray);
     border: 1px solid var(--near-black);
     border-radius: var(--border-radius-2);
     /* Needed to render inputs & buttons of equal width */
@@ -160,6 +142,58 @@ body {
     width: 80%;
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.button-primary {
+    background-color: var(--light-gray);
+}
+
+.button-primary:hover {
+    background-color: var(--primary);
+}
+
+.button-primary:focus {
+    background-color: var(--primary);
+    outline: none;
+}
+
+.button-secondary {
+    background-color: var(--light-gray);
+}
+
+.button-secondary:hover {
+    background-color: var(--light-silver);
+}
+
+.button-secondary:focus {
+    background-color: var(--light-silver);
+    outline: none;
+}
+
+.button-warning {
+    background-color: var(--light-gray);
+}
+
+.button-warning:hover {
+    background-color: var(--light-red);
+}
+
+.button-warning:focus {
+    background-color: var(--light-red);
+    outline: none;
+}
+
+/*
+ * CAPSULES
+ */
+
+.capsule {
+    padding: 1rem;
+    border: var(--border-width-1) solid;
+    border-radius: var(--border-radius-3);
+    background-color: var(--light-gray);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 /*
@@ -201,6 +235,7 @@ body {
     align-items: center;
     justify-items: center;
     margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 /*
@@ -274,6 +309,62 @@ body {
 }
 
 /*
+ * COLORS
+ */
+
+.primary-bg {
+    background-color: var(--primary);
+}
+
+.secondary-bg {
+    background-color: var(--secondary);
+}
+
+.success-bg {
+    background-color: var(--success);
+}
+
+.info-bg {
+    background-color: var(--info);
+}
+
+.warning-bg {
+    background-color: var(--warning);
+}
+
+.danger-bg {
+    background-color: var(--danger);
+}
+
+.light-bg {
+    background-color: var(--light);
+}
+
+.primary-border {
+    border-color: var(--primary);
+}
+
+.success-border {
+    border-color: var(--success);
+}
+
+.info-border {
+    border-color: var(--info);
+}
+
+.warning-border {
+    border-color: var(--warning);
+}
+
+.danger-border {
+    border-color: var(--danger);
+}
+
+.dark-gray-border {
+    border-color: var(--dark-gray);
+}
+
+/*
  * GRIDS
  */
 
@@ -298,9 +389,10 @@ body {
     align-items: center;
     justify-content: center;
     justify-items: center;
+    margin-right: 2rem;
+    margin-left: 2rem;
     padding-top: 1.5rem;
     padding-bottom: 1rem;
-    width: 100%;
 }
 
 .three-grid {
@@ -310,7 +402,6 @@ body {
     grid-gap: 10px;
     align-items: center;
     justify-content: center;
-    width: 100%;
 }
 
 .stack {
@@ -318,7 +409,6 @@ body {
     align-items: flex-end;
     justify-items: center;
     justify-content: center;
-    width: 100%;
 }
 
 .three-grid-icon-1 {
@@ -431,15 +521,15 @@ body {
 }
 
 .font-success {
-    color: var(--color-success);
+    color: var(--success);
 }
 
 .font-warning {
-    color: var(--color-warning);
+    color: var(--warning);
 }
 
 .font-failure {
-    color: var(--color-failure);
+    color: var(--danger);
 }
 
 /*
@@ -578,18 +668,6 @@ body {
     grid-column: 1;
     grid-row: 2;
 }
-
-/*
- * MAIN
- */
-/*
-main {
-    min-width: var(--max-width-5);
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-}
-*/
 
 /*
  * METERS

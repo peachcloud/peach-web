@@ -16,7 +16,7 @@
           </div>
           <!-- right column -->
           <!-- network mode, ssid & ip with labels -->
-          <div class="grid-column-2">
+          <div class="grid-column-2 capsule success-border">
             <label class="label-small font-gray" for="netMode" title="Network Mode">MODE</label>
             <p id="netMode" class="card-text" title="Network Mode">Access Point</p>
             <label class="label-small font-gray" for="netSsid" title="Access Point SSID">SSID</label>
@@ -27,10 +27,10 @@
         </div>
         <!-- BUTTONS -->
         <div id="buttons">
-          <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
-          <a id="connectWifi" class="button center" href="/network/wifi/activate" title="Enable WiFi">Enable WiFi</a>
-          <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
-          <a id="viewUsage" class="button center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
+          <a class="button button-primary center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
+          <a id="connectWifi" class="button button-primary center" href="/network/wifi/activate" title="Enable WiFi">Enable WiFi</a>
+          <a id="listWifi" class="button button-primary center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+          <a id="viewUsage" class="button button-primary center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->
@@ -87,22 +87,24 @@
       <!-- NETWORK CARD -->
       <div class="card center">
         <!-- NETWORK INFO BOX -->
-        <div id="netInfoBox" class="two-grid" title="PeachCloud network mode and status">
+        {%- if wlan_state == "up" %}
+        <div id="netInfoBox" class="two-grid capsule success-border" title="PeachCloud network mode and status">
           <!-- NETWORK STATUS -->
           <!-- left column -->
           <!-- network mode icon with label -->
           <div class="grid-column-1">
-          {%- if wlan_state == "up" %}
             <img id="netModeIcon" class="center icon icon-active" src="icons/wifi.svg" alt="WiFi online">
             <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">ONLINE</label>
-          {%- else %}
+        {%- else %}
+        <div id="netInfoBox" class="two-grid capsule warning-border" title="PeachCloud network mode and status">
+          <div class="grid-column-1">
             <img id="netModeIcon" class="center icon icon-inactive" src="icons/wifi.svg" alt="WiFi offline">
             <label id="netModeLabel" for="netModeIcon" class="center label-small font-gray" title="WiFi Client Status">OFFLINE</label>
-          {%- endif %}
+         {%- endif %}
           </div>
+          <div class="grid-column-2">
           <!-- right column -->
           <!-- network mode, ssid & ip with labels -->
-          <div class="grid-column-2">
             <label class="label-small font-gray" for="netMode" title="Network Mode">MODE</label>
             <p id="netMode" class="card-text" title="Network Mode">WiFi Client</p>
             <label class="label-small font-gray" for="netSsid" title="WiFi SSID">SSID</label>
@@ -113,10 +115,10 @@
         </div>
         <!-- BUTTONS -->
         <div id="buttons">
-          <a class="button center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
-          <a id="deployAccessPoint" class="button center" href="/network/ap/activate" title="Deploy Access Point">Deploy Access Point</a>
-          <a id="listWifi" class="button center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
-          <a id="viewUsage" class="button center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
+          <a class="button button-primary center" href="/network/wifi/add" title="Add WiFi Network">Add WiFi Network</a>
+          <a id="deployAccessPoint" class="button button-primary center" href="/network/ap/activate" title="Deploy Access Point">Deploy Access Point</a>
+          <a id="listWifi" class="button button-primary center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
+          <a id="viewUsage" class="button button-primary center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->

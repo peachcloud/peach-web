@@ -157,8 +157,21 @@
 
 /* PEACHCLOUD-SPECIFIC VARIABLES */
 
-  --color-info: var(--blue);
-  --color-success: var(--green);
-  --color-warning: var(--orange);
-  --color-failure: var(--red);
+  --primary: var(--light-green);
+  --secondary: var(--near-white);
+  --success: var(--green);
+  --info: var(--blue);
+  --warning: var(--light-red);
+  --danger: var(--red);
+  --light: var(--light-gray);
+  --dark: var(--near-black);
+
+/* we need to add shades for each accent colour
+ *
+ * --info-100
+ * --info-200
+ * --info-300 -> var(--blue)
+ * --info-400
+ * --info-500
+ */
 }

@@ -517,6 +517,7 @@ impl NetworkDetailContext {
 
 #[derive(Debug, Serialize)]
 pub struct NetworkListContext {
+    pub ap_state: String,
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,

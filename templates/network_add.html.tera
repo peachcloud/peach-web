@@ -10,8 +10,8 @@
             <!-- input for network password -->
             <input id="pass" name="pass" class="center input" type="password" placeholder="Password" title="Password for WiFi access point">
             <div id="buttonDiv">
-              <input id="addWifi" class="button center" title="Add" type="submit" value="Add">
-              <a class="button center" href="/network" title="Cancel">Cancel</a>
+              <input id="addWifi" class="button button-primary center" title="Add" type="submit" value="Add">
+              <a class="button button-secondary center" href="/network" title="Cancel">Cancel</a>
             </div>
           </form>
           <!-- FLASH MESSAGE -->

@@ -4,14 +4,22 @@
         <div class="center list-container">
           <h1 class="bold center-text title-medium">WiFi Networks</h1>
           <ul class="list">
-          {%- if wlan_networks %}
+          {%- if ap_state == "up" %}
+            <li class="list-item light-bg warning-border">Enable WiFi client mode to view saved and available networks.</li>
+          {%- elif wlan_networks %}
           {%- for ssid, state in wlan_networks %}
             <li>
             {%- if ssid == wlan_ssid %}
-              <a class="list-item link" href="/network/wifi?ssid={{ wlan_ssid }}">
+              <a class="list-item link primary-bg" href="/network/wifi?ssid={{ wlan_ssid }}">
                 <img id="netStatus" class="icon icon-active icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi online">
                 <p class="list-text">{{ wlan_ssid }}</p>
                 <label class="label-small list-label font-gray" for="netStatus" title="Status">Connected</label>
+              </a>
+            {%- elif state == "Available" %}
+              <a class="list-item link light-bg" href="/network/wifi?ssid={{ ssid }}">
+                <img id="netStatus" class="icon icon-inactive icon-medium list-icon" src="/icons/wifi.svg" alt="WiFi offline">
+                <p class="list-text">{{ ssid }}</p>
+                <label class="label-small list-label font-gray" for="netStatus" title="Status">{{ state }}</label>
               </a>
             {%- else %}
               <a class="list-item link" href="/network/wifi?ssid={{ ssid }}">
@@ -23,7 +31,7 @@
             </li>
           {%- endfor %}
           {% else -%}
-            <li class="list-item">No networks found. Enable WiFi client mode to view saved and available networks.</li>
+            <li class="list-item light-bg">No saved or available networks found.</li>
           {% endif -%}
           </ul>
         </div>
