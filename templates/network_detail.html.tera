@@ -7,7 +7,7 @@
     <!-- NETWORK CARD -->
     <div class="card center">
       <!-- NETWORK INFO BOX -->
-      <div class="two-grid" title="PeachCloud network mode and status">
+      <div class="two-grid capsule" title="PeachCloud network mode and status">
         <!-- left column -->
         <!-- NETWORK STATUS ICON -->
         <div class="grid-column-1">
@@ -32,7 +32,7 @@
           <form id="wifiDisconnect" action="/network/wifi/disconnect" method="post">
             <!-- hidden element: allows ssid to be sent in request -->
             <input id="disconnectSsid" name="ssid" type="text" value="{{ ssid }}" style="display: none;">
-            <input id="disconnectWifi" class="button center" title="Disconnect from Network" type="submit" value="Disconnect">
+            <input id="disconnectWifi" class="button button-warning center" title="Disconnect from Network" type="submit" value="Disconnect">
           </form>
         {%- endif -%}
         {%- if saved_aps -%}
@@ -47,23 +47,23 @@
           <form id="wifiConnect" action="/network/wifi/connect" method="post">
             <!-- hidden element: allows ssid to be sent in request -->
             <input id="connectSsid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
-            <input id="connectWifi" class="button center" title="Connect to Network" type="submit" value="Connect">
+            <input id="connectWifi" class="button button-primary center" title="Connect to Network" type="submit" value="Connect">
           </form>
           {%- endif -%}
-          <a class="button center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
+          <a class="button button-primary center" href="/network/wifi/modify?ssid={{ ssid }}">Modify</a>
           <form id="wifiForget" action="/network/wifi/forget" method="post">
             <!-- hidden element: allows ssid to be sent in request -->
             <input id="forgetSsid" name="ssid" type="text" value="{{ ap.ssid }}" style="display: none;">
-            <input id="forgetWifi" class="button center" title="Forget Network" type="submit" value="Forget">
+            <input id="forgetWifi" class="button button-warning center" title="Forget Network" type="submit" value="Forget">
           </form>
         {%- endif -%}
         {%- endfor -%}
         {%- endif -%}
         {%- if in_list == false -%}
         {# Display the Add button if AP creds not already in saved networks list #}
-          <a class="button center" href="/network/wifi/add?ssid={{ ssid }}">Add</a>
+          <a class="button button-primary center" href="/network/wifi/add?ssid={{ ssid }}">Add</a>
         {%- endif -%}
-          <a class="button center" href="/network/wifi" title="Cancel">Cancel</a>
+          <a class="button button-secondary center" href="/network/wifi" title="Cancel">Cancel</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->
