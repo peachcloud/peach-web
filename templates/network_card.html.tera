@@ -4,9 +4,9 @@
       <!-- if ap is up, show ap card, else show wlan card -->
       {%- if ap_state == "up" %}
       <!-- NETWORK CARD -->
-      <div class="card">
+      <div class="card center">
         <!-- NETWORK INFO BOX -->
-        <div class="two-grid" style="position: relative;" title="PeachCloud network mode and status">
+        <div class="two-grid capsule success-border" title="PeachCloud network mode and status">
           <!-- NETWORK STATUS -->
           <!-- left column -->
           <!-- network mode icon with label -->
@@ -16,7 +16,7 @@
           </div>
           <!-- right column -->
           <!-- network mode, ssid & ip with labels -->
-          <div class="grid-column-2 capsule success-border">
+          <div class="grid-column-2">
             <label class="label-small font-gray" for="netMode" title="Network Mode">MODE</label>
             <p id="netMode" class="card-text" title="Network Mode">Access Point</p>
             <label class="label-small font-gray" for="netSsid" title="Access Point SSID">SSID</label>
