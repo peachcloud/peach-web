@@ -4,21 +4,21 @@
       <div class="grid">
         <!-- top-left -->
         <!-- PEERS LINK AND ICON -->
-        <a class="top-left" href="/peers">
+        <a class="top-left" href="/peers" title="Scuttlebutt Peers">
           <div class="circle circle-small">
             <img class="icon-medium" src="icons/users.svg">
           </div>
         </a>
         <!-- top-middle -->
         <!-- CURRENT USER LINK AND ICON -->
-        <a class="top-middle" href="/profile">
+        <a class="top-middle" href="/profile" title="Profile">
           <div class="circle circle-small">
             <img class="icon-100" src="icons/glyph.png">
           </div>
         </a>
         <!-- top-right -->
         <!-- MESSAGES LINK AND ICON -->
-        <a class="top-right" href="/messages">
+        <a class="top-right" href="/messages" title="Private Messages">
           <div class="circle circle-small">
             <img class="icon-medium" src="icons/envelope.svg">
           </div>
@@ -30,21 +30,21 @@
         </a>
         <!-- bottom-left -->
         <!-- SYSTEM STATUS LINK AND ICON -->
-        <a class="bottom-left" href="/device">
+        <a class="bottom-left" href="/device" title="Device Status">
           <div class="circle circle-small">
             <img class="icon-medium" src="icons/heart-pulse.svg">
           </div>
         </a>
         <!-- bottom-middle -->
         <!-- PEACHCLOUD GUIDEBOOK LINK AND ICON -->
-        <a class="bottom-middle" href="/help">
+        <a class="bottom-middle" href="/help" title="Help Menu">
           <div class="circle circle-small">
             <img class="icon-medium" src="icons/book.svg">
           </div>
         </a>
         <!-- bottom-right -->
         <!-- SYSTEM SETTINGS LINK AND ICON -->
-        <a class="bottom-right" href="/network">
+        <a class="bottom-right" href="/network" title="Network Configuration">
           <div class="circle circle-small">
             <img class="icon-medium" src="icons/cog.svg">
           </div>

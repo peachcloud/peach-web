@@ -17,6 +17,7 @@ pub struct HelpContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub title: Option<String>,
 }
 
 impl HelpContext {
@@ -25,6 +26,24 @@ impl HelpContext {
             back: None,
             flash_name: None,
             flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct HomeContext {
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl HomeContext {
+    pub fn build() -> HomeContext {
+        HomeContext {
+            flash_name: None,
+            flash_msg: None,
+            title: None,
         }
     }
 }
@@ -34,6 +53,7 @@ pub struct MessageContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub title: Option<String>,
 }
 
 impl MessageContext {
@@ -42,6 +62,7 @@ impl MessageContext {
             back: None,
             flash_name: None,
             flash_msg: None,
+            title: None,
         }
     }
 }
@@ -51,6 +72,7 @@ pub struct PeerContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub title: Option<String>,
 }
 
 impl PeerContext {
@@ -59,6 +81,7 @@ impl PeerContext {
             back: None,
             flash_name: None,
             flash_msg: None,
+            title: None,
         }
     }
 }
@@ -68,6 +91,7 @@ pub struct ProfileContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub title: Option<String>,
 }
 
 impl ProfileContext {
@@ -76,6 +100,7 @@ impl ProfileContext {
             back: None,
             flash_name: None,
             flash_msg: None,
+            title: None,
         }
     }
 }
@@ -90,6 +115,7 @@ pub struct NetworkAlertContext {
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub threshold: Threshold,
+    pub title: Option<String>,
     pub traffic: Traffic, // current wifi traffic in bytes (since boot)
 }
 
@@ -125,6 +151,7 @@ impl NetworkAlertContext {
             flash_name: None,
             flash_msg: None,
             threshold,
+            title: None,
             traffic,
         }
     }
@@ -143,6 +170,7 @@ pub struct DeviceContext {
     pub network_ping: String,
     pub oled_ping: String,
     pub stats_ping: String,
+    pub title: Option<String>,
     pub uptime: Option<i32>,
 }
 
@@ -201,6 +229,7 @@ impl DeviceContext {
             network_ping,
             oled_ping,
             stats_ping,
+            title: None,
             uptime: uptime_parsed,
         }
     }
@@ -219,6 +248,7 @@ pub struct NetworkAddContext {
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
     pub selected: Option<String>,
+    pub title: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -239,6 +269,8 @@ pub struct NetworkContext {
     // allows for passing in the ssid of a chosen access point
     // this is used in the network_detail template
     pub selected: Option<String>,
+    // page title for header in navbar
+    pub title: Option<String>,
     // url for back-arrow link
     pub back: Option<String>,
 }
@@ -365,6 +397,7 @@ impl NetworkContext {
             flash_name: None,
             flash_msg: None,
             selected: None,
+            title: None,
             back: None,
         }
     }
@@ -377,6 +410,7 @@ pub struct NetworkDetailContext {
     pub flash_msg: Option<String>,
     pub saved_aps: Vec<Networks>,
     pub selected: Option<String>,
+    pub title: Option<String>,
     pub wlan_ip: String,
     pub wlan_networks: HashMap<String, AccessPoint>,
     pub wlan_rssi: Option<String>,
@@ -504,6 +538,7 @@ impl NetworkDetailContext {
             flash_msg: None,
             saved_aps,
             selected: None,
+            title: None,
             wlan_ip,
             wlan_networks,
             wlan_rssi,
@@ -521,6 +556,7 @@ pub struct NetworkListContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
+    pub title: Option<String>,
     pub wlan_networks: HashMap<String, String>,
     pub wlan_ssid: String,
 }
@@ -528,5 +564,24 @@ pub struct NetworkListContext {
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
         network_list_context("wlan0").unwrap()
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ShutdownContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl ShutdownContext {
+    pub fn build() -> ShutdownContext {
+        ShutdownContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
     }
 }

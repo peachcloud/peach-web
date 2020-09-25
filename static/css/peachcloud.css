@@ -267,19 +267,19 @@
 }
 
 .circle-success {
-    background-color: var(--color-success);
+    background-color: var(--success);
     color: var(--white);
     font-size: var(--font-size-4);
 }
 
 .circle-warning {
-    background-color: var(--color-warning);
+    background-color: var(--warning);
     color: var(--white);
     font-size: var(--font-size-4);
 }
 
 .circle-error {
-    background-color: var(--color-failure);
+    background-color: var(--danger);
     color: var(--white);
     font-size: var(--font-size-4);
 }
@@ -739,8 +739,16 @@ meter::-moz-meter-bar {
     align-items: center;
     width: 100%;
     height: 2em;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    justify-content: space-between;
+}
+
+.nav-title {
+    font-family: var(--sans-serif);
+    font-size: var(--font-size-4);
+    font-weight: normal;
+    margin: 0;
 }
 
 .nav-icon {

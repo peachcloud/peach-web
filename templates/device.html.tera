@@ -21,8 +21,6 @@
       <!-- DEVICE STATUS VIEW -->
       <div class="card center">
         <div class="card-container">
-          <!-- HACK: use class for removing top margin -->
-          <h1 class="bold center center-text title-medium" style="margin-top: 0;">Device Status</h1>
           {# Display microservice status for network, oled & stats #}
           <div class="three-grid" style="padding-bottom: 1rem; padding-top: 1rem;">
             <!-- PEACH-NETWORK STATUS STACK -->

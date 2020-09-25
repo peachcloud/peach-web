@@ -35,9 +35,9 @@
 use std::path::{Path, PathBuf};
 
 use crate::context::{
-    DeviceContext, FlashContext, HelpContext, MessageContext, NetworkAddContext,
+    DeviceContext, FlashContext, HelpContext, HomeContext, MessageContext, NetworkAddContext,
     NetworkAlertContext, NetworkContext, NetworkDetailContext, NetworkListContext, PeerContext,
-    ProfileContext,
+    ProfileContext, ShutdownContext,
 };
 use crate::device::*;
 use crate::monitor::*;
@@ -54,9 +54,10 @@ use rocket_contrib::templates::Template;
 
 #[get("/")]
 pub fn index() -> Template {
-    let context = FlashContext {
+    let context = HomeContext {
         flash_name: None,
         flash_msg: None,
+        title: None,
     };
     Template::render("index", &context)
 }
@@ -66,6 +67,7 @@ pub fn device_stats(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = DeviceContext::build();
     context.back = Some("/".to_string());
+    context.title = Some("Device Status".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -96,6 +98,7 @@ pub fn shutdown_cmd() -> Flash<Redirect> {
 pub fn help(flash: Option<FlashMessage>) -> Template {
     let mut context = HelpContext::build();
     context.back = Some("/".to_string());
+    context.title = Some("Help".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -109,7 +112,10 @@ pub fn help(flash: Option<FlashMessage>) -> Template {
 pub fn network(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
+    // set back button (nav) url
     context.back = Some("/".to_string());
+    // set page title
+    context.title = Some("Network Configuration".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -138,6 +144,7 @@ pub fn wifi_list(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkListContext::build();
     context.back = Some("/network".to_string());
+    context.title = Some("WiFi Networks".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -153,6 +160,7 @@ pub fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkDetailContext::build();
     context.back = Some("/network/wifi".to_string());
+    context.title = Some("WiFi Network".to_string());
     // decode ssid from url
     let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
     context.selected = Some(decoded_ssid.to_string());
@@ -181,6 +189,7 @@ pub fn network_add_wifi(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkContext::build();
     // set back icon link to network route
     context.back = Some("/network".to_string());
+    context.title = Some("Add WiFi Network".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -197,9 +206,10 @@ pub fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template 
     let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
     let mut context = NetworkAddContext {
         back: Some("/network/wifi".to_string()),
-        selected: Some(decoded_ssid.to_string()),
         flash_name: None,
         flash_msg: None,
+        selected: Some(decoded_ssid.to_string()),
+        title: Some("Add WiFi Network".to_string()),
     };
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
@@ -258,6 +268,7 @@ pub fn wifi_usage(flash: Option<FlashMessage>) -> Template {
     let mut context = NetworkAlertContext::build();
     // set back icon link to network route
     context.back = Some("/network".to_string());
+    context.title = Some("Network Data Usage".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -330,9 +341,10 @@ pub fn wifi_password(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
     let mut context = NetworkAddContext {
         back: Some("/network/wifi".to_string()),
-        selected: Some(decoded_ssid.to_string()),
         flash_name: None,
         flash_msg: None,
+        selected: Some(decoded_ssid.to_string()),
+        title: Some("Update WiFi Password".to_string()),
     };
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
@@ -362,6 +374,7 @@ pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
 pub fn messages(flash: Option<FlashMessage>) -> Template {
     let mut context = MessageContext::build();
     context.back = Some("/".to_string());
+    context.title = Some("Private Messages".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -375,6 +388,7 @@ pub fn messages(flash: Option<FlashMessage>) -> Template {
 pub fn peers(flash: Option<FlashMessage>) -> Template {
     let mut context = PeerContext::build();
     context.back = Some("/".to_string());
+    context.title = Some("Scuttlebutt Peers".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -388,6 +402,7 @@ pub fn peers(flash: Option<FlashMessage>) -> Template {
 pub fn profile(flash: Option<FlashMessage>) -> Template {
     let mut context = ProfileContext::build();
     context.back = Some("/".to_string());
+    context.title = Some("Profile".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -399,10 +414,9 @@ pub fn profile(flash: Option<FlashMessage>) -> Template {
 
 #[get("/shutdown")]
 pub fn shutdown_menu(flash: Option<FlashMessage>) -> Template {
-    let mut context = FlashContext {
-        flash_name: None,
-        flash_msg: None,
-    };
+    let mut context = ShutdownContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("Shutdown".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object

@@ -161,7 +161,7 @@
   --secondary: var(--near-white);
   --success: var(--green);
   --info: var(--blue);
-  --warning: var(--light-red);
+  --warning: var(--orange);
   --danger: var(--red);
   --light: var(--light-gray);
   --dark: var(--near-black);

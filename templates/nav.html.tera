@@ -2,17 +2,12 @@
 {%- block nav -%}
     <!-- Top nav bar -->
     <nav class="nav-bar">
-      <a class="nav-item" href="/">
-        <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud" title="Home">
-      </a>
       <a class="nav-item" href="{% if back %}{{ back }}{% endif %}" title="Back">
         <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Back">
       </a>
-      <a class="nav-item push-right" href="/logout" title="Logout">
+      <h1 class="nav-title">{{ title }}</h1>
+      <a class="nav-item" href="/logout" title="Logout">
         <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit">
-      </a>
-      <a class="nav-item" href="/shutdown" title="Shutdown">
-        <img class="icon-medium nav-icon-right icon-active" src="/icons/power-switch.svg" alt="Power-off">
       </a>
     </nav>
     <!-- Main content container -->
@@ -24,7 +19,10 @@
       <a class="nav-item" href="https://scuttlebutt.nz/">
         <img class="icon-medium nav-icon-left" title="Scuttlebutt Website" src="/icons/hermies.png" alt="Secure Scuttlebutt">
       </a>
-      <a class="nav-item push-right" href="/help">
+      <a class="nav-item" href="/">
+        <img class="icon nav-icon-left" src="/icons/peach-icon.png" alt="PeachCloud" title="Home">
+      </a>
+      <a class="nav-item" href="/help">
         <img class="icon-medium nav-icon-right icon-active" title="Help" src="/icons/question-circle.svg" alt="Question mark">
       </a>
     </nav>

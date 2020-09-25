@@ -4,7 +4,6 @@
       <div class="card center">
         <div class="card-container">
           <form id="wifiCreds" action="/network/wifi/add" method="post">
-            <h1 class="bold center center-text title-medium">Add WiFi Network</h1>
             <!-- input for network ssid -->
             <input id="ssid" name="ssid" class="center input" type="text" placeholder="SSID" title="Network name (SSID) for WiFi access point" value="{%- if selected -%}{{ selected }}{%- endif -%}" autofocus>
             <!-- input for network password -->

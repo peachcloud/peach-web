@@ -251,6 +251,7 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
         back: None,
         flash_msg: None,
         flash_name: None,
+        title: None,
         wlan_networks,
         wlan_ssid,
     };

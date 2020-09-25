@@ -2,7 +2,6 @@
 {%- block card %}
       <div class="card center">
         <div class="center list-container">
-          <h1 class="bold center-text title-medium">WiFi Networks</h1>
           <ul class="list">
           {%- if ap_state == "up" %}
             <li class="list-item light-bg warning-border">Enable WiFi client mode to view saved and available networks.</li>
