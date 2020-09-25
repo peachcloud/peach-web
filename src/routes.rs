@@ -416,7 +416,7 @@ pub fn profile(flash: Option<FlashMessage>) -> Template {
 pub fn shutdown_menu(flash: Option<FlashMessage>) -> Template {
     let mut context = ShutdownContext::build();
     context.back = Some("/".to_string());
-    context.title = Some("Shutdown".to_string());
+    context.title = Some("Shutdown Device".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object

@@ -3,7 +3,6 @@
       <!-- SHUTDOWN / REBOOT MENU -->
       <div class="card center">
         <div class="card-container">
-          <h1 class="bold center center-text title-medium">Shutdown Device</h1>
           <!-- BUTTONS -->
           <div id="buttonDiv">
             <a id="rebootBtn" class="button center" href="/device/reboot" title="Reboot Device">Reboot</a>
