@@ -110,7 +110,6 @@ impl ProfileContext {
 pub struct NetworkAlertContext {
     pub alert: Alert,
     pub back: Option<String>,
-    pub data: Data,       // stored wifi traffic in bytes
     pub data_total: Data, // combined stored and current wifi traffic in bytes
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
@@ -123,7 +122,7 @@ impl NetworkAlertContext {
     pub fn build() -> NetworkAlertContext {
         let alert = get_alerts().unwrap();
         // stored wifi data values as bytes
-        let data = get_data().unwrap();
+        let stored_traffic = get_data().unwrap();
         let threshold = get_thresholds().unwrap();
         // current wifi traffic values as bytes
         let traffic = match network_traffic("wlan0") {
@@ -136,17 +135,15 @@ impl NetworkAlertContext {
             },
         };
 
-        let rx_total = data.rx + traffic.received;
-        let tx_total = data.tx + traffic.transmitted;
+        let current_traffic = traffic.received + traffic.transmitted;
+        let total = stored_traffic.total + current_traffic;
         let data_total = Data {
-            rx: rx_total,
-            tx: tx_total,
+            total,
         };
 
         NetworkAlertContext {
             alert,
             back: None,
-            data,
             data_total,
             flash_name: None,
             flash_msg: None,

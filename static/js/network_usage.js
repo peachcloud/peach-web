@@ -10,10 +10,8 @@ corresponding to the web route `/network/wifi/usage`
 methods:
 
  PEACH_NETWORK.updateAlerts();
- PEACH_NETWORK.toggleRxWarning();
- PEACH_NETWORK.toggleRxCutoff();
- PEACH_NETWORK.toggleTxWarning();
- PEACH_NETWORK.toggleTxCutoff();
+ PEACH_NETWORK.toggleWarning();
+ PEACH_NETWORK.toggleCutoff();
  PEACH_NETWORK.flashMsg(status, msg);
 
 */
@@ -28,24 +26,16 @@ PEACH_NETWORK.updateAlerts = function() {
             e.preventDefault();
             // capture form data
             var formElement = document.querySelector("form");
-            let rx_warn = formElement.elements.rx_warn.value;
-            let rx_cut = formElement.elements.rx_cut.value;
-            let tx_warn = formElement.elements.tx_warn.value;
-            let tx_cut = formElement.elements.tx_cut.value;
-            let rx_warn_flag = formElement.elements.rx_warn_flag.checked;
-            let rx_cut_flag = formElement.elements.rx_cut_flag.checked;
-            let tx_warn_flag = formElement.elements.tx_warn_flag.checked;
-            let tx_cut_flag = formElement.elements.tx_cut_flag.checked;
+            let warn = formElement.elements.warn.value;
+            let cut = formElement.elements.cut.value;
+            let warn_flag = formElement.elements.warn_flag.checked;
+            let cut_flag = formElement.elements.cut_flag.checked;
             // perform json serialization
             var jsonData = JSON.stringify({
-                "rx_warn": parseFloat(rx_warn),
-                "rx_cut": parseFloat(rx_cut),
-                "tx_warn": parseFloat(tx_warn),
-                "tx_cut": parseFloat(tx_cut),
-                "rx_warn_flag": rx_warn_flag,
-                "rx_cut_flag": rx_cut_flag,
-                "tx_warn_flag": tx_warn_flag,
-                "tx_cut_flag": tx_cut_flag,
+                "warn": parseFloat(warn),
+                "cut": parseFloat(cut),
+                "warn_flag": warn_flag,
+                "cut_flag": cut_flag,
             });
             // write in-progress status message to ui
             PEACH_NETWORK.flashMsg("info", "Updating alert settings...");
@@ -68,14 +58,14 @@ PEACH_NETWORK.updateAlerts = function() {
     });
 }
 
-// update ui for rx warning
-PEACH_NETWORK.toggleRxWarning = function() {
+// update ui for warning
+PEACH_NETWORK.toggleWarning = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        let i = document.getElementById("rxWarnIcon");
-        let rxWarnCheck = document.getElementById("downWarnCheck");
-        rxWarnCheck.addEventListener('click', function(e) {
-            console.log('Toggling download warning icon state');
-            if (rxWarnCheck.checked) {
+        let i = document.getElementById("warnIcon");
+        let warnCheck = document.getElementById("warnCheck");
+        warnCheck.addEventListener('click', function(e) {
+            console.log('Toggling warning icon state');
+            if (warnCheck.checked) {
                 i.className = "icon";
             } else {
                 i.className = "icon icon-inactive";
@@ -84,46 +74,14 @@ PEACH_NETWORK.toggleRxWarning = function() {
     });
 };
 
-// update ui for rx cutoff
-PEACH_NETWORK.toggleRxCutoff = function() {
+// update ui for cutoff
+PEACH_NETWORK.toggleCutoff = function() {
     document.addEventListener('DOMContentLoaded', function() {
-        let i = document.getElementById("rxCutIcon");
-        let rxCutCheck = document.getElementById("downCutCheck");
-        rxCutCheck.addEventListener('click', function(e) {
-            console.log('Toggling download cutoff icon state');
-            if (rxCutCheck.checked) {
-                i.className = "icon";
-            } else {
-                i.className = "icon icon-inactive";
-            }
-        });
-    });
-};
-
-// update ui for tx warning
-PEACH_NETWORK.toggleTxWarning = function() {
-    document.addEventListener('DOMContentLoaded', function() {
-        let i = document.getElementById("txWarnIcon");
-        let txWarnCheck = document.getElementById("upWarnCheck");
-        txWarnCheck.addEventListener('click', function(e) {
-            console.log('Toggling upload warning icon state');
-            if (txWarnCheck.checked) {
-                i.className = "icon";
-            } else {
-                i.className = "icon icon-inactive";
-            }
-        });
-    });
-};
-
-// update ui for tx cutoff
-PEACH_NETWORK.toggleTxCutoff = function() {
-    document.addEventListener('DOMContentLoaded', function() {
-        let i = document.getElementById("txCutIcon");
-        let txCutCheck = document.getElementById("upCutCheck");
-        txCutCheck.addEventListener('click', function(e) {
-            console.log('Toggling upload cutoff icon state');
-            if (txCutCheck.checked) {
+        let i = document.getElementById("cutIcon");
+        let cutCheck = document.getElementById("cutCheck");
+        cutCheck.addEventListener('click', function(e) {
+            console.log('Toggling cutoff icon state');
+            if (cutCheck.checked) {
                 i.className = "icon";
             } else {
                 i.className = "icon icon-inactive";
@@ -166,8 +124,6 @@ PEACH_NETWORK.flashMsg = function(status, msg) {
 }
 
 var usageInstance = PEACH_NETWORK;
-usageInstance.toggleRxWarning();
-usageInstance.toggleRxCutoff();
-usageInstance.toggleTxWarning();
-usageInstance.toggleTxCutoff();
+usageInstance.toggleWarning();
+usageInstance.toggleCutoff();
 usageInstance.updateAlerts();

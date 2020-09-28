@@ -5,40 +5,30 @@ use std::convert::TryInto;
 use nest::{Error, Store, Value};
 use serde_json::json;
 
-/// Network traffic data values
+/// Network traffic data total
 #[derive(Debug, Serialize)]
 pub struct Data {
-    pub rx: u64, // total bytes received
-    pub tx: u64, // total bytes transmitted
+    pub total: u64, // total traffic in bytes
 }
 
 impl Data {
     /// Retrieve network traffic data values from the store
     fn get(store: &Store) -> Data {
         // retrieve previous network traffic statistics
-        let rx_stored = match store.get(&["net", "traffic", "rx"]) {
-            Ok(rx) => rx,
-            // return 0 if no value exists
-            Err(_) => Value::Uint(u64::MIN),
-        };
-        let tx_stored = match store.get(&["net", "traffic", "tx"]) {
-            Ok(tx) => tx,
+        let data_stored = match store.get(&["net", "traffic", "total"]) {
+            Ok(total) => total,
             // return 0 if no value exists
             Err(_) => Value::Uint(u64::MIN),
         };
 
         let mut data = Vec::new();
         // retrieve u64 from Value type
-        if let Value::Uint(rx) = rx_stored {
-            data.push(rx);
-        };
-        if let Value::Uint(tx) = tx_stored {
-            data.push(tx);
+        if let Value::Uint(total) = data_stored {
+            data.push(total);
         };
 
         Data {
-            rx: data[0],
-            tx: data[1],
+            total: data[0],
         }
     }
 }
@@ -46,14 +36,10 @@ impl Data {
 /// Network traffic notification thresholds and flags (user-defined)
 #[derive(Debug, Deserialize, Serialize, FromForm)]
 pub struct Threshold {
-    rx_warn: u64,       // received bytes warning threshold
-    rx_cut: u64,        // received bytes cutoff threshold
-    tx_warn: u64,       // transmitted bytes warning threshold
-    tx_cut: u64,        // transmitted bytes cutoff threshold
-    rx_warn_flag: bool, // received bytes warning notification flag
-    rx_cut_flag: bool,  // received bytes cutoff notification flag
-    tx_warn_flag: bool, // transmitted bytes warning notification flag
-    tx_cut_flag: bool,  // transmitted bytes cutoff notification flag
+    warn: u64,       // traffic warning threshold
+    cut: u64,        // traffic cutoff threshold
+    warn_flag: bool, // traffic warning notification flag
+    cut_flag: bool,  // traffic cutoff notification flag
 }
 
 impl Threshold {
@@ -61,112 +47,62 @@ impl Threshold {
     fn get(store: &Store) -> Threshold {
         let mut threshold = Vec::new();
 
-        let rx_warn_val = store
-            .get(&["net", "notify", "rx_warn"])
+        let warn_val = store
+            .get(&["net", "notify", "warn"])
             .unwrap_or(Value::Uint(0));
-        if let Value::Uint(rx) = rx_warn_val {
-            threshold.push(rx);
+        if let Value::Uint(val) = warn_val {
+            threshold.push(val);
         };
 
-        let rx_cut_val = store
-            .get(&["net", "notify", "rx_cut"])
+        let cut_val = store
+            .get(&["net", "notify", "cut"])
             .unwrap_or(Value::Uint(0));
-        if let Value::Uint(rx) = rx_cut_val {
-            threshold.push(rx);
-        };
-
-        let tx_warn_val = store
-            .get(&["net", "notify", "tx_warn"])
-            .unwrap_or(Value::Uint(0));
-        if let Value::Uint(tx) = tx_warn_val {
-            threshold.push(tx);
-        };
-
-        let tx_cut_val = store
-            .get(&["net", "notify", "tx_cut"])
-            .unwrap_or(Value::Uint(0));
-        if let Value::Uint(tx) = tx_cut_val {
-            threshold.push(tx);
+        if let Value::Uint(val) = cut_val {
+            threshold.push(val);
         };
 
         let mut flag = Vec::new();
 
-        let rx_warn_flag = store
-            .get(&["net", "notify", "rx_warn_flag"])
+        let warn_flag = store
+            .get(&["net", "notify", "warn_flag"])
             .unwrap_or(Value::Bool(false));
-        if let Value::Bool(rx) = rx_warn_flag {
-            flag.push(rx);
+        if let Value::Bool(state) = warn_flag {
+            flag.push(state);
         }
 
-        let rx_cut_flag = store
-            .get(&["net", "notify", "rx_cut_flag"])
+        let cut_flag = store
+            .get(&["net", "notify", "cut_flag"])
             .unwrap_or(Value::Bool(false));
-        if let Value::Bool(rx) = rx_cut_flag {
-            flag.push(rx);
-        }
-
-        let tx_warn_flag = store
-            .get(&["net", "notify", "tx_warn_flag"])
-            .unwrap_or(Value::Bool(false));
-        if let Value::Bool(tx) = tx_warn_flag {
-            flag.push(tx);
-        }
-
-        let tx_cut_flag = store
-            .get(&["net", "notify", "tx_cut_flag"])
-            .unwrap_or(Value::Bool(false));
-        if let Value::Bool(tx) = tx_cut_flag {
-            flag.push(tx);
+        if let Value::Bool(state) = cut_flag {
+            flag.push(state);
         }
 
         Threshold {
-            rx_warn: threshold[0],
-            rx_cut: threshold[1],
-            tx_warn: threshold[2],
-            tx_cut: threshold[3],
-            rx_warn_flag: flag[0],
-            rx_cut_flag: flag[1],
-            tx_warn_flag: flag[2],
-            tx_cut_flag: flag[3],
+            warn: threshold[0],
+            cut: threshold[1],
+            warn_flag: flag[0],
+            cut_flag: flag[1],
         }
     }
 
     /// Store notification flags from user data
     fn set(self, store: &Store) {
         store
-            .set(&["net", "notify", "rx_warn"], &Value::Uint(self.rx_warn))
+            .set(&["net", "notify", "warn"], &Value::Uint(self.warn))
             .unwrap();
         store
-            .set(&["net", "notify", "rx_cut"], &Value::Uint(self.rx_cut))
-            .unwrap();
-        store
-            .set(&["net", "notify", "tx_warn"], &Value::Uint(self.tx_warn))
-            .unwrap();
-        store
-            .set(&["net", "notify", "tx_cut"], &Value::Uint(self.tx_cut))
+            .set(&["net", "notify", "cut"], &Value::Uint(self.cut))
             .unwrap();
         store
             .set(
-                &["net", "notify", "rx_warn_flag"],
-                &Value::Bool(self.rx_warn_flag),
+                &["net", "notify", "warn_flag"],
+                &Value::Bool(self.warn_flag),
             )
             .unwrap();
         store
             .set(
-                &["net", "notify", "rx_cut_flag"],
-                &Value::Bool(self.rx_cut_flag),
-            )
-            .unwrap();
-        store
-            .set(
-                &["net", "notify", "tx_warn_flag"],
-                &Value::Bool(self.tx_warn_flag),
-            )
-            .unwrap();
-        store
-            .set(
-                &["net", "notify", "tx_cut_flag"],
-                &Value::Bool(self.tx_cut_flag),
+                &["net", "notify", "cut_flag"],
+                &Value::Bool(self.cut_flag),
             )
             .unwrap();
     }
@@ -175,10 +111,8 @@ impl Threshold {
 /// Warning and cutoff network traffic alert flags (programatically-defined)
 #[derive(Debug, Serialize)]
 pub struct Alert {
-    rx_warn: bool,
-    rx_cut: bool,
-    tx_warn: bool,
-    tx_cut: bool,
+    warn: bool,
+    cut: bool,
 }
 
 impl Alert {
@@ -186,39 +120,23 @@ impl Alert {
     fn get(store: &Store) -> Alert {
         let mut alert = Vec::new();
 
-        let rx_warn_flag = store
-            .get(&["net", "alert", "rx_warn"])
+        let warn_flag = store
+            .get(&["net", "alert", "warn"])
             .unwrap_or(Value::Bool(false));
-        if let Value::Bool(rx) = rx_warn_flag {
-            alert.push(rx);
+        if let Value::Bool(flag) = warn_flag {
+            alert.push(flag);
         }
 
-        let rx_cut_flag = store
-            .get(&["net", "alert", "rx_cut"])
+        let cut_flag = store
+            .get(&["net", "alert", "cut"])
             .unwrap_or(Value::Bool(false));
-        if let Value::Bool(rx) = rx_cut_flag {
-            alert.push(rx);
-        }
-
-        let tx_warn_flag = store
-            .get(&["net", "alert", "tx_warn"])
-            .unwrap_or(Value::Bool(false));
-        if let Value::Bool(tx) = tx_warn_flag {
-            alert.push(tx);
-        }
-
-        let tx_cut_flag = store
-            .get(&["net", "alert", "tx_cut"])
-            .unwrap_or(Value::Bool(false));
-        if let Value::Bool(tx) = tx_cut_flag {
-            alert.push(tx);
+        if let Value::Bool(flag) = cut_flag {
+            alert.push(flag);
         }
 
         Alert {
-            rx_warn: alert[0],
-            rx_cut: alert[1],
-            tx_warn: alert[2],
-            tx_cut: alert[3],
+            warn: alert[0],
+            cut: alert[1],
         }
     }
 }

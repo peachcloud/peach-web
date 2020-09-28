@@ -11,28 +11,28 @@
         </div>
         <div class="card-container container">
           <div>
-            <img id="txWarnIcon" class="icon{% if threshold.tx_warn_flag == false %} icon-inactive{% endif %}" alt="Warning" title="Warning upload threshold" src="/icons/alert.svg">
+            <img id="warnIcon" class="icon{% if threshold.warn_flag == false %} icon-inactive{% endif %}" alt="Warning" title="Warning threshold" src="/icons/alert.svg">
           </div>
           <div>
-            <!-- input for upload warning threshold -->
-            <label id="upWarn" class="label-small font-near-black"><input id="upWarnInput" class="alert-input" name="tx_warn" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.tx_warn }}">MB</label>
-            <label class="label-small font-gray" for="upWarn" style="padding-top: 0.25rem;">WARNING THRESHOLD</label>
+            <!-- input for warning threshold -->
+            <label id="warn" class="label-small font-near-black"><input id="warnInput" class="alert-input" name="warn" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.warn }}">MB</label>
+            <label class="label-small font-gray" for="warn" style="padding-top: 0.25rem;">WARNING THRESHOLD</label>
           </div>
           <div>
-            <!-- checkbox for upload warning threshold flag -->
-            <input id="upWarnCheck" name="tx_warn_flag" title="Activate upload warning" type="checkbox" {% if threshold.tx_warn_flag %}checked{% endif %}>
+            <!-- checkbox for warning threshold flag -->
+            <input id="warnCheck" name="warn_flag" title="Activate warning" type="checkbox" {% if threshold.warn_flag %}checked{% endif %}>
           </div>
           <div>
-            <img id="txCutIcon" class="icon{% if threshold.tx_cut_flag == false %} icon-inactive{% endif %}" alt="Cutoff" title="Upload cutoff threshold" src="/icons/scissor.svg">
+            <img id="cutIcon" class="icon{% if threshold.cut_flag == false %} icon-inactive{% endif %}" alt="Cutoff" title="Cutoff threshold" src="/icons/scissor.svg">
           </div>
           <div>
-            <!-- input for upload critical threshold -->
-            <label id="upCut" class="label-small font-near-black"><input id="upCutInput" class="alert-input" name="tx_cut" placeholder="0" type="text" title="Warning threshold value" value="{{ threshold.tx_cut }}">MB</label>
-            <label class="label-small font-gray" for="upCut" style="padding-top: 0.25rem;">CUTOFF THRESHOLD</label>
+            <!-- input for cutoff threshold -->
+            <label id="cut" class="label-small font-near-black"><input id="cutInput" class="alert-input" name="cut" placeholder="0" type="text" title="Critical threshold value" value="{{ threshold.cut }}">MB</label>
+            <label class="label-small font-gray" for="cut" style="padding-top: 0.25rem;">CUTOFF THRESHOLD</label>
           </div>
           <div>
-            <!-- checkbox for upload cutoff threshold flag -->
-            <input id="upCutCheck" name="tx_cut_flag" title="Activate upload cutoff" type="checkbox" {% if threshold.tx_cut_flag %}checked{% endif %}>
+            <!-- checkbox for cutoff threshold flag -->
+            <input id="cutCheck" name="cut_flag" title="Activate cutoff" type="checkbox" {% if threshold.cut_flag %}checked{% endif %}>
           </div>
         </div>
         <div id="buttonDiv" style="grid-column-start: 1; grid-column-end: 4; margin-bottom: 1rem;">
