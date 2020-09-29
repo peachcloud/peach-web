@@ -94,6 +94,7 @@ fn rocket() -> rocket::Rocket {
                 wifi_set_password,  // WEB ROUTE
                 wifi_usage,         // WEB ROUTE
                 wifi_usage_alerts,  // WEB ROUTE
+                wifi_usage_reset,   // WEB ROUTE
                 activate_ap,        // JSON API
                 activate_client,    // JSON API
                 add_wifi,           // JSON API

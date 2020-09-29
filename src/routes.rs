@@ -20,13 +20,14 @@
 //! | GET    | /network/wifi/add           | Add WiFi form                     |
 //! | POST   | /network/wifi/add           | WiFi form submission              |
 //! | GET    | /network/wifi/add?<ssid>    | Add WiFi form (SSID populated)    |
-//! | GET    | /network/wifi/alert         | WiFi data alerts form             |
-//! | POST   | /network/wifi/alert         | WiFi data alerts form submission  |
 //! | POST   | /network/wifi/connect       | Connect to WiFi access point      |
 //! | POST   | /network/wifi/disconnect    | Disconnect from WiFi access point |
 //! | POST   | /network/wifi/forget        | Remove WiFi                       |
 //! | GET    | /network/wifi/modify?<ssid> | Modify WiFi password form         |
 //! | POST   | /network/wifi/modify        | Modify network password           |
+//! | GET    | /network/wifi/usage         | WiFi data usage form              |
+//! | POST   | /network/wifi/usage         | WiFi data usage form submission   |
+//! | GET    | /network/wifi/usage/reset   | Reset stored data usage total     |
 //! | GET    | /messages                   | Private Scuttlebutt messages      |
 //! | GET    | /peers                      | Scuttlebutt peers overview        |
 //! | GET    | /profile                    | Scuttlebutt user profile          |
@@ -81,16 +82,16 @@ pub fn device_stats(flash: Option<FlashMessage>) -> Template {
 #[get("/device/reboot")]
 pub fn reboot_cmd() -> Flash<Redirect> {
     match device_reboot() {
-        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Rebooting the device."),
-        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to reboot the device."),
+        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Rebooting the device"),
+        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to reboot the device"),
     }
 }
 
 #[get("/device/shutdown")]
 pub fn shutdown_cmd() -> Flash<Redirect> {
     match device_shutdown() {
-        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Shutting down the device."),
-        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to shutdown the device."),
+        Ok(_) => Flash::success(Redirect::to("/shutdown"), "Shutting down the device"),
+        Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to shutdown the device"),
     }
 }
 
@@ -131,10 +132,10 @@ pub fn deploy_ap() -> Flash<Redirect> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
     match network_activate_ap() {
-        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi access point."),
+        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi access point"),
         Err(_) => Flash::error(
             Redirect::to("/network"),
-            "Failed to activate WiFi access point.",
+            "Failed to activate WiFi access point",
         ),
     }
 }
@@ -179,8 +180,8 @@ pub fn deploy_client() -> Flash<Redirect> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
     match network_activate_client() {
-        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi client."),
-        Err(_) => Flash::error(Redirect::to("/network"), "Failed to activate WiFi client."),
+        Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi client"),
+        Err(_) => Flash::error(Redirect::to("/network"), "Failed to activate WiFi client"),
     }
 }
 
@@ -243,8 +244,8 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
             debug!("Added WiFi credentials.");
             // force reread of wpa_supplicant.conf file with new credentials
             match network_reconfigure() {
-                Ok(_) => debug!("Successfully reconfigured wpa_supplicant."),
-                Err(_) => warn!("Failed to reconfigure wpa_supplicant."),
+                Ok(_) => debug!("Successfully reconfigured wpa_supplicant"),
+                Err(_) => warn!("Failed to reconfigure wpa_supplicant"),
             }
             let context = FlashContext {
                 flash_name: Some("success".to_string()),
@@ -299,16 +300,25 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
     }
 }
 
+#[get("/network/wifi/usage/reset")]
+pub fn wifi_usage_reset() -> Flash<Redirect> {
+    let url = uri!(wifi_usage);
+    match reset_data() {
+        Ok(_) => Flash::success(Redirect::to(url), "Reset stored network traffic total to zero"),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to reset stored network traffic total"),
+    }
+}
+
 #[post("/network/wifi/connect", data = "<network>")]
 pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
     match network_id("wlan0", &ssid) {
         Ok(id) => match network_connect(&id, "wlan0") {
-            Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network."),
-            Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network."),
+            Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network"),
+            Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network"),
         },
-        Err(_) => Flash::error(Redirect::to(url), "Failed to retrieve the network ID."),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to retrieve the network ID"),
     }
 }
 
@@ -317,8 +327,8 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network);
     match network_disable("wlan0", &ssid) {
-        Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network."),
-        Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network."),
+        Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network"),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network"),
     }
 }
 
@@ -327,7 +337,7 @@ pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network);
     match forget_network("wlan0", &ssid) {
-        Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed."),
+        Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed"),
         Err(_) => Flash::error(
             Redirect::to(url),
             "Failed to remove WiFi credentials".to_string(),
@@ -362,7 +372,7 @@ pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let pass = &wifi.pass;
     let url = uri!(network_detail: ssid);
     match update_password("wlan0", ssid, pass) {
-        Ok(_) => Flash::success(Redirect::to(url), "WiFi password updated.".to_string()),
+        Ok(_) => Flash::success(Redirect::to(url), "WiFi password updated".to_string()),
         Err(_) => Flash::error(
             Redirect::to(url),
             "Failed to update WiFi password".to_string(),

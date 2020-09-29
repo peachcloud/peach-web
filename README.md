@@ -34,6 +34,7 @@ _Note: This is a work-in-progress._
 | `/network/wifi/modify` | POST | `ssid` & `pass` | Submit form to update a WiFi network password |
 | `/network/wifi/usage` | GET | | Network data usage values and a form to update alert thresholds |
 | `/network/wifi/usage` | POST | `rx_warn`, `rx_cut`, `tx_warn`, `tx_cut`, `rx_warn_flag`, `rx_cut_flag`, `tx_warn_flag`, `tx_cut_flag` | Submit form to update alert thresholds & set flags |
+| `/network/wifi/usage/reset` | GET | | Reset the stored network data usage total to zero |
 | `/shutdown` | GET | | Shutdown menu |
 
 ### JSON API (`src/json_api.rs`)

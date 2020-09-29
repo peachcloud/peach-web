@@ -4,7 +4,7 @@
       <form id="wifiAlerts" action="/network/wifi/usage" class="card center" method="post">
         <div class="stack capsule" style="margin-left: 2rem; margin-right: 2rem;">
           <div class="flex-grid">
-            <label class="label-large" title="Data download total in MB">158</label>
+            <label class="label-large" title="Data download total in MB">{{ data_total.total / 1024 / 1024 | round }}</label>
             <label class="label-small font-near-black">MB</label>
           </div>
           <label class="center-text label-small font-gray">USAGE TOTAL</label>
@@ -37,6 +37,7 @@
         </div>
         <div id="buttonDiv" style="grid-column-start: 1; grid-column-end: 4; margin-bottom: 1rem;">
           <input id="updateAlerts" class="button button-primary center" title="Update" type="submit" value="Update">
+          <a class="button button-warning center" href="/network/wifi/usage/reset" title="Reset stored usage total to zero">Reset</a>
           <a class="button button-secondary center" href="/network" title="Cancel">Cancel</a>
         </div>
         <!-- FLASH MESSAGE -->

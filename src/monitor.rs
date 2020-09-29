@@ -185,6 +185,14 @@ pub fn get_thresholds() -> std::result::Result<Threshold, Error> {
     Ok(thresholds)
 }
 
+// set stored traffic total to 0
+pub fn reset_data() -> std::result::Result<(), Error> {
+    let store = create_store()?;
+    store.set(&["net", "traffic", "total"], &Value::Uint(0))?;
+
+    Ok(())
+}
+
 pub fn update_store(threshold: Threshold) -> std::result::Result<(), Error> {
     let store = create_store()?;
     Threshold::set(threshold, &store);
