@@ -5,9 +5,9 @@
         <div class="card-container">
           <!-- BUTTONS -->
           <div id="buttonDiv">
-            <a id="rebootBtn" class="button center" href="/device/reboot" title="Reboot Device">Reboot</a>
-            <a id="shutdownBtn" class="button center" href="/device/shutdown" title="Shutdown Device">Shutdown</a>
-            <a id="cancelBtn" class="button center" href="/" title="Cancel">Cancel</a>
+            <a id="rebootBtn" class="button button-primary center" href="/device/reboot" title="Reboot Device">Reboot</a>
+            <a id="shutdownBtn" class="button button-warning center" href="/device/shutdown" title="Shutdown Device">Shutdown</a>
+            <a id="cancelBtn" class="button button-secondary center" href="/" title="Cancel">Cancel</a>
           </div>
           <!-- FLASH MESSAGE -->
           <!-- check for flash message and display accordingly -->
