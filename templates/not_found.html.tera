@@ -1,10 +1,9 @@
 {%- extends "nav" -%}
 {%- block card %}
         <div class="card center">
-            <div class="card-container">
-                <h1 class="bold center-text title-medium">404: Page Not Found</h1>
-                <p>No PeachCloud resource exists for this URL.</p>
-                <p>Click the PeachCloud logo in the top-left of your screen to return to Home.</p>
+            <div class="card-container capsule info-border">
+                <p>No PeachCloud resource exists for this URL. Please ensure that the URL in the address bar is correct.</p>
+                <p>Click the back arrow in the top-left or the PeachCloud logo at the bottom of your screen to return Home.</p>
             </div>
         </div>
 {%- endblock card -%}

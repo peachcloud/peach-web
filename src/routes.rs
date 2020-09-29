@@ -35,11 +35,7 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::context::{
-    DeviceContext, FlashContext, HelpContext, HomeContext, MessageContext, NetworkAddContext,
-    NetworkAlertContext, NetworkContext, NetworkDetailContext, NetworkListContext, PeerContext,
-    ProfileContext, ShutdownContext,
-};
+use crate::context::*;
 use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
@@ -304,8 +300,14 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
 pub fn wifi_usage_reset() -> Flash<Redirect> {
     let url = uri!(wifi_usage);
     match reset_data() {
-        Ok(_) => Flash::success(Redirect::to(url), "Reset stored network traffic total to zero"),
-        Err(_) => Flash::error(Redirect::to(url), "Failed to reset stored network traffic total"),
+        Ok(_) => Flash::success(
+            Redirect::to(url),
+            "Reset stored network traffic total to zero",
+        ),
+        Err(_) => Flash::error(
+            Redirect::to(url),
+            "Failed to reset stored network traffic total",
+        ),
     }
 }
 
@@ -444,21 +446,23 @@ pub fn files(file: PathBuf) -> Option<NamedFile> {
 #[catch(404)]
 pub fn not_found() -> Template {
     debug!("404 Page Not Found");
-    // HACK: this is just here to satisfy the context requirement
-    let context = FlashContext {
-        flash_name: Some("error".to_string()),
-        flash_msg: Some("No resource found for given URL".to_string()),
-    };
+    let mut context = ErrorContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("404: Page Not Found".to_string());
+    context.flash_name = Some("error".to_string());
+    context.flash_msg = Some("No resource found for given URL".to_string());
+
     Template::render("not_found", context)
 }
 
 #[catch(500)]
 pub fn internal_error() -> Template {
     debug!("500 Internal Server Error");
-    // HACK: this is just here to satisfy the context requirement
-    let context = FlashContext {
-        flash_name: Some("error".to_string()),
-        flash_msg: Some("Internal server error".to_string()),
-    };
+    let mut context = ErrorContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("500: Internal Server Error".to_string());
+    context.flash_name = Some("error".to_string());
+    context.flash_msg = Some("Internal server error".to_string());
+
     Template::render("internal_error", context)
 }

@@ -27,9 +27,7 @@ impl Data {
             data.push(total);
         };
 
-        Data {
-            total: data[0],
-        }
+        Data { total: data[0] }
     }
 }
 
@@ -100,10 +98,7 @@ impl Threshold {
             )
             .unwrap();
         store
-            .set(
-                &["net", "notify", "cut_flag"],
-                &Value::Bool(self.cut_flag),
-            )
+            .set(&["net", "notify", "cut_flag"], &Value::Bool(self.cut_flag))
             .unwrap();
     }
 }

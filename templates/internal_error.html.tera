@@ -1,10 +1,9 @@
 {%- extends "nav" -%}
 {%- block card %}
         <div class="card center">
-            <div class="card-container">
-                <h1 class="bold center-text title-medium">500: Internal Server Error</h1>
-                <p>PeachCloud has encountered an internal error.</p>
-                <p>Click the PeachCloud logo in the top-left of your screen to return to Home.</p>
+            <div class="card-container capsule info-border">
+                <p>PeachCloud has encountered an internal error. This may indicate that one or several software components are misconfigured or malfunctioning. Please try to repeat your desired actions. If the problem persists, a system reset is recommended - either via the <a href="/shutdown">Shutdown menu</a> or the OLED menu on the physical device.</p>
+                <p>Click the back arrow in the top-left or the PeachCloud logo at the bottom of your screen to return Home.</p>
             </div>
         </div>
 {%- endblock card -%}

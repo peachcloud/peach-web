@@ -13,6 +13,25 @@ use crate::oled_client::oled_ping;
 use crate::stats_client::*;
 
 #[derive(Debug, Serialize)]
+pub struct ErrorContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl ErrorContext {
+    pub fn build() -> ErrorContext {
+        ErrorContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct HelpContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
@@ -137,9 +156,7 @@ impl NetworkAlertContext {
 
         let current_traffic = traffic.received + traffic.transmitted;
         let total = stored_traffic.total + current_traffic;
-        let data_total = Data {
-            total,
-        };
+        let data_total = Data { total };
 
         NetworkAlertContext {
             alert,
