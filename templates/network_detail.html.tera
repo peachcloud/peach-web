@@ -7,7 +7,7 @@
     <!-- NETWORK CARD -->
     <div class="card center">
       <!-- NETWORK INFO BOX -->
-      <div class="two-grid capsule" title="PeachCloud network mode and status">
+      <div class="two-grid capsule{% if ssid == wlan_ssid %} success-border{% endif %}" title="PeachCloud network mode and status">
         <!-- left column -->
         <!-- NETWORK STATUS ICON -->
         <div class="grid-column-1">
@@ -69,13 +69,13 @@
         <!-- check for flash message and display accordingly -->
         {%- if flash_msg and flash_name == "success" %}
         <!-- display success message -->
-        <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}</div>
+        <div class="capsule center-text flash-message font-success">{{ flash_msg }}</div>
         {%- elif flash_msg and flash_name == "info" %}
         <!-- display info message -->
-        <div class="center-text flash-message font-info" style="padding-left: 5px;">{{ flash_msg }}</div>
+        <div class="capsule center-text flash-message font-info">{{ flash_msg }}</div>
         {%- elif flash_msg and flash_name == "error" %}
         <!-- display error message -->
-        <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}</div>
+        <div class="capsule center-text flash-message font-failure">{{ flash_msg }}</div>
         {%- endif -%}
       </div>
     </div>

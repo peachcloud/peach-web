@@ -131,11 +131,11 @@ PEACH_NETWORK.flashMsg = function(status, msg) {
     // set the class of the element according to status
     var elementClass;
     if (status === "success") {
-        elementClass = "center-text flash-message font-success";
+        elementClass = "capsule center-text flash-message font-success";
     } else if (status === "info") {
-        elementClass = "center-text flash-message font-info";
+        elementClass = "capsule center-text flash-message font-info";
     } else {
-        elementClass = "center-text flash-message font-failure";
+        elementClass = "capsule center-text flash-message font-failure";
     };
 
     var flashElement = document.getElementById("flashMsg");

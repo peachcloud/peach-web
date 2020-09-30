@@ -17,14 +17,20 @@
           <!-- check for flash message and display accordingly -->
           {% if flash_msg and flash_name == "success" %}
           <!-- display success message -->
-          <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          <div class="capsule center-text flash-message font-success">{{ flash_msg }}.</div>
           {%- elif flash_msg and flash_name == "info" %}
           <!-- display info message -->
-          <div class="center-text flash-message font-info" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          <div class="capsule center-text flash-message font-info">{{ flash_msg }}.</div>
           {%- elif flash_msg and flash_name == "error" %}
           <!-- display error message -->
-          <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+          <div class="capsule center-text flash-message font-failure">{{ flash_msg }}.</div>
           {%- endif -%}
+          <!-- share ux information with the user if JS is disabled -->
+          <noscript>
+            <div class="capsule flash-message info-border">
+              <p class="center-text">This website may be temporarily unresponsive while the WiFi credentials are added.</p>
+            </div>
+          </noscript>
         </div>
       </div>
       <script type="text/javascript" src="/js/network_add.js"></script>

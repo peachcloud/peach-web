@@ -35,7 +35,7 @@
             <input id="cutCheck" name="cut_flag" title="Activate cutoff" type="checkbox" {% if threshold.cut_flag %}checked{% endif %}>
           </div>
         </div>
-        <div id="buttonDiv" style="grid-column-start: 1; grid-column-end: 4; margin-bottom: 1rem;">
+        <div id="buttonDiv" class="button-div">
           <input id="updateAlerts" class="button button-primary center" title="Update" type="submit" value="Update">
           <a class="button button-warning center" href="/network/wifi/usage/reset" title="Reset stored usage total to zero">Reset</a>
           <a class="button button-secondary center" href="/network" title="Cancel">Cancel</a>
@@ -44,13 +44,13 @@
         <!-- check for flash message and display accordingly -->
         {% if flash_msg and flash_name == "success" %}
         <!-- display success message -->
-        <div class="center-text flash-message font-success" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        <div class="capsule center-text flash-message font-success">{{ flash_msg }}.</div>
         {%- elif flash_msg and flash_name == "info" %}
         <!-- display info message -->
-        <div class="center-text flash-message font-info" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        <div class="capsule center-text flash-message font-info">{{ flash_msg }}.</div>
         {%- elif flash_msg and flash_name == "error" %}
         <!-- display error message -->
-        <div class="center-text flash-message font-failure" style="padding-left: 5px;">{{ flash_msg }}.</div>
+        <div class="capsule center-text flash-message font-failure">{{ flash_msg }}.</div>
         {%- endif -%}
       </form>
       <script type="text/javascript" src="/js/network_usage.js"></script>
