@@ -6,8 +6,8 @@
         <img class="icon-medium nav-icon-left icon-active" src="/icons/back.svg" alt="Back">
       </a>
       <h1 class="nav-title">{{ title }}</h1>
-      <a class="nav-item" href="/logout" title="Logout">
-        <img class="icon-medium nav-icon-right icon-active" src="/icons/exit.svg" alt="Exit">
+      <a class="nav-item" href="/login" title="Login">
+        <img class="icon-medium nav-icon-right icon-active" src="/icons/enter.svg" alt="Enter">
       </a>
     </nav>
     <!-- Main content container -->

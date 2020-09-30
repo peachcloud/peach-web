@@ -12,6 +12,9 @@
 //! | GET    | /device/reboot              | Reboot device                     |
 //! | GET    | /device/shutdown            | Shutdown device                   |
 //! | GET    | /help                       | Help and usage guidelines         |
+//! | GET    | /login                      | Login form                        |
+//! | POST   | /login                      | Login form submission             |
+//! | POST   | /logout                     | Logout authenticated user         |
 //! | GET    | /network                    | Network overview                  |
 //! | GET    | /network/ap/activate        | Activate WiFi access point mode   |
 //! | GET    | /network/wifi               | List of networks                  |
@@ -103,6 +106,36 @@ pub fn help(flash: Option<FlashMessage>) -> Template {
         context.flash_msg = Some(flash.msg().to_string());
     };
     Template::render("help", &context)
+}
+
+#[get("/login")]
+pub fn login(flash: Option<FlashMessage>) -> Template {
+    let mut context = LoginContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("Login".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("login", &context)
+}
+
+#[post("/logout")]
+pub fn logout() -> Flash<Redirect> {
+    // logout authenticated user
+    debug!("Attempting deauthentication of user.");
+    /*
+    match logout_user() {
+        Ok(_) => Flash::success(Redirect::to("/"), "Logout success"),
+        Err(_) => Flash::error(
+            Redirect::to("/"),
+            "Failed to logout",
+        ),
+    }
+    */
+    Flash::success(Redirect::to("/"), "Logged out")
 }
 
 #[get("/network")]

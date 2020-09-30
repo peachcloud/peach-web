@@ -20,6 +20,7 @@ _Note: This is a work-in-progress._
 | `/device` | GET | | Device status overview |
 | `/device/reboot` | GET | | Reboot device |
 | `/device/shutdown` | GET | | Shutdown device |
+| `/login` | GET | | Login form |
 | `/network` | GET | | Network status overview |
 | `/network/ap/activate` | GET | | Activate WiFi access point mode |
 | `/network/wifi` | GET | | List of networks |

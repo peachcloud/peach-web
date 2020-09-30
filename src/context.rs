@@ -68,6 +68,25 @@ impl HomeContext {
 }
 
 #[derive(Debug, Serialize)]
+pub struct LoginContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl LoginContext {
+    pub fn build() -> LoginContext {
+        LoginContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct MessageContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,

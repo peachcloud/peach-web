@@ -79,6 +79,8 @@ fn rocket() -> rocket::Rocket {
                 forget_wifi,        // WEB ROUTE
                 help,               // WEB ROUTE
                 index,              // WEB ROUTE
+                login,              // WEB ROUTE
+                logout,             // WEB ROUTE
                 messages,           // WEB ROUTE
                 network,            // WEB ROUTE
                 network_add_ssid,   // WEB ROUTE
