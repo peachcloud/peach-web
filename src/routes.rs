@@ -335,7 +335,7 @@ pub fn wifi_usage_reset() -> Flash<Redirect> {
     match reset_data() {
         Ok(_) => Flash::success(
             Redirect::to(url),
-            "Reset stored network traffic total to zero",
+            "Reset stored network traffic total",
         ),
         Err(_) => Flash::error(
             Redirect::to(url),

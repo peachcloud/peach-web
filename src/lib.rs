@@ -108,6 +108,7 @@ fn rocket() -> rocket::Rocket {
                 ping_network,       // JSON API
                 ping_oled,          // JSON API
                 ping_stats,         // JSON API
+                reset_data_total,   // JSON API
                 return_ip,          // JSON API
                 return_rssi,        // JSON API
                 return_ssid,        // JSON API

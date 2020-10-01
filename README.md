@@ -60,6 +60,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `network/wifi/forget` | POST | `ssid` | Submit SSID to delete credentials for given WiFi network |
 | `network/wifi/modify` | POST | `ssid` & `pass` | Submit SSID & password to update the credentials for given WiFi network |
 | `/network/wifi/usage` | POST | `rx_warn`, `rx_cut`, `tx_warn`, `tx_cut`, `rx_warn_flag`, `rx_cut_flag`, `tx_warn_flag`, `tx_cut_flag` | Submit form to update alert thresholds & set flags |
+| `/network/wifi/usage/reset` | POST | | Reset network data usage total |
 | `ping` | GET | | Returns `pong!` if `peach-web` is running |
 | `ping/network` | GET | | Returns `pong!` if `peach-network` microservice is running |
 | `ping/oled` | GET | | Returns `pong!` if `peach-oled` microservice is running |

@@ -10,6 +10,7 @@ corresponding to the web route `/network/wifi/usage`
 methods:
 
  PEACH_NETWORK.updateAlerts();
+ PEACH_NETWORK.resetUsage();
  PEACH_NETWORK.toggleWarning();
  PEACH_NETWORK.toggleCutoff();
  PEACH_NETWORK.flashMsg(status, msg);
@@ -37,8 +38,6 @@ PEACH_NETWORK.updateAlerts = function() {
                 "warn_flag": warn_flag,
                 "cut_flag": cut_flag,
             });
-            // write in-progress status message to ui
-            PEACH_NETWORK.flashMsg("info", "Updating alert settings...");
             // send update_alerts POST request
             fetch("/api/v1/network/wifi/usage", {
                 method: "post",
@@ -57,6 +56,50 @@ PEACH_NETWORK.updateAlerts = function() {
         }, false);
     });
 }
+
+// catch click of 'Reset' and make POST request
+PEACH_NETWORK.resetUsage = function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        var resetBtn = document.getElementById('resetTotal');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function(e) {
+                // prevent form submission (default behavior)
+                e.preventDefault();
+                // send reset_data_usage POST request
+                fetch("/api/v1/network/wifi/usage/reset", {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then( (response) => {
+                    return response.json()
+                })
+                .then( (jsonData) => {
+                    console.log(jsonData.msg);
+                    // write json response message to ui
+                    PEACH_NETWORK.flashMsg(jsonData.status, jsonData.msg);
+                    // if reset is successful, update the ui
+                    if (jsonData.status === "success") {
+                        console.log(jsonData.data);
+                        PEACH_NETWORK.updateTotal(jsonData.data);
+                    }
+                })
+            }, false);
+        }
+    });
+}
+
+// update data usage total in ui
+PEACH_NETWORK.updateTotal = function(data) {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log(data);
+        let label = document.getElementById("dataTotal");
+        // take usage total as bytes, convert to MB and round to nearest integer
+        label.textContent = (data / 1024 / 1024).round();
+    });
+};
 
 // update ui for warning
 PEACH_NETWORK.toggleWarning = function() {
@@ -124,6 +167,7 @@ PEACH_NETWORK.flashMsg = function(status, msg) {
 }
 
 var usageInstance = PEACH_NETWORK;
+usageInstance.resetUsage();
 usageInstance.toggleWarning();
 usageInstance.toggleCutoff();
 usageInstance.updateAlerts();

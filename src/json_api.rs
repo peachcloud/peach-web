@@ -5,28 +5,29 @@
 //!
 //! API ROUTES
 //!
-//! | Method | URL                             | Description                  |
-//! | ------ | ------------------------------- | ---------------------------- |
-//! | POST   | /api/v1/device/reboot           | Reboot device                |
-//! | POST   | /api/v1/device/shutdown         | Shutdown device              |
-//! | POST   | /api/v1/network/activate_ap     |                              |
-//! | POST   | /api/v1/network/activate_client |                              |
-//! | GET    | /api/v1/network/ip              |                              |
-//! | GET    | /api/v1/network/rssi            |                              |
-//! | GET    | /api/v1/network/ssid            |                              |
-//! | GET    | /api/v1/network/state           |                              |
-//! | GET    | /api/v1/network/status          |                              |
-//! | GET    | /api/v1/network/wifi            | Retrieve available networks  |
-//! | POST   | /api/v1/network/wifi            | Add WiFi AP credentials      |
-//! | POST   | /api/v1/network/wifi/connect    | Connect to WiFi access point |
-//! | POST   | /api/v1/network/wifi/disconnect | Disconnect WiFi access point |
-//! | POST   | /api/v1/network/wifi/forget     | Forget / remove network      |
-//! | POST   | /api/v1/network/wifi/modify     | Modify network password      |
-//! | POST   | /api/v1/network/wifi/usage      | Update alert thresholds      |
-//! | GET    | /api/v1/ping                    |                              |
-//! | GET    | /api/v1/ping/network            | Ping `peach-network`         |
-//! | GET    | /api/v1/ping/oled               | Ping `peach-oled`            |
-//! | GET    | /api/v1/ping/stats              | Ping `peach-stats`           |
+//! | Method | URL                              | Description                   |
+//! | ------ | -------------------------------- | ----------------------------- |
+//! | POST   | /api/v1/device/reboot            | Reboot device                 |
+//! | POST   | /api/v1/device/shutdown          | Shutdown device               |
+//! | POST   | /api/v1/network/activate_ap      |                               |
+//! | POST   | /api/v1/network/activate_client  |                               |
+//! | GET    | /api/v1/network/ip               |                               |
+//! | GET    | /api/v1/network/rssi             |                               |
+//! | GET    | /api/v1/network/ssid             |                               |
+//! | GET    | /api/v1/network/state            |                               |
+//! | GET    | /api/v1/network/status           |                               |
+//! | GET    | /api/v1/network/wifi             | Retrieve available networks   |
+//! | POST   | /api/v1/network/wifi             | Add WiFi AP credentials       |
+//! | POST   | /api/v1/network/wifi/connect     | Connect to WiFi access point  |
+//! | POST   | /api/v1/network/wifi/disconnect  | Disconnect WiFi access point  |
+//! | POST   | /api/v1/network/wifi/forget      | Forget / remove network       |
+//! | POST   | /api/v1/network/wifi/modify      | Modify network password       |
+//! | POST   | /api/v1/network/wifi/usage       | Update alert thresholds       |
+//! | POST   | /api/v1/network/wifi/usage/reset | Reset stored data usage total |
+//! | GET    | /api/v1/ping                     |                               |
+//! | GET    | /api/v1/ping/network             | Ping `peach-network`          |
+//! | GET    | /api/v1/ping/oled                | Ping `peach-oled`             |
+//! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
 
 extern crate jsonrpc_client_http;
 extern crate serde_derive;
@@ -36,7 +37,7 @@ use crate::monitor::*;
 use crate::network::*;
 use crate::network_client::*;
 use crate::oled_client::oled_ping;
-use crate::stats_client::stats_ping;
+use crate::stats_client::{stats_ping, Traffic};
 
 use rocket_contrib::json::{Json, JsonValue};
 
@@ -341,9 +342,6 @@ pub fn modify_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/usage", data = "<thresholds>")]
 pub fn update_wifi_alerts(thresholds: Json<Threshold>) -> Json<JsonResponse> {
-    // we are using a helper function (`update_password`) to delete the old
-    // credentials and add the new ones. this is because the wpa_cli method
-    // for updating the password does not work.
     match update_store(thresholds.into_inner()) {
         Ok(_) => {
             debug!("WiFi data usage thresholds updated.");
@@ -355,6 +353,36 @@ pub fn update_wifi_alerts(thresholds: Json<Threshold>) -> Json<JsonResponse> {
             warn!("Failed to update WiFi data usage thresholds.");
             let status = "error".to_string();
             let msg = "Failed to update WiFi data usage thresholds.".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[post("/api/v1/network/wifi/usage/reset")]
+pub fn reset_data_total() -> Json<JsonResponse> {
+    match reset_data() {
+        Ok(_) => {
+            debug!("Reset network data usage total.");
+            let traffic = match network_traffic("wlan0") {
+                Ok(t) => t,
+                Err(_) => Traffic {
+                    received: 0,
+                    transmitted: 0,
+                    rx_unit: None,
+                    tx_unit: None,
+                },
+            };
+            // current wifi traffic values as bytes
+            let current_traffic = traffic.received + traffic.transmitted;
+            let data = json!(current_traffic);
+            let status = "success".to_string();
+            let msg = "Reset network data usage total.".to_string();
+            Json(build_json_response(status, Some(data), Some(msg)))
+        }
+        Err(_) => {
+            warn!("Failed to reset network data usage total.");
+            let status = "error".to_string();
+            let msg = "Failed to reset network data usage total.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
     }
