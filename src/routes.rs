@@ -333,10 +333,7 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
 pub fn wifi_usage_reset() -> Flash<Redirect> {
     let url = uri!(wifi_usage);
     match reset_data() {
-        Ok(_) => Flash::success(
-            Redirect::to(url),
-            "Reset stored network traffic total",
-        ),
+        Ok(_) => Flash::success(Redirect::to(url), "Reset stored network traffic total"),
         Err(_) => Flash::error(
             Redirect::to(url),
             "Failed to reset stored network traffic total",
