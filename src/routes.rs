@@ -234,13 +234,10 @@ pub fn network_add_wifi(flash: Option<FlashMessage>) -> Template {
 pub fn network_add_ssid(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
     // decode ssid from url
     let decoded_ssid = percent_decode(ssid.as_bytes()).decode_utf8().unwrap();
-    let mut context = NetworkAddContext {
-        back: Some("/network/wifi".to_string()),
-        flash_name: None,
-        flash_msg: None,
-        selected: Some(decoded_ssid.to_string()),
-        title: Some("Add WiFi Network".to_string()),
-    };
+    let mut context = NetworkAddContext::build();
+    context.back = Some("/network/wifi".to_string());
+    context.selected = Some(decoded_ssid.to_string());
+    context.title = Some("Add WiFi Network".to_string());
     // check to see if there is a flash message to display
     if let Some(flash) = flash {
         // add flash message contents to the context object
@@ -259,10 +256,11 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
     // use unwrap_or instead, set value to false if err is returned
     let creds_exist = check_saved_aps(&wifi.ssid).unwrap_or(false);
     if creds_exist {
-        let context = FlashContext {
-            flash_name: Some("error".to_string()),
-            flash_msg: Some("Network credentials already exist for this access point".to_string()),
-        };
+        let mut context = NetworkAddContext::build();
+        context.back = Some("/network".to_string());
+        context.flash_name = Some("error".to_string());
+        context.flash_msg = Some("Network credentials already exist for this access point".to_string());
+        context.title = Some("Add WiFi Network".to_string());
         // return early from handler with "creds already exist" message
         return Template::render("network_add", &context);
     };
@@ -276,18 +274,20 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
                 Ok(_) => debug!("Successfully reconfigured wpa_supplicant"),
                 Err(_) => warn!("Failed to reconfigure wpa_supplicant"),
             }
-            let context = FlashContext {
-                flash_name: Some("success".to_string()),
-                flash_msg: Some("Added WiFi credentials".to_string()),
-            };
+            let mut context = NetworkAddContext::build();
+            context.back = Some("/network".to_string());
+            context.flash_name = Some("success".to_string());
+            context.flash_msg = Some("Added WiFi credentials".to_string());
+            context.title = Some("Add WiFi Network".to_string());
             Template::render("network_add", &context)
         }
         Err(_) => {
             debug!("Failed to add WiFi credentials.");
-            let context = FlashContext {
-                flash_name: Some("error".to_string()),
-                flash_msg: Some("Failed to add WiFi credentials".to_string()),
-            };
+            let mut context = NetworkAddContext::build();
+            context.back = Some("/network".to_string());
+            context.flash_name = Some("error".to_string());
+            context.flash_msg = Some("Failed to add WiFi credentials".to_string());
+            context.title = Some("Add WiFi Network".to_string());
             Template::render("network_add", &context)
         }
     }

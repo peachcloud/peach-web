@@ -76,7 +76,7 @@ fn network_list_html() {
     assert_eq!(response.content_type(), Some(ContentType::HTML));
     let body = response.body_string().unwrap();
     assert!(body.contains("WiFi Networks"));
-    assert!(body.contains("No networks found"));
+    assert!(body.contains("No saved or available networks found."));
 }
 
 // TODO: needs further testing once template has been refactored
@@ -138,7 +138,17 @@ fn help_html() {
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::HTML));
     let body = response.body_string().unwrap();
-    assert!(body.contains("PeachCloud Help"));
+    assert!(body.contains("Help"));
+}
+
+#[test]
+fn login_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/login").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Login"));
 }
 
 #[test]
@@ -162,14 +172,34 @@ fn peers_html() {
 }
 
 #[test]
+fn profile_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/profile").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Profile"));
+}
+
+#[test]
+fn shutdown_html() {
+    let client = Client::new(rocket()).expect("valid rocket instance");
+    let mut response = client.get("/shutdown").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::HTML));
+    let body = response.body_string().unwrap();
+    assert!(body.contains("Shutdown Device"));
+}
+
+#[test]
 fn network_usage_html() {
     let client = Client::new(rocket()).expect("valid rocket instance");
     let mut response = client.get("/network/wifi/usage").dispatch();
     assert_eq!(response.status(), Status::Ok);
     assert_eq!(response.content_type(), Some(ContentType::HTML));
     let body = response.body_string().unwrap();
-    assert!(body.contains("WiFi"));
-    assert!(body.contains("DOWNLOAD TOTAL"));
+    assert!(body.contains("Network Data Usage"));
+    assert!(body.contains("WARNING THRESHOLD"));
     assert!(body.contains("Update"));
     assert!(body.contains("Cancel"));
 }

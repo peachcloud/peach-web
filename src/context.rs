@@ -284,6 +284,18 @@ pub struct NetworkAddContext {
     pub title: Option<String>,
 }
 
+impl NetworkAddContext {
+    pub fn build() -> NetworkAddContext {
+        NetworkAddContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            selected: None,
+            title: None,
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct NetworkContext {
     pub ap_ip: String,
