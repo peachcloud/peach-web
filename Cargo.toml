@@ -1,6 +1,6 @@
 [package]
 name = "peach-web"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "peach-web is a web application which provides a web interface for monitoring and interacting with the PeachCloud device. This allows administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins."
@@ -35,23 +35,23 @@ travis-ci = { repository = "peachcloud/peach-web", branch = "master" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-env_logger = "0.6"
+env_logger = "0.8"
 get_if_addrs = "0.5"
 jsonrpc-client-core = "0.5"
 jsonrpc-client-http = "0.5"
 log = "0.4"
 nest = "1.0.0"
 percent-encoding = "2.1.0"
-rocket = "0.4.5"
+rocket = "0.4.6"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
-snafu = "0.4"
-tera = "1.2"
-websocket = "0.21"
+snafu = "0.6"
+tera = "1.5"
+websocket = "0.26"
 xdg = "2.2.0"
 
 [dependencies.rocket_contrib]
-version = "0.4.5"
+version = "0.4.6"
 default-features = false
 features = ["json", "tera_templates"]
