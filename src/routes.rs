@@ -260,7 +260,8 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
         let mut context = NetworkAddContext::build();
         context.back = Some("/network".to_string());
         context.flash_name = Some("error".to_string());
-        context.flash_msg = Some("Network credentials already exist for this access point".to_string());
+        context.flash_msg =
+            Some("Network credentials already exist for this access point".to_string());
         context.title = Some("Add WiFi Network".to_string());
         // return early from handler with "creds already exist" message
         return Template::render("network_add", &context);
