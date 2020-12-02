@@ -26,7 +26,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 extern crate get_if_addrs;
-#[macro_use]
 extern crate jsonrpc_client_core;
 extern crate jsonrpc_client_http;
 #[macro_use]
@@ -46,10 +45,7 @@ pub mod error;
 pub mod json_api;
 pub mod monitor;
 pub mod network;
-pub mod network_client;
-pub mod oled_client;
 pub mod routes;
-pub mod stats_client;
 #[cfg(test)]
 mod tests;
 mod ws;

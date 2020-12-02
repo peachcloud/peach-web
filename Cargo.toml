@@ -41,6 +41,7 @@ jsonrpc-client-core = "0.5"
 jsonrpc-client-http = "0.5"
 log = "0.4"
 nest = "1.0.0"
+peach-lib = { git = "https://github.com/peachcloud/peach-lib", branch = "main" }
 percent-encoding = "2.1.0"
 rocket = "0.4.6"
 serde = "1.0"

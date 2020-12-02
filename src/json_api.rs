@@ -35,9 +35,10 @@ extern crate serde_derive;
 use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
-use crate::network_client::*;
-use crate::oled_client::oled_ping;
-use crate::stats_client::{stats_ping, Traffic};
+
+use peach_lib::network_client::*;
+use peach_lib::oled_client::oled_ping;
+use peach_lib::stats_client::{stats_ping, Traffic};
 
 use rocket_contrib::json::{Json, JsonValue};
 
