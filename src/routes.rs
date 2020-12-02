@@ -42,7 +42,8 @@ use crate::context::*;
 use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
-use crate::network_client::*;
+
+use peach_lib::network_client::*;
 
 use percent_encoding::percent_decode;
 
