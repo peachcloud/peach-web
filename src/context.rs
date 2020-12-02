@@ -11,7 +11,8 @@ use crate::network::*;
 
 use peach_lib::network_client;
 use peach_lib::oled_client;
-use peach_lib::stats_client::*;
+use peach_lib::stats_client;
+use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
 
 #[derive(Debug, Serialize)]
 pub struct ErrorContext {
@@ -211,9 +212,9 @@ pub struct DeviceContext {
 impl DeviceContext {
     pub fn build() -> DeviceContext {
         // convert result to Option<CpuStatPercentages>, discard any error
-        let cpu_stat_percent = cpu_stats_percent().ok();
-        let load_average = load_average().ok();
-        let mem_stats = mem_stats().ok();
+        let cpu_stat_percent = stats_client::cpu_stats_percent().ok();
+        let load_average = stats_client::load_average().ok();
+        let mem_stats = stats_client::mem_stats().ok();
         let network_ping = match network_client::ping() {
             Ok(_) => "ONLINE".to_string(),
             Err(_) => "OFFLINE".to_string(),
@@ -222,17 +223,17 @@ impl DeviceContext {
             Ok(_) => "ONLINE".to_string(),
             Err(_) => "OFFLINE".to_string(),
         };
-        let stats_ping = match stats_ping() {
+        let stats_ping = match stats_client::ping() {
             Ok(_) => "ONLINE".to_string(),
             Err(_) => "OFFLINE".to_string(),
         };
-        let uptime = match uptime() {
+        let uptime = match stats_client::uptime() {
             Ok(mins) => mins,
             Err(_) => "Unavailable".to_string(),
         };
 
         // serialize disk usage data into Vec<DiskUsage>
-        let disk_usage_stats = match disk_usage() {
+        let disk_usage_stats = match stats_client::disk_usage() {
             Ok(disks) => {
                 let partitions: Vec<DiskUsage> = serde_json::from_str(disks.as_str())
                     .expect("Failed to deserialize disk_usage response");
