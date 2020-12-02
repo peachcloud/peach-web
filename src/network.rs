@@ -8,10 +8,10 @@ use std::env;
 
 use jsonrpc_client_http::HttpTransport;
 
+use peach_lib::network_client;
+
 use crate::context::NetworkListContext;
 use crate::error::NetworkError;
-
-use peach_lib::network_client;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AccessPoint {
