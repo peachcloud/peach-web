@@ -43,7 +43,7 @@ use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
 
-use peach_lib::network_client::*;
+use peach_lib::network_client;
 
 use percent_encoding::percent_decode;
 
@@ -161,7 +161,7 @@ pub fn network(flash: Option<FlashMessage>) -> Template {
 pub fn deploy_ap() -> Flash<Redirect> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
-    match network_activate_ap() {
+    match network_client::activate_ap() {
         Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi access point"),
         Err(_) => Flash::error(
             Redirect::to("/network"),
@@ -209,7 +209,7 @@ pub fn network_detail(ssid: &RawStr, flash: Option<FlashMessage>) -> Template {
 pub fn deploy_client() -> Flash<Redirect> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
-    match network_activate_client() {
+    match network_client::activate_client() {
         Ok(_) => Flash::success(Redirect::to("/network"), "Activated WiFi client"),
         Err(_) => Flash::error(Redirect::to("/network"), "Failed to activate WiFi client"),
     }
@@ -268,11 +268,11 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
     };
 
     // if credentials not found, generate and write wifi config to wpa_supplicant
-    match network_add(&wifi.ssid, &wifi.pass) {
+    match network_client::add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials.");
             // force reread of wpa_supplicant.conf file with new credentials
-            match network_reconfigure() {
+            match network_client::reconfigure() {
                 Ok(_) => debug!("Successfully reconfigured wpa_supplicant"),
                 Err(_) => warn!("Failed to reconfigure wpa_supplicant"),
             }
@@ -347,8 +347,8 @@ pub fn wifi_usage_reset() -> Flash<Redirect> {
 pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
-    match network_id("wlan0", &ssid) {
-        Ok(id) => match network_connect(&id, "wlan0") {
+    match network_client::id("wlan0", &ssid) {
+        Ok(id) => match network_client::connect(&id, "wlan0") {
             Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network"),
             Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network"),
         },

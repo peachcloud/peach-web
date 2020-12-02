@@ -8,10 +8,10 @@ use std::env;
 
 use jsonrpc_client_http::HttpTransport;
 
+use peach_lib::network_client;
+
 use crate::context::NetworkListContext;
 use crate::error::NetworkError;
-
-use peach_lib::network_client::*;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AccessPoint {
@@ -55,7 +55,7 @@ pub struct WiFi {
 /// * `ssid` - A string slice containing the SSID of a network.
 pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
     // retrieve a list of access points with saved credentials
-    let saved_aps = match network_saved_networks() {
+    let saved_aps = match network_client::saved_networks() {
         Ok(ssids) => {
             let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
                 .expect("Failed to deserialize saved_networks response");
@@ -93,7 +93,7 @@ pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, N
     debug!("Creating HTTP transport handle on {}.", http_server);
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
-    let mut client = PeachNetworkClient::new(transport_handle);
+    let mut client = network_client::PeachNetworkClient::new(transport_handle);
 
     // get the id of the network
     info!("Performing id call to peach-network microservice.");
@@ -123,7 +123,7 @@ pub fn forget_network(iface: &str, ssid: &str) -> std::result::Result<String, Ne
     debug!("Creating HTTP transport handle on {}.", http_server);
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
-    let mut client = PeachNetworkClient::new(transport_handle);
+    let mut client = network_client::PeachNetworkClient::new(transport_handle);
 
     info!("Performing id call to peach-network microservice.");
     let id = client.id(&iface, &ssid).call()?;
@@ -161,7 +161,7 @@ pub fn update_password(
     debug!("Creating HTTP transport handle on {}.", http_server);
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
-    let mut client = PeachNetworkClient::new(transport_handle);
+    let mut client = network_client::PeachNetworkClient::new(transport_handle);
 
     // get the id of the network
     info!("Performing id call to peach-network microservice.");
@@ -203,7 +203,7 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
     debug!("Creating HTTP transport handle on {}.", http_server);
     let transport_handle = transport.handle(&http_server)?;
     info!("Creating client for peach_network service.");
-    let mut client = PeachNetworkClient::new(transport_handle);
+    let mut client = network_client::PeachNetworkClient::new(transport_handle);
 
     // list of networks saved in the wpa_supplicant.conf
     let wlan_list = match client.saved_networks().call() {
@@ -242,7 +242,7 @@ pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListConte
             .or_insert_with(|| "Not in range".to_string());
     }
 
-    let ap_state = match network_state("ap0") {
+    let ap_state = match network_client::state("ap0") {
         Ok(state) => state,
         Err(_) => "Interface unavailable".to_string(),
     };

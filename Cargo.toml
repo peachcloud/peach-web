@@ -1,6 +1,6 @@
 [package]
 name = "peach-web"
-version = "0.3.1"
+version = "0.3.3"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "peach-web is a web application which provides a web interface for monitoring and interacting with the PeachCloud device. This allows administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins."

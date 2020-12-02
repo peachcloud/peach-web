@@ -36,9 +36,10 @@ use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
 
-use peach_lib::network_client::*;
-use peach_lib::oled_client::oled_ping;
-use peach_lib::stats_client::{stats_ping, Traffic};
+use peach_lib::network_client;
+use peach_lib::oled_client;
+use peach_lib::stats_client;
+use peach_lib::stats_client::Traffic;
 
 use rocket_contrib::json::{Json, JsonValue};
 
@@ -93,7 +94,7 @@ pub fn shutdown_device() -> Json<JsonResponse> {
 pub fn activate_ap() -> Json<JsonResponse> {
     // activate the wireless access point
     debug!("Activating WiFi access point.");
-    match network_activate_ap() {
+    match network_client::activate_ap() {
         Ok(_) => {
             let status = "success".to_string();
             Json(build_json_response(status, None, None))
@@ -110,7 +111,7 @@ pub fn activate_ap() -> Json<JsonResponse> {
 pub fn activate_client() -> Json<JsonResponse> {
     // activate the wireless client
     debug!("Activating WiFi client mode.");
-    match network_activate_client() {
+    match network_client::activate_client() {
         Ok(_) => {
             let status = "success".to_string();
             Json(build_json_response(status, None, None))
@@ -126,12 +127,12 @@ pub fn activate_client() -> Json<JsonResponse> {
 #[get("/api/v1/network/ip")]
 pub fn return_ip() -> Json<JsonResponse> {
     // retrieve ip for wlan0 or set to x.x.x.x if not found
-    let wlan_ip = match network_ip("wlan0") {
+    let wlan_ip = match network_client::ip("wlan0") {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
     // retrieve ip for ap0 or set to x.x.x.x if not found
-    let ap_ip = match network_ip("ap0") {
+    let ap_ip = match network_client::ip("ap0") {
         Ok(ip) => ip,
         Err(_) => "x.x.x.x".to_string(),
     };
@@ -146,7 +147,7 @@ pub fn return_ip() -> Json<JsonResponse> {
 #[get("/api/v1/network/rssi")]
 pub fn return_rssi() -> Json<JsonResponse> {
     // retrieve rssi for connected network
-    match network_rssi("wlan0") {
+    match network_client::rssi("wlan0") {
         Ok(rssi) => {
             let status = "success".to_string();
             let data = json!(rssi);
@@ -163,7 +164,7 @@ pub fn return_rssi() -> Json<JsonResponse> {
 #[get("/api/v1/network/ssid")]
 pub fn return_ssid() -> Json<JsonResponse> {
     // retrieve ssid for connected network
-    match network_ssid("wlan0") {
+    match network_client::ssid("wlan0") {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -180,12 +181,12 @@ pub fn return_ssid() -> Json<JsonResponse> {
 #[get("/api/v1/network/state")]
 pub fn return_state() -> Json<JsonResponse> {
     // retrieve state of wlan0 or set to x.x.x.x if not found
-    let wlan_state = match network_state("wlan0") {
+    let wlan_state = match network_client::state("wlan0") {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
     // retrieve state for ap0 or set to x.x.x.x if not found
-    let ap_state = match network_state("ap0") {
+    let ap_state = match network_client::state("ap0") {
         Ok(state) => state,
         Err(_) => "unavailable".to_string(),
     };
@@ -200,7 +201,7 @@ pub fn return_state() -> Json<JsonResponse> {
 #[get("/api/v1/network/status")]
 pub fn return_status() -> Json<JsonResponse> {
     // retrieve status info for wlan0 interface
-    match network_status("wlan0") {
+    match network_client::status("wlan0") {
         Ok(network) => {
             let status = "success".to_string();
             let data = json!(network);
@@ -217,7 +218,7 @@ pub fn return_status() -> Json<JsonResponse> {
 #[get("/api/v1/network/wifi")]
 pub fn scan_networks() -> Json<JsonResponse> {
     // retrieve scan results for access-points within range of wlan0
-    match network_available_networks("wlan0") {
+    match network_client::available_networks("wlan0") {
         Ok(networks) => {
             let status = "success".to_string();
             let data = json!(networks);
@@ -234,11 +235,11 @@ pub fn scan_networks() -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi", data = "<wifi>")]
 pub fn add_wifi(wifi: Json<WiFi>) -> Json<JsonResponse> {
     // generate and write wifi config to wpa_supplicant
-    match network_add(&wifi.ssid, &wifi.pass) {
+    match network_client::add(&wifi.ssid, &wifi.pass) {
         Ok(_) => {
             debug!("Added WiFi credentials.");
             // force reread of wpa_supplicant.conf file with new credentials
-            match network_reconfigure() {
+            match network_client::reconfigure() {
                 Ok(_) => debug!("Successfully reconfigured wpa_supplicant."),
                 Err(_) => warn!("Failed to reconfigure wpa_supplicant."),
             }
@@ -260,9 +261,9 @@ pub fn add_wifi(wifi: Json<WiFi>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/connect", data = "<ssid>")]
 pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     // retrieve the id for the given network ssid
-    match network_id("wlan0", &ssid.ssid) {
+    match network_client::id("wlan0", &ssid.ssid) {
         // attempt connection with the given network
-        Ok(id) => match network_connect(&id, "wlan0") {
+        Ok(id) => match network_client::connect(&id, "wlan0") {
             Ok(_) => {
                 let status = "success".to_string();
                 let msg = "Connected to chosen network.".to_string();
@@ -364,7 +365,7 @@ pub fn reset_data_total() -> Json<JsonResponse> {
     match reset_data() {
         Ok(_) => {
             debug!("Reset network data usage total.");
-            let traffic = match network_traffic("wlan0") {
+            let traffic = match network_client::traffic("wlan0") {
                 Ok(t) => t,
                 Err(_) => Traffic {
                     received: 0,
@@ -401,7 +402,7 @@ pub fn ping_pong() -> Json<JsonResponse> {
 // status route: check availability of `peach-network` microservice
 #[get("/api/v1/ping/network")]
 pub fn ping_network() -> Json<JsonResponse> {
-    match network_ping() {
+    match network_client::ping() {
         Ok(_) => {
             debug!("peach-network responded successfully");
             let status = "success".to_string();
@@ -420,7 +421,7 @@ pub fn ping_network() -> Json<JsonResponse> {
 // status route: check availability of `peach-oled` microservice
 #[get("/api/v1/ping/oled")]
 pub fn ping_oled() -> Json<JsonResponse> {
-    match oled_ping() {
+    match oled_client::ping() {
         Ok(_) => {
             debug!("peach-oled responded successfully");
             let status = "success".to_string();
@@ -439,7 +440,7 @@ pub fn ping_oled() -> Json<JsonResponse> {
 // status route: check availability of `peach-stats` microservice
 #[get("/api/v1/ping/stats")]
 pub fn ping_stats() -> Json<JsonResponse> {
-    match stats_ping() {
+    match stats_client::ping() {
         Ok(_) => {
             debug!("peach-stats responded successfully");
             let status = "success".to_string();
