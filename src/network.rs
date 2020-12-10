@@ -86,7 +86,7 @@ pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
+pub fn disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -116,7 +116,7 @@ pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, N
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-pub fn forget_network(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
+pub fn forget(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -196,7 +196,7 @@ pub fn update_password(
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListContext, NetworkError> {
+pub fn list_context(iface: &str) -> std::result::Result<NetworkListContext, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =

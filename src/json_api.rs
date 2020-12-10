@@ -58,7 +58,7 @@ pub struct JsonResponse {
 // reboot the device
 #[post("/api/v1/device/reboot")]
 pub fn reboot_device() -> Json<JsonResponse> {
-    match device::device_reboot() {
+    match device::reboot() {
         Ok(_) => {
             debug!("Going down for reboot...");
             let status = "success".to_string();
@@ -77,7 +77,7 @@ pub fn reboot_device() -> Json<JsonResponse> {
 // shutdown the device
 #[post("/api/v1/device/shutdown")]
 pub fn shutdown_device() -> Json<JsonResponse> {
-    match device::device_shutdown() {
+    match device::shutdown() {
         Ok(_) => {
             debug!("Going down for shutdown...");
             let status = "success".to_string();
@@ -289,7 +289,7 @@ pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/disconnect", data = "<ssid>")]
 pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     // attempt to disable the current network for wlan0 interface
-    match network::network_disable("wlan0", &ssid.ssid) {
+    match network::disable("wlan0", &ssid.ssid) {
         Ok(_) => {
             let status = "success".to_string();
             let msg = "Disconnected from WiFi network.".to_string();
@@ -306,7 +306,7 @@ pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
-    match network::forget_network("wlan0", &ssid) {
+    match network::forget("wlan0", &ssid) {
         Ok(_) => {
             debug!("Removed WiFi credentials for chosen network.");
             let status = "success".to_string();

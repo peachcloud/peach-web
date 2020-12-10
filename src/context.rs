@@ -614,7 +614,7 @@ pub struct NetworkListContext {
 
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
-        network::network_list_context("wlan0").unwrap()
+        network::list_context("wlan0").unwrap()
     }
 }
 

@@ -67,7 +67,7 @@ fn rocket() -> rocket::Rocket {
                 login,              // WEB ROUTE
                 logout,             // WEB ROUTE
                 messages,           // WEB ROUTE
-                network,            // WEB ROUTE
+                network_home,       // WEB ROUTE
                 network_add_ssid,   // WEB ROUTE
                 network_add_wifi,   // WEB ROUTE
                 network_detail,     // WEB ROUTE
