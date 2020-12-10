@@ -38,20 +38,20 @@
 
 use std::path::{Path, PathBuf};
 
+use log::{debug, warn};
+use percent_encoding::percent_decode;
+use rocket::http::RawStr;
+use rocket::request::{FlashMessage, Form};
+use rocket::response::{Flash, NamedFile, Redirect};
+use rocket::{catch, get, post, uri};
+use rocket_contrib::templates::Template;
+
+use peach_lib::network_client;
+
 use crate::context::*;
 use crate::device::*;
 use crate::monitor::*;
 use crate::network::*;
-
-use peach_lib::network_client;
-
-use percent_encoding::percent_decode;
-
-use rocket::http::RawStr;
-use rocket::request::{FlashMessage, Form};
-use rocket::response::{Flash, NamedFile, Redirect};
-
-use rocket_contrib::templates::Template;
 
 #[get("/")]
 pub fn index() -> Template {

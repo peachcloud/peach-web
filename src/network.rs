@@ -1,12 +1,14 @@
 //! Provides network-related methods, data structures and helper functions which
 //! utilise the JSON-RPC `peach-network` microservice.
 
-extern crate jsonrpc_client_http;
-
 use std::collections::HashMap;
 use std::env;
 
 use jsonrpc_client_http::HttpTransport;
+use log::{debug, info};
+use rocket::request::FromForm;
+use rocket::UriDisplayQuery;
+use serde::{Deserialize, Serialize};
 
 use peach_lib::network_client;
 

@@ -1,11 +1,8 @@
 //! Initialize the logger and run the application, catching any errors.
 
-extern crate peach_web;
-#[macro_use]
-extern crate log;
-extern crate env_logger;
-
 use std::process;
+
+use log::error;
 
 fn main() {
     // initialize the logger

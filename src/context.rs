@@ -6,13 +6,17 @@
 
 use std::collections::HashMap;
 
-use crate::monitor::*;
-use crate::network::*;
+use serde::Serialize;
 
 use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
+
+use crate::monitor;
+use crate::monitor::{Alert, Data, Threshold};
+use crate::network;
+use crate::network::{AccessPoint, Networks, Scan};
 
 #[derive(Debug, Serialize)]
 pub struct ErrorContext {
@@ -160,10 +164,10 @@ pub struct NetworkAlertContext {
 
 impl NetworkAlertContext {
     pub fn build() -> NetworkAlertContext {
-        let alert = get_alerts().unwrap();
+        let alert = monitor::get_alerts().unwrap();
         // stored wifi data values as bytes
-        let stored_traffic = get_data().unwrap();
-        let threshold = get_thresholds().unwrap();
+        let stored_traffic = monitor::get_data().unwrap();
+        let threshold = monitor::get_thresholds().unwrap();
         // current wifi traffic values as bytes
         let traffic = match network_client::traffic("wlan0") {
             Ok(t) => t,
@@ -610,7 +614,7 @@ pub struct NetworkListContext {
 
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
-        network_list_context("wlan0").unwrap()
+        network::network_list_context("wlan0").unwrap()
     }
 }
 

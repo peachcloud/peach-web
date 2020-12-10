@@ -3,6 +3,8 @@
 use std::io;
 use std::process::{Command, Output};
 
+use log::info;
+
 /// Executes a system command to reboot the device immediately.
 pub fn device_reboot() -> io::Result<Output> {
     info!("Rebooting the device");
