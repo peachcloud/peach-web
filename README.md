@@ -1,6 +1,6 @@
 # peach-web
 
-[![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web) ![Generic badge](https://img.shields.io/badge/version-0.3.3-<COLOR>.svg)
+[![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web) ![Generic badge](https://img.shields.io/badge/version-0.4.0-<COLOR>.svg)
 
 ## Web Interface for PeachCloud
 
