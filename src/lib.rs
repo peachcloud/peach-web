@@ -25,20 +25,6 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
-extern crate get_if_addrs;
-extern crate jsonrpc_client_core;
-extern crate jsonrpc_client_http;
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate rocket;
-#[macro_use]
-extern crate rocket_contrib;
-#[macro_use]
-extern crate serde_derive;
-extern crate tera;
-extern crate websocket;
-
 pub mod context;
 pub mod device;
 pub mod error;
@@ -52,12 +38,15 @@ mod ws;
 
 use std::{env, thread};
 
+use log::{debug, error, info};
+
+use rocket::{catchers, routes};
+use rocket_contrib::templates::Template;
+
 use crate::error::BoxError;
 use crate::json_api::*;
 use crate::routes::*;
 use crate::ws::*;
-
-use rocket_contrib::templates::Template;
 
 // create rocket instance & mount web & json routes (makes testing easier)
 fn rocket() -> rocket::Rocket {
@@ -78,7 +67,7 @@ fn rocket() -> rocket::Rocket {
                 login,              // WEB ROUTE
                 logout,             // WEB ROUTE
                 messages,           // WEB ROUTE
-                network,            // WEB ROUTE
+                network_home,       // WEB ROUTE
                 network_add_ssid,   // WEB ROUTE
                 network_add_wifi,   // WEB ROUTE
                 network_detail,     // WEB ROUTE

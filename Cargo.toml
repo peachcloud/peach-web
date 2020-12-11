@@ -1,6 +1,6 @@
 [package]
 name = "peach-web"
-version = "0.3.3"
+version = "0.4.0"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "peach-web is a web application which provides a web interface for monitoring and interacting with the PeachCloud device. This allows administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins."
@@ -36,7 +36,6 @@ maintenance = { status = "actively-developed" }
 
 [dependencies]
 env_logger = "0.8"
-get_if_addrs = "0.5"
 jsonrpc-client-core = "0.5"
 jsonrpc-client-http = "0.5"
 log = "0.4"
@@ -44,9 +43,8 @@ nest = "1.0.0"
 peach-lib = { git = "https://github.com/peachcloud/peach-lib", branch = "main" }
 percent-encoding = "2.1.0"
 rocket = "0.4.6"
-serde = "1.0"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-serde_derive = "1.0"
 snafu = "0.6"
 tera = "1.5"
 websocket = "0.26"

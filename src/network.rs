@@ -1,12 +1,14 @@
 //! Provides network-related methods, data structures and helper functions which
 //! utilise the JSON-RPC `peach-network` microservice.
 
-extern crate jsonrpc_client_http;
-
 use std::collections::HashMap;
 use std::env;
 
 use jsonrpc_client_http::HttpTransport;
+use log::{debug, info};
+use rocket::request::FromForm;
+use rocket::UriDisplayQuery;
+use serde::{Deserialize, Serialize};
 
 use peach_lib::network_client;
 
@@ -84,7 +86,7 @@ pub fn check_saved_aps(ssid: &str) -> std::result::Result<bool, NetworkError> {
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
+pub fn disable(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -114,7 +116,7 @@ pub fn network_disable(iface: &str, ssid: &str) -> std::result::Result<String, N
 ///
 /// * `iface` - A string slice containing the network interface identifier.
 /// * `ssid` - A string slice containing the SSID of a network.
-pub fn forget_network(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
+pub fn forget(iface: &str, ssid: &str) -> std::result::Result<String, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =
@@ -194,7 +196,7 @@ pub fn update_password(
 /// # Arguments
 ///
 /// * `iface` - A string slice containing the network interface identifier.
-pub fn network_list_context(iface: &str) -> std::result::Result<NetworkListContext, NetworkError> {
+pub fn list_context(iface: &str) -> std::result::Result<NetworkListContext, NetworkError> {
     debug!("Creating HTTP transport for network client.");
     let transport = HttpTransport::new().standalone()?;
     let http_addr =

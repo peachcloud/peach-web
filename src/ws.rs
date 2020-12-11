@@ -4,6 +4,7 @@
 use std::io;
 use std::thread;
 
+use log::{debug, info};
 use websocket::sync::Server;
 use websocket::{Message, OwnedMessage};
 

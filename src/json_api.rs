@@ -29,19 +29,22 @@
 //! | GET    | /api/v1/ping/oled                | Ping `peach-oled`             |
 //! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
 
-extern crate jsonrpc_client_http;
-extern crate serde_derive;
-
-use crate::device::*;
-use crate::monitor::*;
-use crate::network::*;
+use log::{debug, warn};
+use rocket::{get, post};
+use rocket_contrib::json;
+use rocket_contrib::json::{Json, JsonValue};
+use serde::Serialize;
 
 use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
 
-use rocket_contrib::json::{Json, JsonValue};
+use crate::device;
+use crate::monitor;
+use crate::monitor::Threshold;
+use crate::network;
+use crate::network::{Ssid, WiFi};
 
 #[derive(Serialize)]
 pub struct JsonResponse {
@@ -55,7 +58,7 @@ pub struct JsonResponse {
 // reboot the device
 #[post("/api/v1/device/reboot")]
 pub fn reboot_device() -> Json<JsonResponse> {
-    match device_reboot() {
+    match device::reboot() {
         Ok(_) => {
             debug!("Going down for reboot...");
             let status = "success".to_string();
@@ -74,7 +77,7 @@ pub fn reboot_device() -> Json<JsonResponse> {
 // shutdown the device
 #[post("/api/v1/device/shutdown")]
 pub fn shutdown_device() -> Json<JsonResponse> {
-    match device_shutdown() {
+    match device::shutdown() {
         Ok(_) => {
             debug!("Going down for shutdown...");
             let status = "success".to_string();
@@ -286,7 +289,7 @@ pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/disconnect", data = "<ssid>")]
 pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     // attempt to disable the current network for wlan0 interface
-    match network_disable("wlan0", &ssid.ssid) {
+    match network::disable("wlan0", &ssid.ssid) {
         Ok(_) => {
             let status = "success".to_string();
             let msg = "Disconnected from WiFi network.".to_string();
@@ -303,7 +306,7 @@ pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
-    match forget_network("wlan0", &ssid) {
+    match network::forget("wlan0", &ssid) {
         Ok(_) => {
             debug!("Removed WiFi credentials for chosen network.");
             let status = "success".to_string();
@@ -326,7 +329,7 @@ pub fn modify_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
     // we are using a helper function (`update_password`) to delete the old
     // credentials and add the new ones. this is because the wpa_cli method
     // for updating the password does not work.
-    match update_password("wlan0", ssid, pass) {
+    match network::update_password("wlan0", ssid, pass) {
         Ok(_) => {
             debug!("WiFi password updated for chosen network.");
             let status = "success".to_string();
@@ -344,7 +347,7 @@ pub fn modify_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/usage", data = "<thresholds>")]
 pub fn update_wifi_alerts(thresholds: Json<Threshold>) -> Json<JsonResponse> {
-    match update_store(thresholds.into_inner()) {
+    match monitor::update_store(thresholds.into_inner()) {
         Ok(_) => {
             debug!("WiFi data usage thresholds updated.");
             let status = "success".to_string();
@@ -362,7 +365,7 @@ pub fn update_wifi_alerts(thresholds: Json<Threshold>) -> Json<JsonResponse> {
 
 #[post("/api/v1/network/wifi/usage/reset")]
 pub fn reset_data_total() -> Json<JsonResponse> {
-    match reset_data() {
+    match monitor::reset_data() {
         Ok(_) => {
             debug!("Reset network data usage total.");
             let traffic = match network_client::traffic("wlan0") {

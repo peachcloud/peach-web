@@ -38,20 +38,26 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::context::*;
-use crate::device::*;
-use crate::monitor::*;
-use crate::network::*;
-
-use peach_lib::network_client;
-
+use log::{debug, warn};
 use percent_encoding::percent_decode;
-
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
 use rocket::response::{Flash, NamedFile, Redirect};
-
+use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
+
+use peach_lib::network_client;
+
+use crate::context::{
+    DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext, MessageContext,
+    NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
+    NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
+};
+use crate::device;
+use crate::monitor;
+use crate::monitor::Threshold;
+use crate::network;
+use crate::network::{Ssid, WiFi};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -81,7 +87,7 @@ pub fn device_stats(flash: Option<FlashMessage>) -> Template {
 
 #[get("/device/reboot")]
 pub fn reboot_cmd() -> Flash<Redirect> {
-    match device_reboot() {
+    match device::reboot() {
         Ok(_) => Flash::success(Redirect::to("/shutdown"), "Rebooting the device"),
         Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to reboot the device"),
     }
@@ -89,7 +95,7 @@ pub fn reboot_cmd() -> Flash<Redirect> {
 
 #[get("/device/shutdown")]
 pub fn shutdown_cmd() -> Flash<Redirect> {
-    match device_shutdown() {
+    match device::shutdown() {
         Ok(_) => Flash::success(Redirect::to("/shutdown"), "Shutting down the device"),
         Err(_) => Flash::error(Redirect::to("/shutdown"), "Failed to shutdown the device"),
     }
@@ -140,7 +146,7 @@ pub fn logout() -> Flash<Redirect> {
 }
 
 #[get("/network")]
-pub fn network(flash: Option<FlashMessage>) -> Template {
+pub fn network_home(flash: Option<FlashMessage>) -> Template {
     // assign context through context_builder call
     let mut context = NetworkContext::build();
     // set back button (nav) url
@@ -255,7 +261,7 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
     // note: this is nicer but it's an unstable feature:
     //       if check_saved_aps(&wifi.ssid).contains(true)
     // use unwrap_or instead, set value to false if err is returned
-    let creds_exist = check_saved_aps(&wifi.ssid).unwrap_or(false);
+    let creds_exist = network::check_saved_aps(&wifi.ssid).unwrap_or(false);
     if creds_exist {
         let mut context = NetworkAddContext::build();
         context.back = Some("/network".to_string());
@@ -313,7 +319,7 @@ pub fn wifi_usage(flash: Option<FlashMessage>) -> Template {
 
 #[post("/network/wifi/usage", data = "<thresholds>")]
 pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
-    match update_store(thresholds.into_inner()) {
+    match monitor::update_store(thresholds.into_inner()) {
         Ok(_) => {
             debug!("WiFi data usage thresholds updated.");
             Flash::success(
@@ -334,7 +340,7 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
 #[get("/network/wifi/usage/reset")]
 pub fn wifi_usage_reset() -> Flash<Redirect> {
     let url = uri!(wifi_usage);
-    match reset_data() {
+    match monitor::reset_data() {
         Ok(_) => Flash::success(Redirect::to(url), "Reset stored network traffic total"),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -359,8 +365,8 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[post("/network/wifi/disconnect", data = "<network>")]
 pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network);
-    match network_disable("wlan0", &ssid) {
+    let url = uri!(network_home);
+    match network::disable("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network"),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network"),
     }
@@ -369,8 +375,8 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 #[post("/network/wifi/forget", data = "<network>")]
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
-    let url = uri!(network);
-    match forget_network("wlan0", &ssid) {
+    let url = uri!(network_home);
+    match network::forget("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed"),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -405,7 +411,7 @@ pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     let url = uri!(network_detail: ssid);
-    match update_password("wlan0", ssid, pass) {
+    match network::update_password("wlan0", ssid, pass) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi password updated".to_string()),
         Err(_) => Flash::error(
             Redirect::to(url),
