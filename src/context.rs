@@ -4,6 +4,24 @@
 //! method. Context objects provide the means by which application and device
 //! state are made available for rendering in the templates.
 
+// Context object struct names:
+//
+// DeviceContext
+// ErrorContext
+// FlashContext
+// HelpContext
+// HomeContext
+// LoginContext
+// MessageContext
+// NetworkContext
+// NetworkAddContext
+// NetworkAlertContext
+// NetworkDetailContext
+// NetworkListContext
+// PeerContext
+// ProfileContext
+// ShutdownContext
+
 use std::collections::HashMap;
 
 use serde::Serialize;
@@ -16,184 +34,6 @@ use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemSta
 
 use crate::monitor;
 use crate::monitor::{Alert, Data, Threshold};
-
-#[derive(Debug, Serialize)]
-pub struct ErrorContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl ErrorContext {
-    pub fn build() -> ErrorContext {
-        ErrorContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct HelpContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl HelpContext {
-    pub fn build() -> HelpContext {
-        HelpContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct HomeContext {
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl HomeContext {
-    pub fn build() -> HomeContext {
-        HomeContext {
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct LoginContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl LoginContext {
-    pub fn build() -> LoginContext {
-        LoginContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct MessageContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl MessageContext {
-    pub fn build() -> MessageContext {
-        MessageContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct PeerContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl PeerContext {
-    pub fn build() -> PeerContext {
-        PeerContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-#[derive(Debug, Serialize)]
-pub struct ProfileContext {
-    pub back: Option<String>,
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub title: Option<String>,
-}
-
-impl ProfileContext {
-    pub fn build() -> ProfileContext {
-        ProfileContext {
-            back: None,
-            flash_name: None,
-            flash_msg: None,
-            title: None,
-        }
-    }
-}
-
-// used in /network/wifi/alert for traffic alerts
-#[derive(Debug, Serialize)]
-pub struct NetworkAlertContext {
-    pub alert: Alert,
-    pub back: Option<String>,
-    pub data_total: Data, // combined stored and current wifi traffic in bytes
-    pub flash_name: Option<String>,
-    pub flash_msg: Option<String>,
-    pub threshold: Threshold,
-    pub title: Option<String>,
-    pub traffic: Traffic, // current wifi traffic in bytes (since boot)
-}
-
-impl NetworkAlertContext {
-    pub fn build() -> NetworkAlertContext {
-        let alert = monitor::get_alerts().unwrap();
-        // stored wifi data values as bytes
-        let stored_traffic = monitor::get_data().unwrap();
-        let threshold = monitor::get_thresholds().unwrap();
-        // current wifi traffic values as bytes
-        let traffic = match network_client::traffic("wlan0") {
-            Ok(t) => t,
-            Err(_) => Traffic {
-                received: 0,
-                transmitted: 0,
-                rx_unit: None,
-                tx_unit: None,
-            },
-        };
-
-        let current_traffic = traffic.received + traffic.transmitted;
-        let total = stored_traffic.total + current_traffic;
-        let data_total = Data { total };
-
-        NetworkAlertContext {
-            alert,
-            back: None,
-            data_total,
-            flash_name: None,
-            flash_msg: None,
-            threshold,
-            title: None,
-            traffic,
-        }
-    }
-}
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]
@@ -274,28 +114,99 @@ impl DeviceContext {
 }
 
 #[derive(Debug, Serialize)]
+pub struct ErrorContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl ErrorContext {
+    pub fn build() -> ErrorContext {
+        ErrorContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct FlashContext {
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
 }
 
-// used in /network/wifi/add?<ssid>
 #[derive(Debug, Serialize)]
-pub struct NetworkAddContext {
+pub struct HelpContext {
     pub back: Option<String>,
     pub flash_name: Option<String>,
     pub flash_msg: Option<String>,
-    pub selected: Option<String>,
     pub title: Option<String>,
 }
 
-impl NetworkAddContext {
-    pub fn build() -> NetworkAddContext {
-        NetworkAddContext {
+impl HelpContext {
+    pub fn build() -> HelpContext {
+        HelpContext {
             back: None,
             flash_name: None,
             flash_msg: None,
-            selected: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct HomeContext {
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl HomeContext {
+    pub fn build() -> HomeContext {
+        HomeContext {
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct LoginContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl LoginContext {
+    pub fn build() -> LoginContext {
+        LoginContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct MessageContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl MessageContext {
+    pub fn build() -> MessageContext {
+        MessageContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
             title: None,
         }
     }
@@ -449,6 +360,75 @@ impl NetworkContext {
             selected: None,
             title: None,
             back: None,
+        }
+    }
+}
+
+// used in /network/wifi/add?<ssid>
+#[derive(Debug, Serialize)]
+pub struct NetworkAddContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub selected: Option<String>,
+    pub title: Option<String>,
+}
+
+impl NetworkAddContext {
+    pub fn build() -> NetworkAddContext {
+        NetworkAddContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            selected: None,
+            title: None,
+        }
+    }
+}
+
+// used in /network/wifi/alert for traffic alerts
+#[derive(Debug, Serialize)]
+pub struct NetworkAlertContext {
+    pub alert: Alert,
+    pub back: Option<String>,
+    pub data_total: Data, // combined stored and current wifi traffic in bytes
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub threshold: Threshold,
+    pub title: Option<String>,
+    pub traffic: Traffic, // current wifi traffic in bytes (since boot)
+}
+
+impl NetworkAlertContext {
+    pub fn build() -> NetworkAlertContext {
+        let alert = monitor::get_alerts().unwrap();
+        // stored wifi data values as bytes
+        let stored_traffic = monitor::get_data().unwrap();
+        let threshold = monitor::get_thresholds().unwrap();
+        // current wifi traffic values as bytes
+        let traffic = match network_client::traffic("wlan0") {
+            Ok(t) => t,
+            Err(_) => Traffic {
+                received: 0,
+                transmitted: 0,
+                rx_unit: None,
+                tx_unit: None,
+            },
+        };
+
+        let current_traffic = traffic.received + traffic.transmitted;
+        let total = stored_traffic.total + current_traffic;
+        let data_total = Data { total };
+
+        NetworkAlertContext {
+            alert,
+            back: None,
+            data_total,
+            flash_name: None,
+            flash_msg: None,
+            threshold,
+            title: None,
+            traffic,
         }
     }
 }
@@ -663,6 +643,44 @@ impl NetworkListContext {
             title: None,
             wlan_networks,
             wlan_ssid,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct PeerContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl PeerContext {
+    pub fn build() -> PeerContext {
+        PeerContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ProfileContext {
+    pub back: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+    pub title: Option<String>,
+}
+
+impl ProfileContext {
+    pub fn build() -> ProfileContext {
+        ProfileContext {
+            back: None,
+            flash_name: None,
+            flash_msg: None,
+            title: None,
         }
     }
 }
