@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use serde::Serialize;
 
 use peach_lib::network_client;
+use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
@@ -16,7 +17,6 @@ use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemSta
 use crate::monitor;
 use crate::monitor::{Alert, Data, Threshold};
 use crate::network;
-use crate::network::{AccessPoint, Networks, Scan};
 
 #[derive(Debug, Serialize)]
 pub struct ErrorContext {

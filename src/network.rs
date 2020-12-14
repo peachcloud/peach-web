@@ -8,32 +8,13 @@ use jsonrpc_client_http::HttpTransport;
 use log::{debug, info};
 use rocket::request::FromForm;
 use rocket::UriDisplayQuery;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use peach_lib::network_client;
+use peach_lib::network_client::Networks;
 
 use crate::context::NetworkListContext;
 use crate::error::NetworkError;
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct AccessPoint {
-    pub detail: Option<Scan>,
-    pub signal: Option<i32>,
-    pub state: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Networks {
-    pub ssid: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Scan {
-    pub protocol: String,
-    pub frequency: String,
-    pub signal_level: String,
-    pub ssid: String,
-}
 
 #[derive(Debug, Deserialize, FromForm, UriDisplayQuery)]
 pub struct Ssid {
