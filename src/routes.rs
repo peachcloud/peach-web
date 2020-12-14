@@ -56,7 +56,6 @@ use crate::context::{
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network;
 use crate::network::{Ssid, WiFi};
 
 #[get("/")]
@@ -261,7 +260,7 @@ pub fn add_credentials(wifi: Form<WiFi>) -> Template {
     // note: this is nicer but it's an unstable feature:
     //       if check_saved_aps(&wifi.ssid).contains(true)
     // use unwrap_or instead, set value to false if err is returned
-    let creds_exist = network::check_saved_aps(&wifi.ssid).unwrap_or(false);
+    let creds_exist = network_client::saved_ap(&wifi.ssid).unwrap_or(false);
     if creds_exist {
         let mut context = NetworkAddContext::build();
         context.back = Some("/network".to_string());
@@ -366,7 +365,7 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network::disable("wlan0", &ssid) {
+    match network_client::disable("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network"),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network"),
     }
@@ -376,7 +375,7 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network::forget("wlan0", &ssid) {
+    match network_client::forget("wlan0", &ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed"),
         Err(_) => Flash::error(
             Redirect::to(url),
@@ -411,7 +410,7 @@ pub fn wifi_set_password(wifi: Form<WiFi>) -> Flash<Redirect> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
     let url = uri!(network_detail: ssid);
-    match network::update_password("wlan0", ssid, pass) {
+    match network_client::update("wlan0", ssid, pass) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi password updated".to_string()),
         Err(_) => Flash::error(
             Redirect::to(url),

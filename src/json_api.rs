@@ -43,7 +43,6 @@ use peach_lib::stats_client::Traffic;
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network;
 use crate::network::{Ssid, WiFi};
 
 #[derive(Serialize)]
@@ -289,7 +288,7 @@ pub fn connect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/disconnect", data = "<ssid>")]
 pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
     // attempt to disable the current network for wlan0 interface
-    match network::disable("wlan0", &ssid.ssid) {
+    match network_client::disable("wlan0", &ssid.ssid) {
         Ok(_) => {
             let status = "success".to_string();
             let msg = "Disconnected from WiFi network.".to_string();
@@ -306,7 +305,7 @@ pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
-    match network::forget("wlan0", &ssid) {
+    match network_client::forget("wlan0", &ssid) {
         Ok(_) => {
             debug!("Removed WiFi credentials for chosen network.");
             let status = "success".to_string();
@@ -326,10 +325,10 @@ pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
 pub fn modify_password(wifi: Json<WiFi>) -> Json<JsonResponse> {
     let ssid = &wifi.ssid;
     let pass = &wifi.pass;
-    // we are using a helper function (`update_password`) to delete the old
+    // we are using a helper function (`update`) to delete the old
     // credentials and add the new ones. this is because the wpa_cli method
     // for updating the password does not work.
-    match network::update_password("wlan0", ssid, pass) {
+    match network_client::update("wlan0", ssid, pass) {
         Ok(_) => {
             debug!("WiFi password updated for chosen network.");
             let status = "success".to_string();
