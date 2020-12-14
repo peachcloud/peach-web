@@ -16,7 +16,6 @@ use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemSta
 
 use crate::monitor;
 use crate::monitor::{Alert, Data, Threshold};
-use crate::network;
 
 #[derive(Debug, Serialize)]
 pub struct ErrorContext {
@@ -614,7 +613,57 @@ pub struct NetworkListContext {
 
 impl NetworkListContext {
     pub fn build() -> NetworkListContext {
-        network::list_context("wlan0").unwrap()
+        // list of networks saved in the wpa_supplicant.conf
+        let wlan_list = match network_client::saved_networks() {
+            Ok(ssids) => {
+                let networks: Vec<Networks> = serde_json::from_str(ssids.as_str())
+                    .expect("Failed to deserialize scan_list response");
+                networks
+            }
+            Err(_) => Vec::new(),
+        };
+
+        // list of networks currently in range (online & accessible)
+        let wlan_scan = match network_client::available_networks("wlan0") {
+            Ok(networks) => {
+                let scan: Vec<Networks> = serde_json::from_str(networks.as_str())
+                    .expect("Failed to deserialize scan_networks response");
+                scan
+            }
+            Err(_) => Vec::new(),
+        };
+
+        let wlan_ssid = match network_client::ssid("wlan0") {
+            Ok(ssid) => ssid,
+            Err(_) => "Not connected".to_string(),
+        };
+
+        // create a hashmap to combine wlan_list & wlan_scan without repetition
+        let mut wlan_networks = HashMap::new();
+        for ap in wlan_scan {
+            wlan_networks.insert(ap.ssid, "Available".to_string());
+        }
+        for network in wlan_list {
+            // insert ssid (with state) only if it doesn't already exist
+            wlan_networks
+                .entry(network.ssid)
+                .or_insert_with(|| "Not in range".to_string());
+        }
+
+        let ap_state = match network_client::state("ap0") {
+            Ok(state) => state,
+            Err(_) => "Interface unavailable".to_string(),
+        };
+
+        NetworkListContext {
+            ap_state,
+            back: None,
+            flash_msg: None,
+            flash_name: None,
+            title: None,
+            wlan_networks,
+            wlan_ssid,
+        }
     }
 }
 
