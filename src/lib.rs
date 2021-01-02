@@ -27,7 +27,6 @@
 
 pub mod context;
 pub mod device;
-pub mod error;
 pub mod json_api;
 pub mod monitor;
 pub mod network;
@@ -43,10 +42,11 @@ use log::{debug, error, info};
 use rocket::{catchers, routes};
 use rocket_contrib::templates::Template;
 
-use crate::error::BoxError;
 use crate::json_api::*;
 use crate::routes::*;
 use crate::ws::*;
+
+pub type BoxError = Box<dyn std::error::Error>;
 
 // create rocket instance & mount web & json routes (makes testing easier)
 fn rocket() -> rocket::Rocket {
