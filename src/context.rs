@@ -213,6 +213,29 @@ impl MessageContext {
 }
 
 #[derive(Debug, Serialize)]
+pub struct ConfigureDNSContext {
+    pub external_domain: String,
+    pub dyndns_domain: String,
+    pub enable_dyndns: bool,
+    pub ip: Option<String>,
+    pub back: Option<String>,
+    pub title: Option<String>,
+}
+
+impl ConfigureDNSContext {
+    pub fn build() -> ConfigureDNSContext {
+        ConfigureDNSContext {
+            external_domain: "canalswans.net".to_string(),
+            dyndns_domain: "canalswans".to_string(),
+            enable_dyndns: true,
+            ip: Some("1.1.1.1".to_string()),
+            back: None,
+            title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct NetworkContext {
     pub ap_ip: String,
     pub ap_ssid: String,

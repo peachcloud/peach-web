@@ -51,7 +51,7 @@ use peach_lib::network_client;
 use crate::context::{
     DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext, MessageContext,
     NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
+    NetworkListContext, PeerContext, ProfileContext, ShutdownContext, ConfigureDNSContext
 };
 use crate::device;
 use crate::monitor;
@@ -334,6 +334,16 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
             )
         }
     }
+}
+
+#[get("/network/dns")]
+pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
+    let mut context = ConfigureDNSContext::build();
+    // set back icon link to network route
+    context.back = Some("/network".to_string());
+    context.title = Some("Configure DNS".to_string());
+    // template_dir is set in Rocket.toml
+    Template::render("configure_dns", &context)
 }
 
 #[get("/network/wifi/usage/reset")]

@@ -1,0 +1,48 @@
+{%- extends "nav" -%}
+{%- block card %}
+      <!-- CONFIGURE DNS FORM -->
+      <div class="card center">
+        <div class="form-container">
+              <form id="configureDNS" action="/network/dns/save" method="post">
+              <div class="input-wrapper">
+                <!-- input for externaldomain -->
+                <label id="externaldomain" class="label-small input-label font-near-black">
+                   <label class="label-small input-label font-gray" for="warn" style="padding-top: 0.25rem;">External Domain (optional)</label>
+                <input id="warnInput" class="form-input"  style="margin-bottom: 0;"
+                    name="warn" placeholder="0" type="text" title="external domain" value="{{ external_domain }}"></label>
+
+              </div>
+              <div class="input-wrapper">
+                  <div>
+                    <!-- checkbox for dynds flag -->
+                    <label class="label-small input-label font-gray"> Enable Dynamic DNS </label>
+                    <input
+                    style="margin-left: 0px;"
+                    id="dyndns_checkbox" name="dynds_checkbox" title="Activate dynds" type="checkbox" {% if enable_dyndns %}checked{% endif %}>
+                  </div>
+              </div>
+              <div class="input-wrapper">
+                <!-- input for dynds -->
+                <label id="cut" class="label-small input-label font-near-black">
+                      <label class="label-small input-label font-gray" for="cut" style="padding-top: 0.25rem;">Dynamic DNS Domain</label>
+                    <input id="cutInput" class="alert-input" name="cut" placeholder="0" type="text" title="dyndns_domain" value="{{ dyndns_domain }}">.dyn.peachcloud.org</label>
+
+              </div>
+            </div>
+
+            <div id="buttonDiv">
+              <input id="configureDNSButton" class="button button-primary center" title="Add" type="submit" value="Save">
+              <a class="button button-secondary center" href="/network/dns" title="Cancel">Cancel</a>
+            </div>
+          </form>
+
+          <!-- share ux information with the user if JS is disabled -->
+          <noscript>
+            <div class="capsule flash-message info-border">
+              <p class="center-text">This website may be temporarily unresponsive while settings are being saved.</p>
+            </div>
+          </noscript>
+        </div>
+      </div>
+      <script type="text/javascript" src="/js/network_add.js"></script>
+{%- endblock card -%}
