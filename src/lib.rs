@@ -104,6 +104,7 @@ fn rocket() -> rocket::Rocket {
                 scan_networks,      // JSON API
                 shutdown_device,    // JSON API
                 update_wifi_alerts, // JSON API
+                save_dns_configuration, // JSON API
             ],
         )
         .register(catchers![not_found, internal_error])

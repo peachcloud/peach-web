@@ -47,16 +47,18 @@ use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
 
 use peach_lib::network_client;
+use peach_lib::dyndns_client;
+use peach_lib::config_manager;
 
 use crate::context::{
-    DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext, MessageContext,
-    NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext, PeerContext, ProfileContext, ShutdownContext, ConfigureDNSContext
+    ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext,
+    MessageContext, NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
+    NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
 };
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{Ssid, WiFi};
+use crate::network::{Ssid, WiFi, DnsForm};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -344,6 +346,41 @@ pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
     context.title = Some("Configure DNS".to_string());
     // template_dir is set in Rocket.toml
     Template::render("configure_dns", &context)
+}
+
+#[post("/network/dns", data = "<dns>")]
+pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
+    debug!("dns form data: {:?}", dns);
+    if dns.enable_dyndns {
+        match dyndns_client::register_domain(&dns.dynamic_domain) {
+            Ok(_) => {
+                debug!("registered dyndns domain");
+                let mut context = ConfigureDNSContext::build();
+                // set back icon link to network route
+                context.back = Some("/network".to_string());
+                context.title = Some("Configure DNS".to_string());
+                // template_dir is set in Rocket.toml
+                Template::render("configure_dns", &context)
+            }
+            Err(_) => {
+                debug!("Failed to add dyndns domain");
+                let mut context = ConfigureDNSContext::build();
+                // set back icon link to network route
+                context.back = Some("/network".to_string());
+                context.title = Some("Configure DNS".to_string());
+                // template_dir is set in Rocket.toml
+                Template::render("configure_dns", &context)
+            }
+        }
+    }
+    else {
+        let mut context = ConfigureDNSContext::build();
+        // set back icon link to network route
+        context.back = Some("/network".to_string());
+        context.title = Some("Configure DNS".to_string());
+        // template_dir is set in Rocket.toml
+        Template::render("configure_dns", &context)
+    }
 }
 
 #[get("/network/wifi/usage/reset")]
