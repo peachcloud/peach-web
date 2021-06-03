@@ -29,24 +29,24 @@
 //! | GET    | /api/v1/ping/oled                | Ping `peach-oled`             |
 //! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
 
-use log::{debug, warn, info};
+use log::{debug, info, warn};
 use rocket::{get, post};
 use rocket_contrib::json;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Serialize;
 
-use peach_lib::network_client;
-use peach_lib::dyndns_client;
 use peach_lib::config_manager;
+use peach_lib::dyndns_client;
+use peach_lib::error::PeachError;
+use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
-use peach_lib::error::PeachError;
 
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{Ssid, WiFi, DnsForm};
+use crate::network::{DnsForm, Ssid, WiFi};
 
 #[derive(Serialize)]
 pub struct JsonResponse {
@@ -464,7 +464,8 @@ pub fn ping_stats() -> Json<JsonResponse> {
 #[post("/api/v1/dns/configure", data = "<dns_form>")]
 pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
     // first save external domain configuration
-    // TODO: use config manager to save domain here
+    // TODO: handle errors
+    config_manager::set_external_domain(&dns_form.external_domain);
     if dns_form.enable_dyndns {
         let full_dynamic_domain = format!("{}.dyn.peachcloud.org", &dns_form.dynamic_domain);
         // TODO: first confirm, that this is actually a new domain,
@@ -483,14 +484,15 @@ pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
                 let status = "error".to_string();
                 let msg: String = match err {
                     // TODO: get glyph's input to figure out a pattern for retrieving the actual error message
-                    PeachError::JsonRpcCore(err) => format!("Failed to register dyndns domain: {}", err.description()),
-                    _ => "Failed to register dyndns domain".to_string()
+                    PeachError::JsonRpcCore(err) => {
+                        format!("Failed to register dyndns domain: {}", err.description())
+                    }
+                    _ => "Failed to register dyndns domain".to_string(),
                 };
                 Json(build_json_response(status, None, Some(msg)))
             }
         }
-    }
-    else {
+    } else {
         // then just return success
         let status = "success".to_string();
         let msg = "Saved dns configurations".to_string();

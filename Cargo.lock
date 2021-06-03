@@ -1269,7 +1269,7 @@ dependencies = [
 [[package]]
 name = "peach-lib"
 version = "1.2.3"
-source = "git+https://github.com/peachcloud/peach-lib?branch=main#53fab12caeaa1b044ee01e9c60226855e1c94582"
+source = "git+https://github.com/peachcloud/peach-lib?branch=dev#a30b64f4275530a303bafac98d67175e7a0ca165"
 dependencies = [
  "env_logger 0.6.2",
  "jsonrpc-client-core",

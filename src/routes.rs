@@ -46,9 +46,9 @@ use rocket::response::{Flash, NamedFile, Redirect};
 use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
 
-use peach_lib::network_client;
-use peach_lib::dyndns_client;
 use peach_lib::config_manager;
+use peach_lib::dyndns_client;
+use peach_lib::network_client;
 
 use crate::context::{
     ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext,
@@ -58,7 +58,7 @@ use crate::context::{
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{Ssid, WiFi, DnsForm};
+use crate::network::{DnsForm, Ssid, WiFi};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -372,8 +372,7 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
                 Template::render("configure_dns", &context)
             }
         }
-    }
-    else {
+    } else {
         let mut context = ConfigureDNSContext::build();
         // set back icon link to network route
         context.back = Some("/network".to_string());
