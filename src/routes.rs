@@ -357,8 +357,8 @@ pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
 
 #[post("/network/dns", data = "<dns>")]
 pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
-    config_manager::set_external_domain(&dns.external_domain);
-    config_manager::set_dyndns_enabled_value(dns.enable_dyndns);
+    config_manager::set_external_domain(&dns.external_domain).unwrap();
+    config_manager::set_dyndns_enabled_value(dns.enable_dyndns).unwrap();
     // TODO: handle errors
     if dns.enable_dyndns {
         let full_dynamic_domain = get_full_dynamic_domain(&dns.dynamic_domain);
