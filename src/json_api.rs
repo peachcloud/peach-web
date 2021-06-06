@@ -309,7 +309,7 @@ pub fn disconnect_ap(ssid: Json<Ssid>) -> Json<JsonResponse> {
 #[post("/api/v1/network/wifi/forget", data = "<network>")]
 pub fn forget_ap(network: Json<Ssid>) -> Json<JsonResponse> {
     let ssid = &network.ssid;
-    match network_client::forget("wlan0", &ssid) {
+    match network_client::forget("wlan0", ssid) {
         Ok(_) => {
             debug!("Removed WiFi credentials for chosen network.");
             let status = "success".to_string();

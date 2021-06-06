@@ -427,7 +427,7 @@ pub fn wifi_usage_reset() -> Flash<Redirect> {
 pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
-    match network_client::id("wlan0", &ssid) {
+    match network_client::id("wlan0", ssid) {
         Ok(id) => match network_client::connect(&id, "wlan0") {
             Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network"),
             Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network"),
@@ -440,7 +440,7 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network_client::disable("wlan0", &ssid) {
+    match network_client::disable("wlan0", ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network"),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network"),
     }
@@ -450,7 +450,7 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network_client::forget("wlan0", &ssid) {
+    match network_client::forget("wlan0", ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed"),
         Err(_) => Flash::error(
             Redirect::to(url),
