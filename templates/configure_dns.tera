@@ -9,7 +9,7 @@
                 <label id="external_domain" class="label-small input-label font-near-black">
                    <label class="label-small input-label font-gray" for="external_domain" style="padding-top: 0.25rem;">External Domain (optional)</label>
                 <input id="external_domain" class="form-input"  style="margin-bottom: 0;"
-                    name="external_domain" placeholder="0" type="text" title="external domain" value="{{ external_domain }}"></label>
+                    name="external_domain" type="text" title="external domain" value="{{ external_domain }}"></label>
 
               </div>
               <div class="input-wrapper">
@@ -25,14 +25,13 @@
                 <!-- input for dynds -->
                 <label id="cut" class="label-small input-label font-near-black">
                       <label class="label-small input-label font-gray" for="cut" style="padding-top: 0.25rem;">Dynamic DNS Domain</label>
-                    <input id="dyndns_domain" class="alert-input" name="dynamic_domain" placeholder="0" type="text" title="dyndns_domain" value="{{ dyndns_domain }}">.dyn.peachcloud.org</label>
+                    <input id="dyndns_domain" class="alert-input" name="dynamic_domain" placeholder="0" type="text" title="dyndns_domain" value="{{ dyndns_subdomain }}">.dyn.peachcloud.org</label>
 
               </div>
             </div>
 
             <div id="buttonDiv">
               <input id="configureDNSButton" class="button button-primary center" title="Add" type="submit" value="Save">
-              <a class="button button-secondary center" href="/network/dns" title="Cancel">Cancel</a>
             </div>
           </form>
 

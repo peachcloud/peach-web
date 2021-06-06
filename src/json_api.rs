@@ -46,6 +46,7 @@ use peach_lib::stats_client::Traffic;
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
+use crate::utils::{get_full_dynamic_domain, check_is_new_dyndns_domain};
 use crate::network::{DnsForm, Ssid, WiFi};
 
 #[derive(Serialize)]
@@ -463,37 +464,48 @@ pub fn ping_stats() -> Json<JsonResponse> {
 
 #[post("/api/v1/dns/configure", data = "<dns_form>")]
 pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
-    // first save external domain configuration
-    // TODO: handle errors
+    // first save local configurations
     config_manager::set_external_domain(&dns_form.external_domain);
+    config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns);
+    // TODO: handle errors
+    // if dynamic dns is enabled and this is a new domain name, then register it
     if dns_form.enable_dyndns {
-        let full_dynamic_domain = format!("{}.dyn.peachcloud.org", &dns_form.dynamic_domain);
-        // TODO: first confirm, that this is actually a new domain,
-        // if its already registered, then no need to register it
-        match dyndns_client::register_domain(&full_dynamic_domain) {
-            Ok(_) => {
-                info!("registered dyndns domain");
-                // json response for successful update
-                let status = "success".to_string();
-                let msg = "New dynamic dns domain is now enabled".to_string();
-                Json(build_json_response(status, None, Some(msg)))
-            }
-            Err(err) => {
-                info!("Failed to register dyndns domain: {:?}", err);
-                // json response for failed update
-                let status = "error".to_string();
-                let msg: String = match err {
-                    // TODO: get glyph's input to figure out a pattern for retrieving the actual error message
-                    PeachError::JsonRpcCore(err) => {
-                        format!("Failed to register dyndns domain: {}", err.description())
-                    }
-                    _ => "Failed to register dyndns domain".to_string(),
-                };
-                Json(build_json_response(status, None, Some(msg)))
+       let full_dynamic_domain = get_full_dynamic_domain(&dns_form.dynamic_domain);
+        // check if this is a new domain or if its already registered
+        let is_new_domain = check_is_new_dyndns_domain(&full_dynamic_domain);
+        if is_new_domain {
+            match dyndns_client::register_domain(&full_dynamic_domain) {
+                Ok(_) => {
+                    info!("Registered new dyndns domain");
+                    // json response for successful update
+                    let status = "success".to_string();
+                    let msg = "New dynamic dns configuration is now enabled".to_string();
+                    Json(build_json_response(status, None, Some(msg)))
+                }
+                Err(err) => {
+                    info!("Failed to register dyndns domain: {:?}", err);
+                    // json response for failed update
+                    let status = "error".to_string();
+                    let msg: String = match err {
+                        // TODO: get glyph's input to figure out a pattern for retrieving the actual error message
+                        PeachError::JsonRpcCore(err) => {
+                            format!("Failed to register dyndns domain: {}", err.description())
+                        }
+                        _ => "Failed to register dyndns domain".to_string(),
+                    };
+                    Json(build_json_response(status, None, Some(msg)))
+                }
             }
         }
+        // if the domain is already registered, then dont re-register, and just return success
+        else {
+            // json response for successful update
+            let status = "success".to_string();
+            let msg = "New dynamic dns configuration is now enabled".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
     } else {
-        // then just return success
+        // if dyndns is not enabled then just return success
         let status = "success".to_string();
         let msg = "Saved dns configurations".to_string();
         Json(build_json_response(status, None, Some(msg)))

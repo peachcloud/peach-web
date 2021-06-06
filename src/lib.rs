@@ -30,6 +30,7 @@ pub mod device;
 pub mod json_api;
 pub mod monitor;
 pub mod network;
+pub mod utils;
 pub mod routes;
 #[cfg(test)]
 mod tests;
@@ -83,6 +84,7 @@ fn rocket() -> rocket::Rocket {
                 wifi_usage_alerts,      // WEB ROUTE
                 wifi_usage_reset,       // WEB ROUTE
                 configure_dns,          // WEB ROUTE
+                configure_dns_post,     // WEB ROUTE
                 activate_ap,            // JSON API
                 activate_client,        // JSON API
                 add_wifi,               // JSON API

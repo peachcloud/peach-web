@@ -27,6 +27,8 @@ PEACH_DNS.add = function() {
             // create form data object from the wifiCreds form element
             var formData = new FormData(formElement);
             var object = {};
+            // set checkbox to false (the value is only passed to formData if it is "on")
+            object["enable_dyndns"] = false;
             // assign values from form
             formData.forEach(function(value, key){
                 // convert checkbox to bool
@@ -71,7 +73,6 @@ PEACH_DNS.flashMsg = function(status, msg) {
         elementClass = "capsule center-text flash-message font-failure";
     };
 
-    alert(msg);
     var flashElement = document.getElementById("flashMsg");
     // if flashElement exists, update the class & text
     if (flashElement) {

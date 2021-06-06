@@ -38,7 +38,7 @@
 
 use std::path::{Path, PathBuf};
 
-use log::{debug, warn};
+use log::{debug, warn, info};
 use percent_encoding::percent_decode;
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
@@ -58,6 +58,7 @@ use crate::context::{
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
+use crate::utils::{get_full_dynamic_domain, check_is_new_dyndns_domain};
 use crate::network::{DnsForm, Ssid, WiFi};
 
 #[get("/")]
@@ -350,33 +351,55 @@ pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
 
 #[post("/network/dns", data = "<dns>")]
 pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
-    debug!("dns form data: {:?}", dns);
+    config_manager::set_external_domain(&dns.external_domain);
+    config_manager::set_dyndns_enabled_value(dns.enable_dyndns);
+    // TODO: handle errors
     if dns.enable_dyndns {
-        match dyndns_client::register_domain(&dns.dynamic_domain) {
-            Ok(_) => {
-                debug!("registered dyndns domain");
-                let mut context = ConfigureDNSContext::build();
-                // set back icon link to network route
-                context.back = Some("/network".to_string());
-                context.title = Some("Configure DNS".to_string());
-                // template_dir is set in Rocket.toml
-                Template::render("configure_dns", &context)
-            }
-            Err(_) => {
-                debug!("Failed to add dyndns domain");
-                let mut context = ConfigureDNSContext::build();
-                // set back icon link to network route
-                context.back = Some("/network".to_string());
-                context.title = Some("Configure DNS".to_string());
-                // template_dir is set in Rocket.toml
-                Template::render("configure_dns", &context)
+        let full_dynamic_domain = get_full_dynamic_domain(&dns.dynamic_domain);
+        let is_new_domain = check_is_new_dyndns_domain(&full_dynamic_domain);
+        if is_new_domain {
+            match dyndns_client::register_domain(&full_dynamic_domain) {
+                Ok(_) => {
+                    info!("registered dyndns domain");
+                    let mut context = ConfigureDNSContext::build();
+                    // set back icon link to network route
+                    context.back = Some("/network".to_string());
+                    context.title = Some("Configure DNS".to_string());
+                    context.flash_name = Some("success".to_string());
+                    context.flash_msg = Some("New dynamic dns configuration is now enabled".to_string());
+                    // template_dir is set in Rocket.toml
+                    Template::render("configure_dns", &context)
+                }
+                Err(err) => {
+                    info!("Failed to add dyndns domain: {:?}", err);
+                    let mut context = ConfigureDNSContext::build();
+                    // set back icon link to network route
+                    context.back = Some("/network".to_string());
+                    context.title = Some("Configure DNS".to_string());
+                    context.flash_name = Some("error".to_string());
+                    context.flash_msg = Some("Failed to save dns configurations".to_string());
+                    // template_dir is set in Rocket.toml
+                    Template::render("configure_dns", &context)
+                }
             }
         }
+    else {
+        let mut context = ConfigureDNSContext::build();
+        // set back icon link to network route
+        context.back = Some("/network".to_string());
+        context.title = Some("Configure DNS".to_string());
+        context.flash_name = Some("success".to_string());
+        context.flash_msg = Some("New dns configuration is now enabled".to_string());
+        // template_dir is set in Rocket.toml
+        Template::render("configure_dns", &context)
+    }
     } else {
         let mut context = ConfigureDNSContext::build();
         // set back icon link to network route
         context.back = Some("/network".to_string());
         context.title = Some("Configure DNS".to_string());
+        context.flash_name = Some("success".to_string());
+        context.flash_msg = Some("New dns configuration is now enabled".to_string());
         // template_dir is set in Rocket.toml
         Template::render("configure_dns", &context)
     }
