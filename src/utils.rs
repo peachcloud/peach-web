@@ -2,7 +2,6 @@ use regex::Regex;
 
 use peach_lib::config_manager::load_peach_config;
 
-
 /// helper function which builds a full dynamic dns domain from a subdomain
 pub fn get_full_dynamic_domain(subdomain: &str) -> String {
     format!("{}.dyn.peachcloud.org", subdomain)

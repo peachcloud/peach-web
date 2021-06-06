@@ -30,10 +30,10 @@ pub mod device;
 pub mod json_api;
 pub mod monitor;
 pub mod network;
-pub mod utils;
 pub mod routes;
 #[cfg(test)]
 mod tests;
+pub mod utils;
 mod ws;
 
 use std::{env, thread};

@@ -46,8 +46,8 @@ use peach_lib::stats_client::Traffic;
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::utils::{get_full_dynamic_domain, check_is_new_dyndns_domain};
 use crate::network::{DnsForm, Ssid, WiFi};
+use crate::utils::{check_is_new_dyndns_domain, get_full_dynamic_domain};
 
 #[derive(Serialize)]
 pub struct JsonResponse {
@@ -470,7 +470,7 @@ pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
     // TODO: handle errors
     // if dynamic dns is enabled and this is a new domain name, then register it
     if dns_form.enable_dyndns {
-       let full_dynamic_domain = get_full_dynamic_domain(&dns_form.dynamic_domain);
+        let full_dynamic_domain = get_full_dynamic_domain(&dns_form.dynamic_domain);
         // check if this is a new domain or if its already registered
         let is_new_domain = check_is_new_dyndns_domain(&full_dynamic_domain);
         if is_new_domain {

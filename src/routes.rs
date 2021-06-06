@@ -38,7 +38,7 @@
 
 use std::path::{Path, PathBuf};
 
-use log::{debug, warn, info};
+use log::{debug, info, warn};
 use percent_encoding::percent_decode;
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
@@ -58,8 +58,8 @@ use crate::context::{
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::utils::{get_full_dynamic_domain, check_is_new_dyndns_domain};
 use crate::network::{DnsForm, Ssid, WiFi};
+use crate::utils::{check_is_new_dyndns_domain, get_full_dynamic_domain};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -345,6 +345,12 @@ pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
     // set back icon link to network route
     context.back = Some("/network".to_string());
     context.title = Some("Configure DNS".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
     // template_dir is set in Rocket.toml
     Template::render("configure_dns", &context)
 }
@@ -366,7 +372,8 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
                     context.back = Some("/network".to_string());
                     context.title = Some("Configure DNS".to_string());
                     context.flash_name = Some("success".to_string());
-                    context.flash_msg = Some("New dynamic dns configuration is now enabled".to_string());
+                    context.flash_msg =
+                        Some("New dynamic dns configuration is now enabled".to_string());
                     // template_dir is set in Rocket.toml
                     Template::render("configure_dns", &context)
                 }
@@ -382,17 +389,16 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
                     Template::render("configure_dns", &context)
                 }
             }
+        } else {
+            let mut context = ConfigureDNSContext::build();
+            // set back icon link to network route
+            context.back = Some("/network".to_string());
+            context.title = Some("Configure DNS".to_string());
+            context.flash_name = Some("success".to_string());
+            context.flash_msg = Some("New dns configuration is now enabled".to_string());
+            // template_dir is set in Rocket.toml
+            Template::render("configure_dns", &context)
         }
-    else {
-        let mut context = ConfigureDNSContext::build();
-        // set back icon link to network route
-        context.back = Some("/network".to_string());
-        context.title = Some("Configure DNS".to_string());
-        context.flash_name = Some("success".to_string());
-        context.flash_msg = Some("New dns configuration is now enabled".to_string());
-        // template_dir is set in Rocket.toml
-        Template::render("configure_dns", &context)
-    }
     } else {
         let mut context = ConfigureDNSContext::build();
         // set back icon link to network route

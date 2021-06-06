@@ -26,16 +26,16 @@ use std::collections::HashMap;
 
 use serde::Serialize;
 
+use peach_lib::config_manager::load_peach_config;
 use peach_lib::network_client;
 use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
-use peach_lib::config_manager::load_peach_config;
 
 use crate::monitor;
-use crate::utils::get_dyndns_subdomain;
 use crate::monitor::{Alert, Data, Threshold};
+use crate::utils::get_dyndns_subdomain;
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]
@@ -233,7 +233,7 @@ impl ConfigureDNSContext {
         let dyndns_subdomain = get_dyndns_subdomain(&dyndns_fulldomain);
         ConfigureDNSContext {
             external_domain: peach_config.external_domain,
-            dyndns_subdomain: dyndns_subdomain,
+            dyndns_subdomain,
             enable_dyndns: peach_config.peach_dyndns.enabled,
             ip: Some("1.1.1.1".to_string()),
             back: None,
