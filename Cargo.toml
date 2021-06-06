@@ -1,6 +1,6 @@
 [package]
 name = "peach-web"
-version = "0.4.3"
+version = "0.4.4"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "peach-web is a web application which provides a web interface for monitoring and interacting with the PeachCloud device. This allows administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins."
@@ -48,6 +48,7 @@ tera = "1.5"
 websocket = "0.26"
 regex = "1"
 xdg = "2.2.0"
+openssl = { version = "0.10", features = ["vendored"] }
 
 [dependencies.rocket_contrib]
 version = "0.4.6"
