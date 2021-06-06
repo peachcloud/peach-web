@@ -465,8 +465,8 @@ pub fn ping_stats() -> Json<JsonResponse> {
 #[post("/api/v1/dns/configure", data = "<dns_form>")]
 pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
     // first save local configurations
-    config_manager::set_external_domain(&dns_form.external_domain);
-    config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns);
+    config_manager::set_external_domain(&dns_form.external_domain).unwrap();
+    config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns).unwrap();
     // TODO: handle errors
     // if dynamic dns is enabled and this is a new domain name, then register it
     if dns_form.enable_dyndns {
