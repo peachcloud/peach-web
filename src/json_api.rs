@@ -462,8 +462,13 @@ pub fn ping_stats() -> Json<JsonResponse> {
     }
 }
 
-#[post("/api/v1/dns/configure", data = "<dns_form>")]
-pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
+#[derive(Debug)]
+pub enum DnsConfigError {
+    FailedToRegisterDomain(String)
+}
+
+/// this function is called by the json endpoint and by the html endpoint
+pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), DnsConfigError> {
     // first save local configurations
     config_manager::set_external_domain(&dns_form.external_domain).unwrap();
     config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns).unwrap();
@@ -477,15 +482,12 @@ pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
             match dyndns_client::register_domain(&full_dynamic_domain) {
                 Ok(_) => {
                     info!("Registered new dyndns domain");
-                    // json response for successful update
-                    let status = "success".to_string();
-                    let msg = "New dynamic dns configuration is now enabled".to_string();
-                    Json(build_json_response(status, None, Some(msg)))
+                    // successful update
+                    Ok(())
                 }
                 Err(err) => {
                     info!("Failed to register dyndns domain: {:?}", err);
                     // json response for failed update
-                    let status = "error".to_string();
                     let msg: String = match err {
                         // TODO: get glyph's input to figure out a pattern for retrieving the actual error message
                         PeachError::JsonRpcCore(err) => {
@@ -493,22 +495,32 @@ pub fn save_dns_configuration(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
                         }
                         _ => "Failed to register dyndns domain".to_string(),
                     };
-                    Json(build_json_response(status, None, Some(msg)))
+                    Err(DnsConfigError::FailedToRegisterDomain(msg))
                 }
             }
         }
         // if the domain is already registered, then dont re-register, and just return success
         else {
-            // json response for successful update
+            Ok(())
+        }
+    } else {
+        Ok(())
+    }
+}
+
+#[post("/api/v1/dns/configure", data = "<dns_form>")]
+pub fn save_dns_configuration_endpoint(dns_form: Json<DnsForm>) -> Json<JsonResponse> {
+    let result = save_dns_configuration(dns_form.into_inner());
+    match result {
+        Ok(_) => {
             let status = "success".to_string();
             let msg = "New dynamic dns configuration is now enabled".to_string();
             Json(build_json_response(status, None, Some(msg)))
+        },
+        Err(DnsConfigError::FailedToRegisterDomain(msg)) => {
+            let status = "error".to_string();
+            Json(build_json_response(status, None, Some(msg)))
         }
-    } else {
-        // if dyndns is not enabled then just return success
-        let status = "success".to_string();
-        let msg = "Saved dns configurations".to_string();
-        Json(build_json_response(status, None, Some(msg)))
     }
 }
 
