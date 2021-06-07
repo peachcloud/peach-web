@@ -38,7 +38,7 @@
 
 use std::path::{Path, PathBuf};
 
-use log::{debug, info, warn};
+use log::{debug, warn};
 use percent_encoding::percent_decode;
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
@@ -46,8 +46,6 @@ use rocket::response::{Flash, NamedFile, Redirect};
 use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
 
-use peach_lib::config_manager;
-use peach_lib::dyndns_client;
 use peach_lib::network_client;
 
 use crate::context::{
@@ -56,11 +54,10 @@ use crate::context::{
     NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
 };
 use crate::device;
+use crate::json_api::save_dns_configuration;
 use crate::monitor;
 use crate::monitor::Threshold;
 use crate::network::{DnsForm, Ssid, WiFi};
-use crate::utils::{check_is_new_dyndns_domain, get_full_dynamic_domain};
-use crate::json_api::{save_dns_configuration, DnsConfigError};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -366,18 +363,17 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
             context.back = Some("/network".to_string());
             context.title = Some("Configure DNS".to_string());
             context.flash_name = Some("success".to_string());
-            context.flash_msg =
-                Some("New dynamic dns configuration is now enabled".to_string());
+            context.flash_msg = Some("New dynamic dns configuration is now enabled".to_string());
             // template_dir is set in Rocket.toml
             Template::render("configure_dns", &context)
         }
-        Err(DnsConfigError::FailedToRegisterDomain(msg)) => {
+        Err(err) => {
             let mut context = ConfigureDNSContext::build();
             // set back icon link to network route
             context.back = Some("/network".to_string());
             context.title = Some("Configure DNS".to_string());
             context.flash_name = Some("error".to_string());
-            context.flash_msg = Some("Failed to save dns configurations".to_string());
+            context.flash_msg = Some(format!("Failed to save dns configurations: {}", err));
             // template_dir is set in Rocket.toml
             Template::render("configure_dns", &context)
         }

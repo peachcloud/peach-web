@@ -38,12 +38,15 @@ use serde::Serialize;
 use peach_lib::config_manager;
 use peach_lib::dyndns_client;
 use peach_lib::error::PeachError;
+use peach_lib::jsonrpc_client_core::{Error, ErrorKind};
+use peach_lib::jsonrpc_core::types::error::ErrorCode;
 use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
 
 use crate::device;
+use crate::error::PeachWebError;
 use crate::monitor;
 use crate::monitor::Threshold;
 use crate::network::{DnsForm, Ssid, WiFi};
@@ -462,17 +465,11 @@ pub fn ping_stats() -> Json<JsonResponse> {
     }
 }
 
-#[derive(Debug)]
-pub enum DnsConfigError {
-    FailedToRegisterDomain(String)
-}
-
 /// this function is called by the json endpoint and by the html endpoint
-pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), DnsConfigError> {
+pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), PeachWebError> {
     // first save local configurations
-    config_manager::set_external_domain(&dns_form.external_domain).unwrap();
-    config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns).unwrap();
-    // TODO: handle errors
+    config_manager::set_external_domain(&dns_form.external_domain)?;
+    config_manager::set_dyndns_enabled_value(dns_form.enable_dyndns)?;
     // if dynamic dns is enabled and this is a new domain name, then register it
     if dns_form.enable_dyndns {
         let full_dynamic_domain = get_full_dynamic_domain(&dns_form.dynamic_domain);
@@ -489,13 +486,24 @@ pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), DnsConfigError> {
                     info!("Failed to register dyndns domain: {:?}", err);
                     // json response for failed update
                     let msg: String = match err {
-                        // TODO: get glyph's input to figure out a pattern for retrieving the actual error message
-                        PeachError::JsonRpcCore(err) => {
-                            format!("Failed to register dyndns domain: {}", err.description())
-                        }
+                        PeachError::JsonRpcClientCore(err) => match err {
+                            Error(ErrorKind::JsonRpcError(err), _state) => {
+                                match err.code {
+                                    ErrorCode::ServerError(-32030) => {
+                                        format!("Error registering domain: {} was previously registered", full_dynamic_domain)
+                                    }
+                                    _ => {
+                                        format!("Failed to register dyndns domain {}", err.message)
+                                    }
+                                }
+                            }
+                            _ => {
+                                format!("Failed to register dyndns domain: {}", err.description())
+                            }
+                        },
                         _ => "Failed to register dyndns domain".to_string(),
                     };
-                    Err(DnsConfigError::FailedToRegisterDomain(msg))
+                    Err(PeachWebError::FailedToRegisterDynDomain { msg })
                 }
             }
         }
@@ -516,9 +524,10 @@ pub fn save_dns_configuration_endpoint(dns_form: Json<DnsForm>) -> Json<JsonResp
             let status = "success".to_string();
             let msg = "New dynamic dns configuration is now enabled".to_string();
             Json(build_json_response(status, None, Some(msg)))
-        },
-        Err(DnsConfigError::FailedToRegisterDomain(msg)) => {
+        }
+        Err(err) => {
             let status = "error".to_string();
+            let msg = format!("{}", err);
             Json(build_json_response(status, None, Some(msg)))
         }
     }
