@@ -54,7 +54,7 @@ use crate::context::{
     NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
 };
 use crate::device;
-use crate::json_api::save_dns_configuration;
+use crate::common::save_dns_configuration;
 use crate::monitor;
 use crate::monitor::Threshold;
 use crate::network::{DnsForm, Ssid, WiFi};

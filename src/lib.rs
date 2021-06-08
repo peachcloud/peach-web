@@ -32,6 +32,7 @@ pub mod json_api;
 pub mod monitor;
 pub mod network;
 pub mod routes;
+pub mod common;
 #[cfg(test)]
 mod tests;
 pub mod utils;
