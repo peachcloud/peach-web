@@ -18,6 +18,6 @@ pub fn get_dyndns_subdomain(dyndns_full_domain: &str) -> String {
 // helper function which checks if a dyndns domain is new
 pub fn check_is_new_dyndns_domain(dyndns_full_domain: &str) -> bool {
     let peach_config = load_peach_config().unwrap();
-    let previous_dyndns_domain = peach_config.peach_dyndns.domain;
+    let previous_dyndns_domain = peach_config.dyn_domain;
     dyndns_full_domain != previous_dyndns_domain
 }

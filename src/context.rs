@@ -219,7 +219,6 @@ pub struct ConfigureDNSContext {
     pub external_domain: String,
     pub dyndns_subdomain: String,
     pub enable_dyndns: bool,
-    pub ip: Option<String>,
     pub back: Option<String>,
     pub title: Option<String>,
     pub flash_name: Option<String>,
@@ -229,13 +228,12 @@ pub struct ConfigureDNSContext {
 impl ConfigureDNSContext {
     pub fn build() -> ConfigureDNSContext {
         let peach_config = load_peach_config().unwrap();
-        let dyndns_fulldomain = peach_config.peach_dyndns.domain;
+        let dyndns_fulldomain = peach_config.dyn_domain;
         let dyndns_subdomain = get_dyndns_subdomain(&dyndns_fulldomain);
         ConfigureDNSContext {
             external_domain: peach_config.external_domain,
             dyndns_subdomain,
-            enable_dyndns: peach_config.peach_dyndns.enabled,
-            ip: Some("1.1.1.1".to_string()),
+            enable_dyndns: peach_config.dyn_enabled,
             back: None,
             title: None,
             flash_name: None,
