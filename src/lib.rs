@@ -25,6 +25,7 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
+pub mod common;
 pub mod context;
 pub mod device;
 pub mod error;
@@ -32,7 +33,6 @@ pub mod json_api;
 pub mod monitor;
 pub mod network;
 pub mod routes;
-pub mod common;
 #[cfg(test)]
 mod tests;
 pub mod utils;

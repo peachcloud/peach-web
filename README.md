@@ -1,6 +1,6 @@
 # peach-web
 
-[![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web) ![Generic badge](https://img.shields.io/badge/version-0.4.4-<COLOR>.svg)
+[![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web) ![Generic badge](https://img.shields.io/badge/version-0.4.5-<COLOR>.svg)
 
 ## Web Interface for PeachCloud
 
@@ -36,6 +36,8 @@ _Note: This is a work-in-progress._
 | `/network/wifi/usage` | GET | | Network data usage values and a form to update alert thresholds |
 | `/network/wifi/usage` | POST | `rx_warn`, `rx_cut`, `tx_warn`, `tx_cut`, `rx_warn_flag`, `rx_cut_flag`, `tx_warn_flag`, `tx_cut_flag` | Submit form to update alert thresholds & set flags |
 | `/network/wifi/usage/reset` | GET | | Reset the stored network data usage total to zero |
+| `/network/dns` | GET | | View current DNS configurations |
+| `/network/dns` | POST | | Modify DNS configurations |
 | `/shutdown` | GET | | Shutdown menu |
 
 ### JSON API (`src/json_api.rs`)
@@ -65,6 +67,7 @@ All JSON API calls are prefixed by `/api/v1/`. This has been excluded from the t
 | `ping/network` | GET | | Returns `pong!` if `peach-network` microservice is running |
 | `ping/oled` | GET | | Returns `pong!` if `peach-oled` microservice is running |
 | `ping/stats` | GET | | Returns `pong!` if `peach-stats` microservice is running |
+| `dns/configure` | POST | | Modify dns configurations |
 
 ### Environment
 

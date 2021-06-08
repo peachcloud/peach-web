@@ -28,6 +28,7 @@
 //! | GET    | /api/v1/ping/network             | Ping `peach-network`          |
 //! | GET    | /api/v1/ping/oled                | Ping `peach-oled`             |
 //! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
+//! | POST   | /api/v1/dns/configure            | Modify dns configurations     |
 
 use log::{debug, warn};
 use rocket::{get, post};
@@ -40,11 +41,11 @@ use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
 
+use crate::common::save_dns_configuration;
 use crate::device;
 use crate::monitor;
 use crate::monitor::Threshold;
 use crate::network::{DnsForm, Ssid, WiFi};
-use crate::common::save_dns_configuration;
 
 #[derive(Serialize)]
 pub struct JsonResponse {

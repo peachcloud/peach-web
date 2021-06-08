@@ -4,15 +4,14 @@
 //! and turned into a rocket response appropriately.
 use log::info;
 
+use crate::error::PeachWebError;
+use crate::network::DnsForm;
+use crate::utils::{check_is_new_dyndns_domain, get_full_dynamic_domain};
 use peach_lib::config_manager;
 use peach_lib::dyndns_client;
 use peach_lib::error::PeachError;
 use peach_lib::jsonrpc_client_core::{Error, ErrorKind};
 use peach_lib::jsonrpc_core::types::error::ErrorCode;
-use crate::network::DnsForm;
-use crate::error::PeachWebError;
-use crate::utils::{get_full_dynamic_domain, check_is_new_dyndns_domain};
-
 
 pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), PeachWebError> {
     // first save local configurations
