@@ -25,6 +25,7 @@
 
 #![feature(proc_macro_hygiene, decl_macro)]
 
+pub mod common;
 pub mod context;
 pub mod device;
 pub mod error;

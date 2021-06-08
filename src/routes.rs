@@ -35,6 +35,8 @@
 //! | GET    | /peers                      | Scuttlebutt peers overview        |
 //! | GET    | /profile                    | Scuttlebutt user profile          |
 //! | GET    | /shutdown                   | Shutdown menu                     |
+//! | GET    | /network/dns                | View DNS configurations           |
+//! | POST   | /network/dns                | Modify DNS configurations         |
 
 use std::path::{Path, PathBuf};
 
@@ -48,13 +50,13 @@ use rocket_contrib::templates::Template;
 
 use peach_lib::network_client;
 
+use crate::common::save_dns_configuration;
 use crate::context::{
     ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext,
     MessageContext, NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
     NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
 };
 use crate::device;
-use crate::json_api::save_dns_configuration;
 use crate::monitor;
 use crate::monitor::Threshold;
 use crate::network::{DnsForm, Ssid, WiFi};
