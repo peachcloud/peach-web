@@ -1,0 +1,60 @@
+{%- extends "nav" -%}
+{%- block card %}
+      <!-- CONFIGURE DNS FORM -->
+      <div class="card center">
+        <div class="form-container">
+              <form id="configureDNS" action="/network/dns" method="post">
+              <div class="input-wrapper">
+                <!-- input for externaldomain -->
+                <label id="external_domain" class="label-small input-label font-near-black">
+                   <label class="label-small input-label font-gray" for="external_domain" style="padding-top: 0.25rem;">External Domain (optional)</label>
+                <input id="external_domain" class="form-input"  style="margin-bottom: 0;"
+                    name="external_domain" type="text" title="external domain" value="{{ external_domain }}"></label>
+
+              </div>
+              <div class="input-wrapper">
+                  <div>
+                    <!-- checkbox for dynds flag -->
+                    <label class="label-small input-label font-gray"> Enable Dynamic DNS </label>
+                    <input
+                    style="margin-left: 0px;"
+                    id="enable_dyndns" name="enable_dyndns" title="Activate dynds" type="checkbox" {% if enable_dyndns %}checked{% endif %}>
+                  </div>
+              </div>
+              <div class="input-wrapper">
+                <!-- input for dynds -->
+                <label id="cut" class="label-small input-label font-near-black">
+                      <label class="label-small input-label font-gray" for="cut" style="padding-top: 0.25rem;">Dynamic DNS Domain</label>
+                    <input id="dyndns_domain" class="alert-input" name="dynamic_domain" placeholder="0" type="text" title="dyndns_domain" value="{{ dyndns_subdomain }}">.dyn.peachcloud.org</label>
+
+              </div>
+            </div>
+
+            <div id="buttonDiv">
+              <input id="configureDNSButton" class="button button-primary center" title="Add" type="submit" value="Save">
+            </div>
+          </form>
+
+           <!-- FLASH MESSAGE -->
+          <!-- check for flash message and display accordingly -->
+          {% if flash_msg and flash_name == "success" %}
+          <!-- display success message -->
+          <div class="capsule center-text flash-message font-success">{{ flash_msg }}.</div>
+          {%- elif flash_msg and flash_name == "info" %}
+          <!-- display info message -->
+          <div class="capsule center-text flash-message font-info">{{ flash_msg }}.</div>
+          {%- elif flash_msg and flash_name == "error" %}
+          <!-- display error message -->
+          <div class="capsule center-text flash-message font-failure">{{ flash_msg }}.</div>
+          {%- endif -%}
+
+          <!-- share ux information with the user if JS is disabled -->
+          <noscript>
+            <div class="capsule flash-message info-border">
+              <p class="center-text">This website may be temporarily unresponsive while settings are being saved.</p>
+            </div>
+          </noscript>
+        </div>
+      </div>
+      <script type="text/javascript" src="/js/configure_dns.js"></script>
+{%- endblock card -%}

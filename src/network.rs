@@ -18,3 +18,10 @@ pub struct WiFi {
     pub ssid: String,
     pub pass: String,
 }
+
+#[derive(Debug, Deserialize, FromForm)]
+pub struct DnsForm {
+    pub external_domain: String,
+    pub enable_dyndns: bool,
+    pub dynamic_domain: String,
+}

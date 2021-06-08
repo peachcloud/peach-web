@@ -26,6 +26,7 @@ use std::collections::HashMap;
 
 use serde::Serialize;
 
+use peach_lib::config_manager::load_peach_config;
 use peach_lib::network_client;
 use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
@@ -34,6 +35,7 @@ use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemSta
 
 use crate::monitor;
 use crate::monitor::{Alert, Data, Threshold};
+use crate::utils::get_dyndns_subdomain;
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]
@@ -208,6 +210,36 @@ impl MessageContext {
             flash_name: None,
             flash_msg: None,
             title: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ConfigureDNSContext {
+    pub external_domain: String,
+    pub dyndns_subdomain: String,
+    pub enable_dyndns: bool,
+    pub ip: Option<String>,
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl ConfigureDNSContext {
+    pub fn build() -> ConfigureDNSContext {
+        let peach_config = load_peach_config().unwrap();
+        let dyndns_fulldomain = peach_config.peach_dyndns.domain;
+        let dyndns_subdomain = get_dyndns_subdomain(&dyndns_fulldomain);
+        ConfigureDNSContext {
+            external_domain: peach_config.external_domain,
+            dyndns_subdomain,
+            enable_dyndns: peach_config.peach_dyndns.enabled,
+            ip: Some("1.1.1.1".to_string()),
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
         }
     }
 }

@@ -227,6 +227,14 @@
     padding-bottom: 1rem;
 }
 
+.form-container {
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: 80%;
+    margin: auto;
+}
+
 .card-text {
     margin: 0;
     font-size: var(--font-size-5);
@@ -296,7 +304,7 @@
     width: 100px;
     height: 100px;
 }
-    
+
 .quarter {
     width: 50%;
     height: 50%;
@@ -584,6 +592,15 @@
     width: 80%;
 }
 
+.form-input {
+    margin-bottom: 0;
+    margin-left: 0px;
+    border: 0px;
+    padding-left: 5px;
+    line-height: 1.5rem;
+    width: 100%;
+}
+
 .alert-input {
     /* Needed to render inputs & buttons of equal width */
     -moz-box-sizing: border-box;
@@ -593,6 +610,10 @@
     padding-right: 0.25rem;
     text-align: right;
     width: 7rem;
+}
+
+.input-wrapper {
+    margin-bottom: 15px;
 }
 
 /*
@@ -613,6 +634,10 @@
 .label-large {
     font-size: var(--font-size-2);
     display: block;
+}
+
+.input-label {
+    margin-bottom: 0.4rem;
 }
 
 /*

@@ -27,12 +27,14 @@
 
 pub mod context;
 pub mod device;
+pub mod error;
 pub mod json_api;
 pub mod monitor;
 pub mod network;
 pub mod routes;
 #[cfg(test)]
 mod tests;
+pub mod utils;
 mod ws;
 
 use std::{env, thread};
@@ -54,55 +56,58 @@ fn rocket() -> rocket::Rocket {
         .mount(
             "/",
             routes![
-                add_credentials,    // WEB ROUTE
-                connect_wifi,       // WEB ROUTE
-                disconnect_wifi,    // WEB ROUTE
-                deploy_ap,          // WEB ROUTE
-                deploy_client,      // WEB ROUTE
-                device_stats,       // WEB ROUTE
-                files,              // WEB ROUTE
-                forget_wifi,        // WEB ROUTE
-                help,               // WEB ROUTE
-                index,              // WEB ROUTE
-                login,              // WEB ROUTE
-                logout,             // WEB ROUTE
-                messages,           // WEB ROUTE
-                network_home,       // WEB ROUTE
-                network_add_ssid,   // WEB ROUTE
-                network_add_wifi,   // WEB ROUTE
-                network_detail,     // WEB ROUTE
-                peers,              // WEB ROUTE
-                profile,            // WEB ROUTE
-                reboot_cmd,         // WEB ROUTE
-                shutdown_cmd,       // WEB ROUTE
-                shutdown_menu,      // WEB ROUTE
-                wifi_list,          // WEB ROUTE
-                wifi_password,      // WEB ROUTE
-                wifi_set_password,  // WEB ROUTE
-                wifi_usage,         // WEB ROUTE
-                wifi_usage_alerts,  // WEB ROUTE
-                wifi_usage_reset,   // WEB ROUTE
-                activate_ap,        // JSON API
-                activate_client,    // JSON API
-                add_wifi,           // JSON API
-                connect_ap,         // JSON API
-                disconnect_ap,      // JSON API
-                forget_ap,          // JSON API
-                modify_password,    // JSON API
-                ping_pong,          // JSON API
-                ping_network,       // JSON API
-                ping_oled,          // JSON API
-                ping_stats,         // JSON API
-                reset_data_total,   // JSON API
-                return_ip,          // JSON API
-                return_rssi,        // JSON API
-                return_ssid,        // JSON API
-                return_state,       // JSON API
-                return_status,      // JSON API
-                reboot_device,      // JSON API
-                scan_networks,      // JSON API
-                shutdown_device,    // JSON API
-                update_wifi_alerts, // JSON API
+                add_credentials,                 // WEB ROUTE
+                connect_wifi,                    // WEB ROUTE
+                disconnect_wifi,                 // WEB ROUTE
+                deploy_ap,                       // WEB ROUTE
+                deploy_client,                   // WEB ROUTE
+                device_stats,                    // WEB ROUTE
+                files,                           // WEB ROUTE
+                forget_wifi,                     // WEB ROUTE
+                help,                            // WEB ROUTE
+                index,                           // WEB ROUTE
+                login,                           // WEB ROUTE
+                logout,                          // WEB ROUTE
+                messages,                        // WEB ROUTE
+                network_home,                    // WEB ROUTE
+                network_add_ssid,                // WEB ROUTE
+                network_add_wifi,                // WEB ROUTE
+                network_detail,                  // WEB ROUTE
+                peers,                           // WEB ROUTE
+                profile,                         // WEB ROUTE
+                reboot_cmd,                      // WEB ROUTE
+                shutdown_cmd,                    // WEB ROUTE
+                shutdown_menu,                   // WEB ROUTE
+                wifi_list,                       // WEB ROUTE
+                wifi_password,                   // WEB ROUTE
+                wifi_set_password,               // WEB ROUTE
+                wifi_usage,                      // WEB ROUTE
+                wifi_usage_alerts,               // WEB ROUTE
+                wifi_usage_reset,                // WEB ROUTE
+                configure_dns,                   // WEB ROUTE
+                configure_dns_post,              // WEB ROUTE
+                activate_ap,                     // JSON API
+                activate_client,                 // JSON API
+                add_wifi,                        // JSON API
+                connect_ap,                      // JSON API
+                disconnect_ap,                   // JSON API
+                forget_ap,                       // JSON API
+                modify_password,                 // JSON API
+                ping_pong,                       // JSON API
+                ping_network,                    // JSON API
+                ping_oled,                       // JSON API
+                ping_stats,                      // JSON API
+                reset_data_total,                // JSON API
+                return_ip,                       // JSON API
+                return_rssi,                     // JSON API
+                return_ssid,                     // JSON API
+                return_state,                    // JSON API
+                return_status,                   // JSON API
+                reboot_device,                   // JSON API
+                scan_networks,                   // JSON API
+                shutdown_device,                 // JSON API
+                update_wifi_alerts,              // JSON API
+                save_dns_configuration_endpoint, // JSON API
             ],
         )
         .register(catchers![not_found, internal_error])

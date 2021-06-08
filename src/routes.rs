@@ -49,14 +49,15 @@ use rocket_contrib::templates::Template;
 use peach_lib::network_client;
 
 use crate::context::{
-    DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext, MessageContext,
-    NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
+    ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext,
+    MessageContext, NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
     NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
 };
 use crate::device;
+use crate::json_api::save_dns_configuration;
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{Ssid, WiFi};
+use crate::network::{DnsForm, Ssid, WiFi};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -336,6 +337,49 @@ pub fn wifi_usage_alerts(thresholds: Form<Threshold>) -> Flash<Redirect> {
     }
 }
 
+#[get("/network/dns")]
+pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
+    let mut context = ConfigureDNSContext::build();
+    // set back icon link to network route
+    context.back = Some("/network".to_string());
+    context.title = Some("Configure DNS".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    // template_dir is set in Rocket.toml
+    Template::render("configure_dns", &context)
+}
+
+#[post("/network/dns", data = "<dns>")]
+pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
+    let result = save_dns_configuration(dns.into_inner());
+    match result {
+        Ok(_) => {
+            let mut context = ConfigureDNSContext::build();
+            // set back icon link to network route
+            context.back = Some("/network".to_string());
+            context.title = Some("Configure DNS".to_string());
+            context.flash_name = Some("success".to_string());
+            context.flash_msg = Some("New dynamic dns configuration is now enabled".to_string());
+            // template_dir is set in Rocket.toml
+            Template::render("configure_dns", &context)
+        }
+        Err(err) => {
+            let mut context = ConfigureDNSContext::build();
+            // set back icon link to network route
+            context.back = Some("/network".to_string());
+            context.title = Some("Configure DNS".to_string());
+            context.flash_name = Some("error".to_string());
+            context.flash_msg = Some(format!("Failed to save dns configurations: {}", err));
+            // template_dir is set in Rocket.toml
+            Template::render("configure_dns", &context)
+        }
+    }
+}
+
 #[get("/network/wifi/usage/reset")]
 pub fn wifi_usage_reset() -> Flash<Redirect> {
     let url = uri!(wifi_usage);
@@ -352,7 +396,7 @@ pub fn wifi_usage_reset() -> Flash<Redirect> {
 pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_detail: ssid);
-    match network_client::id("wlan0", &ssid) {
+    match network_client::id("wlan0", ssid) {
         Ok(id) => match network_client::connect(&id, "wlan0") {
             Ok(_) => Flash::success(Redirect::to(url), "Connected to chosen network"),
             Err(_) => Flash::error(Redirect::to(url), "Failed to connect to chosen network"),
@@ -365,7 +409,7 @@ pub fn connect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network_client::disable("wlan0", &ssid) {
+    match network_client::disable("wlan0", ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "Disconnected from WiFi network"),
         Err(_) => Flash::error(Redirect::to(url), "Failed to disconnect from WiFi network"),
     }
@@ -375,7 +419,7 @@ pub fn disconnect_wifi(network: Form<Ssid>) -> Flash<Redirect> {
 pub fn forget_wifi(network: Form<Ssid>) -> Flash<Redirect> {
     let ssid = &network.ssid;
     let url = uri!(network_home);
-    match network_client::forget("wlan0", &ssid) {
+    match network_client::forget("wlan0", ssid) {
         Ok(_) => Flash::success(Redirect::to(url), "WiFi credentials removed"),
         Err(_) => Flash::error(
             Redirect::to(url),
