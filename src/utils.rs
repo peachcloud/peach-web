@@ -8,11 +8,11 @@ pub fn get_full_dynamic_domain(subdomain: &str) -> String {
 }
 
 /// helper function to get a dyndns subdomain from a dyndns full domain
-pub fn get_dyndns_subdomain(dyndns_full_domain: &str) -> String {
-    let re = Regex::new(r"(.*)\.dyn\.peachcloud\.org").unwrap();
-    let caps = re.captures(dyndns_full_domain).unwrap();
+pub fn get_dyndns_subdomain(dyndns_full_domain: &str) -> Option<String> {
+    let re = Regex::new(r"(.*)\.dyn\.peachcloud\.org").ok()?;
+    let caps = re.captures(dyndns_full_domain)?;
     let subdomain = caps.get(1).map_or("", |m| m.as_str());
-    subdomain.to_string()
+    Some(subdomain.to_string())
 }
 
 // helper function which checks if a dyndns domain is new

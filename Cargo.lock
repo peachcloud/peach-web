@@ -1350,7 +1350,7 @@ dependencies = [
 
 [[package]]
 name = "peach-web"
-version = "0.4.6"
+version = "0.4.7"
 dependencies = [
  "env_logger 0.8.3",
  "log 0.4.14",
