@@ -36,11 +36,11 @@ use rocket_contrib::json;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Serialize;
 
+use peach_lib::dyndns_client::is_dns_updater_online;
 use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
-use peach_lib::dyndns_client::is_dns_updater_online;
 
 use crate::common::save_dns_configuration;
 use crate::device;
