@@ -229,7 +229,8 @@ impl ConfigureDNSContext {
     pub fn build() -> ConfigureDNSContext {
         let peach_config = load_peach_config().unwrap();
         let dyndns_fulldomain = peach_config.dyn_domain;
-        let dyndns_subdomain = get_dyndns_subdomain(&dyndns_fulldomain).unwrap_or(dyndns_fulldomain);
+        let dyndns_subdomain =
+            get_dyndns_subdomain(&dyndns_fulldomain).unwrap_or(dyndns_fulldomain);
         ConfigureDNSContext {
             external_domain: peach_config.external_domain,
             dyndns_subdomain,

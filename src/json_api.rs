@@ -30,7 +30,7 @@
 //! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
 //! | POST   | /api/v1/dns/configure            | Modify dns configurations     |
 
-use log::{debug, warn};
+use log::{debug, warn, info};
 use rocket::{get, post};
 use rocket_contrib::json;
 use rocket_contrib::json::{Json, JsonValue};
