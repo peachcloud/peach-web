@@ -32,6 +32,7 @@ use peach_lib::network_client;
 use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
 use peach_lib::stats_client;
+use peach_lib::dyndns_client;
 use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
 
 use crate::monitor;
@@ -51,6 +52,8 @@ pub struct DeviceContext {
     pub network_ping: String,
     pub oled_ping: String,
     pub stats_ping: String,
+    pub dyndns_enabled: bool,
+    pub dyndns_is_online: bool,
     pub title: Option<String>,
     pub uptime: Option<i32>,
 }
@@ -99,6 +102,33 @@ impl DeviceContext {
         // parse the uptime string to a signed integer (for math)
         let uptime_parsed = uptime.parse::<i32>().ok();
 
+        // dyndns
+        let dyndns_enabled: bool;
+        let dyndns_is_online: bool;
+        let load_peach_config_result = load_peach_config();
+        match load_peach_config_result {
+            Ok(peach_config) => {
+                dyndns_enabled = peach_config.dyn_enabled;
+                if dyndns_enabled {
+                    let is_dyndns_online_result = dyndns_client::is_dns_updater_online();
+                    match is_dyndns_online_result {
+                        Ok(is_online) => {
+                            dyndns_is_online = is_online;
+                        },
+                        Err(_err) => {
+                            dyndns_is_online = false;
+                        }
+                    }
+                } else {
+                    dyndns_is_online = false;
+                }
+            },
+            Err(_err) => {
+                dyndns_enabled = false;
+                dyndns_is_online = false;
+            }
+        }
+
         DeviceContext {
             back: None,
             cpu_stat_percent,
@@ -110,6 +140,8 @@ impl DeviceContext {
             network_ping,
             oled_ping,
             stats_ping,
+            dyndns_enabled,
+            dyndns_is_online,
             title: None,
             uptime: uptime_parsed,
         }
