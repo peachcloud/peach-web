@@ -33,21 +33,21 @@ pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), PeachWebError> {
                     info!("Failed to register dyndns domain: {:?}", err);
                     // json response for failed update
                     let msg: String = match err {
-                        PeachError::JsonRpcClientCore{source} => match source {
-                            Error(ErrorKind::JsonRpcError(err), _state) => {
-                                match err.code {
+                        PeachError::JsonRpcClientCore { source } => {
+                            match source {
+                                Error(ErrorKind::JsonRpcError(err), _state) => match err.code {
                                     ErrorCode::ServerError(-32030) => {
                                         format!("Error registering domain: {} was previously registered", full_dynamic_domain)
                                     }
                                     _ => {
                                         format!("Failed to register dyndns domain {:?}", err)
                                     }
+                                },
+                                _ => {
+                                    format!("Failed to register dyndns domain: {:?}", source)
                                 }
                             }
-                            _ => {
-                                format!("Failed to register dyndns domain: {:?}", source)
-                            }
-                        },
+                        }
                         _ => "Failed to register dyndns domain".to_string(),
                     };
                     Err(PeachWebError::FailedToRegisterDynDomain { msg })

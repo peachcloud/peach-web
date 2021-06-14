@@ -1,7 +1,7 @@
 //!! different types of PeachWebError
 
-use peach_lib::{serde_json, serde_yaml};
 use peach_lib::error::PeachError;
+use peach_lib::{serde_json, serde_yaml};
 use snafu::Snafu;
 
 #[derive(Debug, Snafu)]
@@ -30,6 +30,9 @@ impl From<serde_yaml::Error> for PeachWebError {
 
 impl From<PeachError> for PeachWebError {
     fn from(err: PeachError) -> PeachWebError {
-        PeachWebError::PeachLibError { source: err, msg: "".to_string() }
+        PeachWebError::PeachLibError {
+            source: err,
+            msg: "".to_string(),
+        }
     }
 }
