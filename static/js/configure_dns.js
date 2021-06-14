@@ -56,6 +56,9 @@ PEACH_DNS.add = function() {
             .then( (jsonData) => {
                 // write json response message to ui
                 PEACH_DNS.flashMsg(jsonData.status, jsonData.msg);
+                let statusIndicator = document.getElementById("dyndns-status-indicator");
+                statusIndicator.remove();
+
             })
         }, false);
     });

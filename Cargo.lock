@@ -1334,8 +1334,8 @@ dependencies = [
 
 [[package]]
 name = "peach-lib"
-version = "1.2.7"
-source = "git+https://github.com/peachcloud/peach-lib?branch=main#18a3c7931feca9df4b8fab17739d41192d08fb5c"
+version = "1.2.9"
+source = "git+https://github.com/peachcloud/peach-lib?branch=dev#d3d6c026d35a4e9f20584c65e53224942a3df9a5"
 dependencies = [
  "chrono",
  "env_logger 0.6.2",
@@ -1353,7 +1353,7 @@ dependencies = [
 
 [[package]]
 name = "peach-web"
-version = "0.4.7"
+version = "0.4.8"
 dependencies = [
  "env_logger 0.8.3",
  "log 0.4.14",

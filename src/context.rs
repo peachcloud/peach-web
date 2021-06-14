@@ -27,6 +27,7 @@ use std::collections::HashMap;
 use serde::Serialize;
 
 use peach_lib::config_manager::load_peach_config;
+use peach_lib::dyndns_client::is_dns_updater_online;
 use peach_lib::network_client;
 use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
@@ -219,6 +220,7 @@ pub struct ConfigureDNSContext {
     pub external_domain: String,
     pub dyndns_subdomain: String,
     pub enable_dyndns: bool,
+    pub is_dyndns_online: bool,
     pub back: Option<String>,
     pub title: Option<String>,
     pub flash_name: Option<String>,
@@ -229,12 +231,14 @@ impl ConfigureDNSContext {
     pub fn build() -> ConfigureDNSContext {
         let peach_config = load_peach_config().unwrap();
         let dyndns_fulldomain = peach_config.dyn_domain;
+        let is_dyndns_online = is_dns_updater_online().unwrap();
         let dyndns_subdomain =
             get_dyndns_subdomain(&dyndns_fulldomain).unwrap_or(dyndns_fulldomain);
         ConfigureDNSContext {
             external_domain: peach_config.external_domain,
             dyndns_subdomain,
             enable_dyndns: peach_config.dyn_enabled,
+            is_dyndns_online,
             back: None,
             title: None,
             flash_name: None,

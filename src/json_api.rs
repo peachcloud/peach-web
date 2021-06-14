@@ -40,6 +40,7 @@ use peach_lib::network_client;
 use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
+use peach_lib::dyndns_client::is_dns_updater_online;
 
 use crate::common::save_dns_configuration;
 use crate::device;
@@ -400,6 +401,15 @@ pub fn ping_pong() -> Json<JsonResponse> {
     // ping pong
     let status = "success".to_string();
     let msg = "pong!".to_string();
+    Json(build_json_response(status, None, Some(msg)))
+}
+
+// test route: useful for ad hoc testing
+#[get("/api/v1/test")]
+pub fn test_route() -> Json<JsonResponse> {
+    let val = is_dns_updater_online().unwrap();
+    let status = "success".to_string();
+    let msg = val.to_string();
     Json(build_json_response(status, None, Some(msg)))
 }
 

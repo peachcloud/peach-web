@@ -2,7 +2,22 @@
 {%- block card %}
       <!-- CONFIGURE DNS FORM -->
       <div class="card center">
+
         <div class="form-container">
+
+            {% if enable_dyndns %}
+             <!-- DYNDNS STATUS INDICATOR -->
+            <div id="dyndns-status-indicator" class="stack capsule{% if is_dyndns_online %} success-border{% else %} warning-border{% endif %}">
+              <div class="stack">
+              {% if is_dyndns_online %}
+                <label class="label-small font-near-black">Dynamic DNS is currently online.</label>
+              {% else %}
+                <label class="label-small font-near-black">Dynamic DNS is enabled but may be offline.</label>
+              {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
               <form id="configureDNS" action="/network/dns" method="post">
               <div class="input-wrapper">
                 <!-- input for externaldomain -->
