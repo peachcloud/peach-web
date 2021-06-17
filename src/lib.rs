@@ -95,6 +95,7 @@ fn rocket() -> rocket::Rocket {
                 forget_ap,                       // JSON API
                 modify_password,                 // JSON API
                 ping_pong,                       // JSON API
+                test_route,                      // JSON API
                 ping_network,                    // JSON API
                 ping_oled,                       // JSON API
                 ping_stats,                      // JSON API

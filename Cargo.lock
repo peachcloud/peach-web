@@ -1334,23 +1334,26 @@ dependencies = [
 
 [[package]]
 name = "peach-lib"
-version = "1.2.5"
-source = "git+https://github.com/peachcloud/peach-lib?branch=main#839a957054bf680b53a79c8b24e3f12bb10b3c9d"
+version = "1.2.11"
+source = "git+https://github.com/peachcloud/peach-lib?branch=dev#5797bd50077c32c04239e32dd4f2098f3a7c7aa0"
 dependencies = [
+ "chrono",
  "env_logger 0.6.2",
  "jsonrpc-client-core",
  "jsonrpc-client-http",
  "jsonrpc-core",
  "log 0.4.14",
+ "regex",
  "serde 1.0.126",
  "serde_derive",
  "serde_json",
  "serde_yaml",
+ "snafu 0.6.10",
 ]
 
 [[package]]
 name = "peach-web"
-version = "0.4.6"
+version = "0.4.9"
 dependencies = [
  "env_logger 0.8.3",
  "log 0.4.14",

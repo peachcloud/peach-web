@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+# create user which peach-web runs as
+adduser --quiet --system peach-web
+usermod -g peach peach-web
+
+# cargo deb automatically replaces this token below, see https://github.com/mmstick/cargo-deb/blob/master/systemd.md
+#DEBHELPER#
