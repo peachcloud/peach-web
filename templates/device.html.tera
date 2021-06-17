@@ -22,7 +22,7 @@
       <div class="card center">
         <div class="card-container">
           {# Display microservice status for network, oled & stats #}
-          <div class="three-grid" style="padding-bottom: 1rem; padding-top: 1rem;">
+          <div class="three-grid" style="padding-top: 1rem;">
             <!-- PEACH-NETWORK STATUS STACK -->
             <div class="stack capsule{% if network_ping == "ONLINE" %} success-border{% else %} warning-border{% endif %}">
               <img id="networkIcon" class="icon{% if network_ping == "OFFLINE" %} icon-inactive{% endif %} icon-medium" alt="Network" title="Network microservice status" src="icons/wifi.svg">
@@ -48,6 +48,34 @@
               </div>
             </div>
           </div>
+           {%- if dyndns_enabled %}
+            <div class="three-grid" style="padding-bottom: 1rem; margin-top: 0px;">
+                <!-- DYNDNS STATUS STACK -->
+                <div class="stack capsule{% if dyndns_is_online %} success-border{% else %} warning-border{% endif %}">
+                  <img id="networkIcon" class="icon{% if dyndns_is_online != true %} icon-inactive {% endif %} icon-medium" alt="Dyndns" title="Dyndns status" src="icons/wifi.svg">
+                  <div class="stack" style="padding-top: 0.5rem;">
+                    <label class="label-small font-near-black">Dyn DNS</label>
+                    <label class="label-small font-near-black">{% if dyndns_is_online %} ONLINE {% else %} OFFLINE {% endif %} </label>
+                  </div>
+                </div>
+                  <!-- CONFIG STATUS STACK -->
+                <div class="stack capsule{% if config_is_valid %} success-border{% else %} warning-border{% endif %}">
+                  <img id="networkIcon" class="icon{% if config_is_valid != true %} icon-inactive {% endif %} icon-medium" alt="Config" title="Config status" src="icons/wifi.svg">
+                  <div class="stack" style="padding-top: 0.5rem;">
+                    <label class="label-small font-near-black">Config</label>
+                    <label class="label-small font-near-black">{% if config_is_valid %} LOADED {% else %} INVALID {% endif %} </label>
+                  </div>
+                </div>
+                  <!-- SBOT STATUS STACK -->
+                <div class="stack capsule{% if sbot_is_online %} success-border{% else %} warning-border{% endif %}">
+                  <img id="networkIcon" class="icon{% if sbot_is_online != true %} icon-inactive {% endif %} icon-medium" alt="Sbot" title="Sbot status" src="icons/wifi.svg">
+                  <div class="stack" style="padding-top: 0.5rem;">
+                    <label class="label-small font-near-black">Sbot</label>
+                    <label class="label-small font-near-black">{% if sbot_is_online %} ONLINE {% else %} OFFLINE {% endif %} </label>
+                  </div>
+                </div>
+            </div>
+          {% endif %}
           {# Display CPU usage meter #}
           {%- if cpu_stat_percent -%}
           <div class="flex-grid">
