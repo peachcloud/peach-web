@@ -3,7 +3,7 @@ Description=Rocket web application for serving the PeachCloud web interface.
 
 [Service]
 User=peach-web
-Group=peach
+Group=www-data
 WorkingDirectory=/usr/share/peach-web
 Environment="ROCKET_ENV=prod"
 Environment="ROCKET_ADDRESS=127.0.0.1"
