@@ -24,6 +24,9 @@
 //! of the template to be rendered.
 
 #![feature(proc_macro_hygiene, decl_macro)]
+// this is to ignore a clippy warning that suggests
+// to replace code with the same code that is already there (possibly a bug)
+#![allow(clippy::nonstandard_macro_braces)]
 
 pub mod common;
 pub mod context;
