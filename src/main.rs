@@ -4,6 +4,7 @@ use std::process;
 
 use log::error;
 
+#[allow(clippy::nonstandard_macro_braces)]
 fn main() {
     // initialize the logger
     env_logger::init();

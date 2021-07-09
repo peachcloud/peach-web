@@ -5,5 +5,53 @@ set -e
 adduser --quiet --system peach-web
 usermod -g peach peach-web
 
+# create secret passwords folder if it doesn't already exist
+mkdir -p /var/lib/peachcloud/passwords
+chown -R peach-web:peach /var/lib/peachcloud/passwords
+chmod -R u+rwX,go+rX,go-w /var/lib/peachcloud/passwords
+
+# create nginx config
+cat <<EOF > /etc/nginx/sites-enabled/default
+server {
+	listen 80 default_server;
+	server_name peach.local www.peach.local;
+
+    # nginx authentication
+    auth_basic           "If you have forgotten your password visit: http://peach.local/send_password_reset/";
+    auth_basic_user_file /var/lib/peachcloud/passwords/htpasswd;
+
+    location / {
+		proxy_pass http://127.0.0.1:3000;
+	}
+
+   # public routes
+   location /send_password_reset {
+        auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+   location /reset_password {
+        auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+   location /public/ {
+        auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+   location /js/ {
+	    auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+   location /css/ {
+	    auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+   location /icons/ {
+	    auth_basic off;
+        proxy_pass http://127.0.0.1:3000;
+   }
+
+}
+EOF
+
 # cargo deb automatically replaces this token below, see https://github.com/mmstick/cargo-deb/blob/master/systemd.md
 #DEBHELPER#

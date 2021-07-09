@@ -120,6 +120,7 @@
           <a id="listWifi" class="button button-primary center" href="/network/wifi" title="List WiFi Networks">List WiFi Networks</a>
           <a id="viewUsage" class="button button-primary center" href="/network/wifi/usage" title="View Data Usage">View Data Usage</a>
           <a id="configureDNS" class="button button-primary center" href="/network/dns" title="Configure DNS">Configure DNS</a>
+          <a id="changePassword" class="button button-primary center" href="/settings/password" title="Change Password">Change Password</a>
         </div>
         <!-- FLASH MESSAGE -->
         <!-- check for flash message and display accordingly -->

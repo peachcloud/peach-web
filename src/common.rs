@@ -1,17 +1,18 @@
 //! This module contains core api functions shared by json_api.rs and by routes.rs
 //!
-//! These functions return Results which are then handled by the json api or hte html routes
+//! These functions return Results which are then handled by the json api or the html routes
 //! and turned into a rocket response appropriately.
 use log::info;
 
 use crate::error::PeachWebError;
-use crate::network::DnsForm;
-use crate::utils::{check_is_new_dyndns_domain, get_full_dynamic_domain};
+use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm};
 use peach_lib::config_manager;
 use peach_lib::dyndns_client;
+use peach_lib::dyndns_client::{check_is_new_dyndns_domain, get_full_dynamic_domain};
 use peach_lib::error::PeachError;
 use peach_lib::jsonrpc_client_core::{Error, ErrorKind};
 use peach_lib::jsonrpc_core::types::error::ErrorCode;
+use peach_lib::password_utils;
 
 pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), PeachWebError> {
     // first save local configurations
@@ -61,4 +62,38 @@ pub fn save_dns_configuration(dns_form: DnsForm) -> Result<(), PeachWebError> {
     } else {
         Ok(())
     }
+}
+
+/// this function is for use by a user who is already logged in to change their password
+pub fn save_password_form(password_form: PasswordForm) -> Result<(), PeachWebError> {
+    info!(
+        "change password!: {} {} {}",
+        password_form.old_password, password_form.new_password1, password_form.new_password2
+    );
+    password_utils::verify_password(&password_form.old_password)?;
+    // if the previous line did not throw an error, then the old password is correct
+    password_utils::validate_new_passwords(
+        &password_form.new_password1,
+        &password_form.new_password2,
+    )?;
+    // if the previous line did not throw an error, then the new password is valid
+    password_utils::set_new_password(&password_form.new_password1)?;
+    Ok(())
+}
+
+/// this function is publicly exposed for users who have forgotten their password
+pub fn save_reset_password_form(password_form: ResetPasswordForm) -> Result<(), PeachWebError> {
+    info!(
+        "reset password!: {} {} {}",
+        password_form.temporary_password, password_form.new_password1, password_form.new_password2
+    );
+    password_utils::verify_temporary_password(&password_form.temporary_password)?;
+    // if the previous line did not throw an error, then the secret_link is correct
+    password_utils::validate_new_passwords(
+        &password_form.new_password1,
+        &password_form.new_password2,
+    )?;
+    // if the previous line did not throw an error, then the new password is valid
+    password_utils::set_new_password(&password_form.new_password1)?;
+    Ok(())
 }

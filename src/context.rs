@@ -28,17 +28,16 @@ use serde::Serialize;
 
 use peach_lib::config_manager::load_peach_config;
 use peach_lib::dyndns_client;
-use peach_lib::dyndns_client::is_dns_updater_online;
+use peach_lib::dyndns_client::{get_dyndns_subdomain, is_dns_updater_online};
 use peach_lib::network_client;
 use peach_lib::network_client::{AccessPoint, Networks, Scan};
 use peach_lib::oled_client;
-use peach_lib::stats_client;
 use peach_lib::sbot_client;
+use peach_lib::stats_client;
 use peach_lib::stats_client::{CpuStatPercentages, DiskUsage, LoadAverage, MemStat, Traffic};
 
 use crate::monitor;
 use crate::monitor::{Alert, Data, Threshold};
-use crate::utils::get_dyndns_subdomain;
 
 // used in /device for system statistics
 #[derive(Debug, Serialize)]
@@ -291,6 +290,67 @@ impl ConfigureDNSContext {
             dyndns_subdomain,
             enable_dyndns: peach_config.dyn_enabled,
             is_dyndns_online,
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ChangePasswordContext {
+    pub ssb_notify_ids: Vec<String>,
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl ChangePasswordContext {
+    pub fn build() -> ChangePasswordContext {
+        let peach_config = load_peach_config().unwrap();
+        let ssb_notify_ids = peach_config.ssb_notify_ids;
+        ChangePasswordContext {
+            ssb_notify_ids,
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ResetPasswordContext {
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl ResetPasswordContext {
+    pub fn build() -> ResetPasswordContext {
+        ResetPasswordContext {
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct SendPasswordResetContext {
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl SendPasswordResetContext {
+    pub fn build() -> SendPasswordResetContext {
+        SendPasswordResetContext {
             back: None,
             title: None,
             flash_name: None,

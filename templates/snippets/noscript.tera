@@ -1,0 +1,6 @@
+<!-- share ux information with the user if JS is disabled -->
+<noscript>
+<div class="capsule flash-message info-border">
+  <p class="center-text">This website may be temporarily unresponsive while settings are being saved.</p>
+</div>
+</noscript>
