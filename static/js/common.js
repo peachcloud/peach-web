@@ -42,5 +42,14 @@ PEACH.flashMsg = function(status, msg) {
     }
 }
 
+// add click event to logout button which logs out of http basic auth
+// by "trying to login" with invalid credentials (user@logout)
+document.getElementById('logoutButton').onclick = function(e){
+  e.preventDefault();
+  var logoutUrl =  "http://user:logout@" + window.location.hostname
+  window.location = logoutUrl;
+}
+
 var addInstance = PEACH;
 addInstance.add();
+addInstance.logout();
