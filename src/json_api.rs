@@ -29,6 +29,8 @@
 //! | GET    | /api/v1/ping/oled                | Ping `peach-oled`             |
 //! | GET    | /api/v1/ping/stats               | Ping `peach-stats`            |
 //! | POST   | /api/v1/dns/configure            | Modify dns configurations     |
+//! | POST   | /api/v1/settings/change_password | Change password (logged in)   |
+//! | POST   | /public/api/v1/reset_password    | Change password (public)      |
 
 use log::{debug, warn};
 use rocket::{get, post};
@@ -42,11 +44,11 @@ use peach_lib::oled_client;
 use peach_lib::stats_client;
 use peach_lib::stats_client::Traffic;
 
-use crate::common::save_dns_configuration;
+use crate::common::{save_dns_configuration, save_password_form, save_reset_password_form};
 use crate::device;
+use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm, Ssid, WiFi};
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{DnsForm, Ssid, WiFi};
 
 #[derive(Serialize)]
 pub struct JsonResponse {
@@ -477,6 +479,45 @@ pub fn save_dns_configuration_endpoint(dns_form: Json<DnsForm>) -> Json<JsonResp
         Ok(_) => {
             let status = "success".to_string();
             let msg = "New dynamic dns configuration is now enabled".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(err) => {
+            let status = "error".to_string();
+            let msg = format!("{}", err);
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+#[post("/api/v1/settings/change_password", data = "<password_form>")]
+pub fn save_password_form_endpoint(password_form: Json<PasswordForm>) -> Json<JsonResponse> {
+    let result = save_password_form(password_form.into_inner());
+    match result {
+        Ok(_) => {
+            let status = "success".to_string();
+            let msg = "Your password was successfully changed".to_string();
+            Json(build_json_response(status, None, Some(msg)))
+        }
+        Err(err) => {
+            let status = "error".to_string();
+            let msg = format!("{}", err);
+            Json(build_json_response(status, None, Some(msg)))
+        }
+    }
+}
+
+/// this reset password route is used by a user who is not logged in
+/// and is specifically for users who have forgotten their password
+/// all routes under /public/* are excluded from nginx basic auth via the nginx config
+#[post("/public/api/v1/reset_password", data = "<reset_password_form>")]
+pub fn reset_password_form_endpoint(
+    reset_password_form: Json<ResetPasswordForm>,
+) -> Json<JsonResponse> {
+    let result = save_reset_password_form(reset_password_form.into_inner());
+    match result {
+        Ok(_) => {
+            let status = "success".to_string();
+            let msg = "New password is now saved. Return home to login.".to_string();
             Json(build_json_response(status, None, Some(msg)))
         }
         Err(err) => {

@@ -1,6 +1,6 @@
 [package]
 name = "peach-web"
-version = "0.4.9"
+version = "0.4.11"
 authors = ["Andrew Reid <gnomad@cryptolab.net>"]
 edition = "2018"
 description = "peach-web is a web application which provides a web interface for monitoring and interacting with the PeachCloud device. This allows administration of the single-board computer (ie. Raspberry Pi) running PeachCloud, as well as the ssb-server and related plugins."
@@ -11,7 +11,7 @@ license = "AGPL-3.0-only"
 publish = false
 
 [package.metadata.deb]
-depends = "$auto"
+depends = "apache2-utils"
 extended-description = """\
 peach-web is a web application which provides a web interface for monitoring \
 and interacting with the PeachCloud device. This allows administration of \
@@ -21,7 +21,7 @@ maintainer-scripts="debian"
 systemd-units = { unit-name = "peach-web" }
 assets = [
     ["target/release/peach-web", "/usr/bin/", "755"],
-    ["templates/*", "/usr/share/peach-web/templates/", "644"],
+    ["templates/**/*", "/usr/share/peach-web/templates/", "644"],
     ["static/*", "/usr/share/peach-web/static/", "644"],
     ["static/css/*", "/usr/share/peach-web/static/css/", "644"],
     ["static/icons/*", "/usr/share/peach-web/static/icons/", "644"],
@@ -38,7 +38,8 @@ maintenance = { status = "actively-developed" }
 env_logger = "0.8"
 log = "0.4"
 nest = "1.0.0"
-peach-lib = { git = "https://github.com/peachcloud/peach-lib", branch = "dev", version = "1.2.11" }
+#peach-lib = { git = "https://github.com/peachcloud/peach-lib", branch = "dev", version = "1.2.11" }
+peach-lib = { path = "../peach-lib" }
 percent-encoding = "2.1.0"
 rocket = "0.4.6"
 serde = { version = "1.0", features = ["derive"] }

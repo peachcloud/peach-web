@@ -37,10 +37,16 @@
 //! | GET    | /shutdown                   | Shutdown menu                     |
 //! | GET    | /network/dns                | View DNS configurations           |
 //! | POST   | /network/dns                | Modify DNS configurations         |
+//! | GET    | /settings/change_password   | View password settings form       |
+//! | POST   | /settings/change_password   | Change admin password             |
+//! | GET    | /reset_password             | Change password using temp pass   |
+//! | POST   | /reset_password             | Rhange password using temp pass   |
+//! | GET    | /send_password_reset        | Send new password reset link      |
+//! | POST   | /send_password_reset        | Send new password reset link      |
 
 use std::path::{Path, PathBuf};
 
-use log::{debug, warn};
+use log::{debug, info, warn};
 use percent_encoding::percent_decode;
 use rocket::http::RawStr;
 use rocket::request::{FlashMessage, Form};
@@ -49,17 +55,19 @@ use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
 
 use peach_lib::network_client;
+use peach_lib::password_utils;
 
-use crate::common::save_dns_configuration;
+use crate::common::{save_dns_configuration, save_password_form, save_reset_password_form};
 use crate::context::{
-    ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext,
-    MessageContext, NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
-    NetworkListContext, PeerContext, ProfileContext, ShutdownContext,
+    ChangePasswordContext, ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext,
+    HomeContext, LoginContext, MessageContext, NetworkAddContext, NetworkAlertContext,
+    NetworkContext, NetworkDetailContext, NetworkListContext, PeerContext, ProfileContext,
+    ResetPasswordContext, SendPasswordResetContext, ShutdownContext,
 };
 use crate::device;
+use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm, Ssid, WiFi};
 use crate::monitor;
 use crate::monitor::Threshold;
-use crate::network::{DnsForm, Ssid, WiFi};
 
 #[get("/")]
 pub fn index() -> Template {
@@ -351,7 +359,6 @@ pub fn configure_dns(flash: Option<FlashMessage>) -> Template {
         context.flash_name = Some(flash.name().to_string());
         context.flash_msg = Some(flash.msg().to_string());
     };
-    // template_dir is set in Rocket.toml
     Template::render("configure_dns", &context)
 }
 
@@ -366,7 +373,6 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
             context.title = Some("Configure DNS".to_string());
             context.flash_name = Some("success".to_string());
             context.flash_msg = Some("New dynamic dns configuration is now enabled".to_string());
-            // template_dir is set in Rocket.toml
             Template::render("configure_dns", &context)
         }
         Err(err) => {
@@ -376,8 +382,138 @@ pub fn configure_dns_post(dns: Form<DnsForm>) -> Template {
             context.title = Some("Configure DNS".to_string());
             context.flash_name = Some("error".to_string());
             context.flash_msg = Some(format!("Failed to save dns configurations: {}", err));
-            // template_dir is set in Rocket.toml
             Template::render("configure_dns", &context)
+        }
+    }
+}
+
+/// this change password route is used by a user who is already logged in
+#[get("/settings/change_password")]
+pub fn change_password(flash: Option<FlashMessage>) -> Template {
+    let mut context = ChangePasswordContext::build();
+    // set back icon link to network route
+    context.back = Some("/network".to_string());
+    context.title = Some("Change Password".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("password/change_password", &context)
+}
+
+/// this change password route is used by a user who is already logged in
+#[post("/settings/change_password", data = "<password_form>")]
+pub fn change_password_post(password_form: Form<PasswordForm>) -> Template {
+    let result = save_password_form(password_form.into_inner());
+    match result {
+        Ok(_) => {
+            let mut context = ChangePasswordContext::build();
+            // set back icon link to network route
+            context.back = Some("/network".to_string());
+            context.title = Some("Change Password".to_string());
+            context.flash_name = Some("success".to_string());
+            context.flash_msg = Some("New password is now saved".to_string());
+            // template_dir is set in Rocket.toml
+            Template::render("password/change_password", &context)
+        }
+        Err(err) => {
+            let mut context = ChangePasswordContext::build();
+            // set back icon link to network route
+            context.back = Some("/network".to_string());
+            context.title = Some("Configure DNS".to_string());
+            context.flash_name = Some("error".to_string());
+            context.flash_msg = Some(format!("Failed to save new password: {}", err));
+            Template::render("password/change_password", &context)
+        }
+    }
+}
+
+/// this reset password route is used by a user who is not logged in
+/// and is specifically for users who have forgotten their password
+/// all routes under /public/* are excluded from nginx basic auth via the nginx config
+#[get("/reset_password")]
+pub fn reset_password(flash: Option<FlashMessage>) -> Template {
+    let mut context = ResetPasswordContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("Reset Password".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("password/reset_password", &context)
+}
+
+/// this reset password route is used by a user who is not logged in
+/// and is specifically for users who have forgotten their password
+/// and is excluded from nginx basic auth via the nginx config
+#[post("/reset_password", data = "<reset_password_form>")]
+pub fn reset_password_post(reset_password_form: Form<ResetPasswordForm>) -> Template {
+    let result = save_reset_password_form(reset_password_form.into_inner());
+    match result {
+        Ok(_) => {
+            let mut context = ChangePasswordContext::build();
+            context.back = Some("/".to_string());
+            context.title = Some("Reset Password".to_string());
+            context.flash_name = Some("success".to_string());
+            let flash_msg = "New password is now saved. Return home to login.".to_string();
+            context.flash_msg = Some(flash_msg);
+            Template::render("password/reset_password", &context)
+        }
+        Err(err) => {
+            let mut context = ChangePasswordContext::build();
+            // set back icon link to network route
+            context.back = Some("/".to_string());
+            context.title = Some("Reset Password".to_string());
+            context.flash_name = Some("error".to_string());
+            context.flash_msg = Some(format!("Failed to reset password: {}", err));
+            Template::render("password/reset_password", &context)
+        }
+    }
+}
+
+/// this route is used by a user who is not logged in to send a new password reset link
+#[get("/send_password_reset")]
+pub fn send_password_reset_page(flash: Option<FlashMessage>) -> Template {
+    let mut context = SendPasswordResetContext::build();
+    context.back = Some("/".to_string());
+    context.title = Some("Send Password Reset".to_string());
+    // check to see if there is a flash message to display
+    if let Some(flash) = flash {
+        // add flash message contents to the context object
+        context.flash_name = Some(flash.name().to_string());
+        context.flash_msg = Some(flash.msg().to_string());
+    };
+    Template::render("password/send_password_reset", &context)
+}
+
+/// this send_password_reset route is used by a user who is not logged in
+/// and is specifically for users who have forgotten their password
+#[post("/send_password_reset")]
+pub fn send_password_reset_post() -> Template {
+    info!("++ send password reset post");
+    let result = password_utils::send_password_reset();
+    match result {
+        Ok(_) => {
+            let mut context = ChangePasswordContext::build();
+            context.back = Some("/".to_string());
+            context.title = Some("Send Password Reset".to_string());
+            context.flash_name = Some("success".to_string());
+            let flash_msg =
+                "A password reset link has been sent to the admin of this device".to_string();
+            context.flash_msg = Some(flash_msg);
+            Template::render("password/send_password_reset", &context)
+        }
+        Err(err) => {
+            let mut context = ChangePasswordContext::build();
+            context.back = Some("/".to_string());
+            context.title = Some("Send Password Reset".to_string());
+            context.flash_name = Some("error".to_string());
+            context.flash_msg = Some(format!("Failed to send password reset link: {}", err));
+            Template::render("password/send_password_reset", &context)
         }
     }
 }

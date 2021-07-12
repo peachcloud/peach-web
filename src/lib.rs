@@ -24,18 +24,20 @@
 //! of the template to be rendered.
 
 #![feature(proc_macro_hygiene, decl_macro)]
+// this is to ignore a clippy warning that suggests
+// to replace code with the same code that is already there (possibly a bug)
+#![allow(clippy::nonstandard_macro_braces)]
 
 pub mod common;
 pub mod context;
 pub mod device;
 pub mod error;
+pub mod forms;
 pub mod json_api;
 pub mod monitor;
-pub mod network;
 pub mod routes;
 #[cfg(test)]
 mod tests;
-pub mod utils;
 mod ws;
 
 use std::{env, thread};
@@ -87,6 +89,10 @@ fn rocket() -> rocket::Rocket {
                 wifi_usage_reset,                // WEB ROUTE
                 configure_dns,                   // WEB ROUTE
                 configure_dns_post,              // WEB ROUTE
+                change_password,                 // WEB ROUTE
+                reset_password,                  // WEB ROUTE
+                send_password_reset_page,        // WEB ROUTE
+                send_password_reset_post,        // WEB ROUTE
                 activate_ap,                     // JSON API
                 activate_client,                 // JSON API
                 add_wifi,                        // JSON API
@@ -110,6 +116,8 @@ fn rocket() -> rocket::Rocket {
                 shutdown_device,                 // JSON API
                 update_wifi_alerts,              // JSON API
                 save_dns_configuration_endpoint, // JSON API
+                save_password_form_endpoint,     // JSON API
+                reset_password_form_endpoint,    // JSON API
             ],
         )
         .register(catchers![not_found, internal_error])

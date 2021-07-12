@@ -7,11 +7,6 @@ corresponding to the web route `/network/dns`
  - perform json api call
  - update the dom
 
-methods:
-
- PEACH_DNS.configure();
- PEACH_DNS.flashMsg(status, msg);
-
 */
 
 var PEACH_DNS = {};
