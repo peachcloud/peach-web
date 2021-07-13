@@ -20,6 +20,9 @@ server {
     auth_basic           "If you have forgotten your password visit: http://peach.local/send_password_reset/";
     auth_basic_user_file /var/lib/peachcloud/passwords/htpasswd;
 
+    # remove trailing slash if found
+    rewrite ^/(.*)/$ /$1 permanent;
+
     location / {
 		proxy_pass http://127.0.0.1:3000;
 	}
@@ -51,6 +54,12 @@ server {
    }
 
 }
+EOF
+
+cat <<EOF > /etc/sudoers.d/peach-web
+# allow peach-web to run commands as peach-go-sbot without a password
+peach-web ALL=(peach-go-sbot) NOPASSWD:ALL
+
 EOF
 
 # cargo deb automatically replaces this token below, see https://github.com/mmstick/cargo-deb/blob/master/systemd.md

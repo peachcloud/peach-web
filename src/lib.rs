@@ -91,6 +91,7 @@ fn rocket() -> rocket::Rocket {
                 configure_dns_post,              // WEB ROUTE
                 change_password,                 // WEB ROUTE
                 reset_password,                  // WEB ROUTE
+                reset_password_post,             // WEB ROUTE
                 send_password_reset_page,        // WEB ROUTE
                 send_password_reset_post,        // WEB ROUTE
                 activate_ap,                     // JSON API
