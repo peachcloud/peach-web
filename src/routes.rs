@@ -459,7 +459,7 @@ pub fn reset_password_post(reset_password_form: Form<ResetPasswordForm>) -> Temp
             context.back = Some("/".to_string());
             context.title = Some("Reset Password".to_string());
             context.flash_name = Some("success".to_string());
-            let flash_msg = "New password is now saved. Return home to login.".to_string();
+            let flash_msg = "New password is now saved. Return home to login".to_string();
             context.flash_msg = Some(flash_msg);
             Template::render("password/reset_password", &context)
         }
