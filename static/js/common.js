@@ -2,6 +2,7 @@
 *
 *   Common javascript functions shared by multiple pages:
 *   - flashMsg
+*   - logout
 *
 */
 
