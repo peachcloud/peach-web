@@ -35,3 +35,13 @@ pub struct WiFi {
     pub ssid: String,
     pub pass: String,
 }
+
+#[derive(Debug, Deserialize, FromForm)]
+pub struct AddAdminForm {
+    pub ssb_id: String,
+}
+
+#[derive(Debug, Deserialize, FromForm)]
+pub struct DeleteAdminForm {
+    pub ssb_id: String,
+}

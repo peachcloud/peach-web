@@ -45,7 +45,7 @@ use std::{env, thread};
 use log::{debug, error, info};
 
 use rocket::{catchers, routes};
-use rocket_contrib::templates::Template;
+use rocket_contrib::templates::{Template};
 
 use crate::json_api::*;
 use crate::routes::*;
@@ -94,6 +94,10 @@ fn rocket() -> rocket::Rocket {
                 reset_password_post,             // WEB ROUTE
                 send_password_reset_page,        // WEB ROUTE
                 send_password_reset_post,        // WEB ROUTE
+                configure_admin,                 // WEB ROUTE
+                add_admin,                       // WEB ROUTE
+                add_admin_post,                  // WEB ROUTE
+                delete_admin_post,               // WEB ROUTE
                 activate_ap,                     // JSON API
                 activate_client,                 // JSON API
                 add_wifi,                        // JSON API
@@ -124,6 +128,8 @@ fn rocket() -> rocket::Rocket {
         .register(catchers![not_found, internal_error])
         .attach(Template::fairing())
 }
+
+
 
 // launch the rocket server
 pub fn run() -> Result<(), BoxError> {

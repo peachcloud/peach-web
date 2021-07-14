@@ -300,7 +300,6 @@ impl ConfigureDNSContext {
 
 #[derive(Debug, Serialize)]
 pub struct ChangePasswordContext {
-    pub ssb_notify_ids: Vec<String>,
     pub back: Option<String>,
     pub title: Option<String>,
     pub flash_name: Option<String>,
@@ -309,10 +308,49 @@ pub struct ChangePasswordContext {
 
 impl ChangePasswordContext {
     pub fn build() -> ChangePasswordContext {
-        let peach_config = load_peach_config().unwrap();
-        let ssb_notify_ids = peach_config.ssb_notify_ids;
         ChangePasswordContext {
-            ssb_notify_ids,
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct ConfigureAdminContext {
+    pub ssb_admin_ids: Vec<String>,
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl ConfigureAdminContext {
+    pub fn build() -> ConfigureAdminContext {
+        let peach_config = load_peach_config().unwrap();
+        let ssb_admin_ids = peach_config.ssb_admin_ids;
+        ConfigureAdminContext {
+            ssb_admin_ids,
+            back: None,
+            title: None,
+            flash_name: None,
+            flash_msg: None,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct AddAdminContext {
+    pub back: Option<String>,
+    pub title: Option<String>,
+    pub flash_name: Option<String>,
+    pub flash_msg: Option<String>,
+}
+
+impl AddAdminContext {
+    pub fn build() -> AddAdminContext {
+        AddAdminContext {
             back: None,
             title: None,
             flash_name: None,

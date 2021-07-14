@@ -48,7 +48,6 @@
               </div>
             </div>
           </div>
-           {%- if dyndns_enabled %}
             <div class="three-grid" style="padding-bottom: 1rem; margin-top: 0px;">
                 <!-- DYNDNS STATUS STACK -->
                 <div class="stack capsule{% if dyndns_is_online %} success-border{% else %} warning-border{% endif %}">
@@ -75,7 +74,6 @@
                   </div>
                 </div>
             </div>
-          {% endif %}
           {# Display CPU usage meter #}
           {%- if cpu_stat_percent -%}
           <div class="flex-grid">

@@ -1,0 +1,36 @@
+{%- extends "nav" -%}
+{%- block card %}
+      <!-- CONFIGURE ADMIN PAGE -->
+      <div class="card center">
+            <div class="text-container">
+                <h4> Current Admins </h4>
+
+                {% if not ssb_admin_ids %}
+                    <div>
+                        There are no currently configured admins.
+                    </div>
+                {% else %}
+                    {% for admin in ssb_admin_ids %}
+                        <div>
+                            <form action="/settings/admin/delete" method="post">
+                                <input type="hidden" name="ssb_id" value="{{admin}}"/>
+                                <input type="submit" value="X" title="Delete"/> <span>{{ admin }}</span>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <a class="button button-primary center full-width" style="margin-top: 25px;" href="/settings/admin/add" title="Add Admin">Add Admin</a>
+            </div>
+
+
+            <!-- FLASH MESSAGE -->
+           {% include "snippets/flash_message" %}
+
+           <!-- NO SCRIPT FOR WHEN JS IS DISABLED -->
+           {% include "snippets/noscript" %}
+
+        </div>
+      </div>
+
+      <script type="text/javascript" src="/js/configure_admin.js"></script>
+{%- endblock card -%}
