@@ -45,13 +45,13 @@ rocket = "0.4.6"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 snafu = "0.6"
-tera = "1.5"
+tera = { version = "1.12.1", features = ["builtins"] }
 websocket = "0.26"
 regex = "1"
 xdg = "2.2.0"
 openssl = { version = "0.10", features = ["vendored"] }
 
 [dependencies.rocket_contrib]
-version = "0.4.6"
+version = "0.4.10"
 default-features = false
 features = ["json", "tera_templates"]

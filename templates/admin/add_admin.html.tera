@@ -1,0 +1,22 @@
+{%- extends "nav" -%}
+{%- block card %}
+      <!-- ADD ADMIN FORM -->
+      <div class="card center">
+        <div class="card-container">
+          <form id="addAdminForm" action="/settings/admin/add" method="post">
+            <input id="ssb_id" name="ssb_id" class="center input" type="text" placeholder="SSB ID" title="SSB ID of Admin" value=""/>
+            <div id="buttonDiv">
+              <input id="addAdmin" class="button button-primary center" title="Add" type="submit" value="Add">
+              <a class="button button-secondary center" href="/settings/configure_admin" title="Cancel">Cancel</a>
+            </div>
+          </form>
+
+            <!-- FLASH MESSAGE -->
+           {% include "snippets/flash_message" %}
+
+           <!-- NO SCRIPT FOR WHEN JS IS DISABLED -->
+           {% include "snippets/noscript" %}
+
+        </div>
+      </div>
+{%- endblock card -%}

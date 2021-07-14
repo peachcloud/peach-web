@@ -94,6 +94,10 @@ fn rocket() -> rocket::Rocket {
                 reset_password_post,             // WEB ROUTE
                 send_password_reset_page,        // WEB ROUTE
                 send_password_reset_post,        // WEB ROUTE
+                configure_admin,                 // WEB ROUTE
+                add_admin,                       // WEB ROUTE
+                add_admin_post,                  // WEB ROUTE
+                delete_admin_post,               // WEB ROUTE
                 activate_ap,                     // JSON API
                 activate_client,                 // JSON API
                 add_wifi,                        // JSON API

@@ -5,7 +5,7 @@
 use log::info;
 
 use crate::error::PeachWebError;
-use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm};
+use crate::forms::{AddAdminForm, DnsForm, PasswordForm, ResetPasswordForm};
 use peach_lib::config_manager;
 use peach_lib::dyndns_client;
 use peach_lib::dyndns_client::{check_is_new_dyndns_domain, get_full_dynamic_domain};
@@ -95,5 +95,11 @@ pub fn save_reset_password_form(password_form: ResetPasswordForm) -> Result<(), 
     )?;
     // if the previous line did not throw an error, then the new password is valid
     password_utils::set_new_password(&password_form.new_password1)?;
+    Ok(())
+}
+
+pub fn save_add_admin_form(admin_form: AddAdminForm) -> Result<(), PeachWebError> {
+    let _result = config_manager::add_ssb_admin_id(&admin_form.ssb_id)?;
+    // if the previous  line didn't throw an error then it was a success
     Ok(())
 }

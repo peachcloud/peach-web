@@ -144,6 +144,10 @@
     margin-bottom: 5px;
 }
 
+.button.full-width {
+    width: 100%;
+}
+
 .button-div {
     grid-column-start: 1;
     grid-column-end: 4;
@@ -231,6 +235,11 @@
     justify-content: center;
     padding-top: 1rem;
     padding-bottom: 1rem;
+    width: 80%;
+    margin: auto;
+}
+
+.text-container {
     width: 80%;
     margin: auto;
 }
