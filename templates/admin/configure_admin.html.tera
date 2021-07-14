@@ -31,6 +31,4 @@
 
         </div>
       </div>
-
-      <script type="text/javascript" src="/js/configure_admin.js"></script>
 {%- endblock card -%}

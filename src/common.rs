@@ -5,7 +5,7 @@
 use log::info;
 
 use crate::error::PeachWebError;
-use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm, AddAdminForm};
+use crate::forms::{AddAdminForm, DnsForm, PasswordForm, ResetPasswordForm};
 use peach_lib::config_manager;
 use peach_lib::dyndns_client;
 use peach_lib::dyndns_client::{check_is_new_dyndns_domain, get_full_dynamic_domain};

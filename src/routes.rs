@@ -54,22 +54,24 @@ use rocket::response::{Flash, NamedFile, Redirect};
 use rocket::{catch, get, post, uri};
 use rocket_contrib::templates::Template;
 
+use peach_lib::config_manager;
 use peach_lib::network_client;
 use peach_lib::password_utils;
-use peach_lib::config_manager;
 
-use crate::common::{save_dns_configuration, save_password_form, save_reset_password_form,
-    save_add_admin_form};
+use crate::common::{
+    save_add_admin_form, save_dns_configuration, save_password_form, save_reset_password_form,
+};
 use crate::context::{
-    ChangePasswordContext, ConfigureDNSContext, DeviceContext, ErrorContext, HelpContext,
-    HomeContext, LoginContext, MessageContext, NetworkAddContext, NetworkAlertContext,
-    NetworkContext, NetworkDetailContext, NetworkListContext, PeerContext, ProfileContext,
-    ResetPasswordContext, SendPasswordResetContext, ShutdownContext, ConfigureAdminContext,
-    AddAdminContext
+    AddAdminContext, ChangePasswordContext, ConfigureAdminContext, ConfigureDNSContext,
+    DeviceContext, ErrorContext, HelpContext, HomeContext, LoginContext, MessageContext,
+    NetworkAddContext, NetworkAlertContext, NetworkContext, NetworkDetailContext,
+    NetworkListContext, PeerContext, ProfileContext, ResetPasswordContext,
+    SendPasswordResetContext, ShutdownContext,
 };
 use crate::device;
-use crate::forms::{DnsForm, PasswordForm, ResetPasswordForm, Ssid, WiFi, AddAdminForm,
-    DeleteAdminForm};
+use crate::forms::{
+    AddAdminForm, DeleteAdminForm, DnsForm, PasswordForm, ResetPasswordForm, Ssid, WiFi,
+};
 use crate::monitor;
 use crate::monitor::Threshold;
 
@@ -538,7 +540,6 @@ pub fn configure_admin(flash: Option<FlashMessage>) -> Template {
     Template::render("admin/configure_admin", &context)
 }
 
-
 #[get("/settings/admin/add")]
 pub fn add_admin(flash: Option<FlashMessage>) -> Template {
     let mut context = AddAdminContext::build();
@@ -554,18 +555,13 @@ pub fn add_admin(flash: Option<FlashMessage>) -> Template {
     Template::render("admin/add_admin", &context)
 }
 
-
 #[post("/settings/admin/add", data = "<add_admin_form>")]
 pub fn add_admin_post(add_admin_form: Form<AddAdminForm>) -> Flash<Redirect> {
     let result = save_add_admin_form(add_admin_form.into_inner());
     let url = uri!(configure_admin);
     match result {
-        Ok(_) => {
-            Flash::success(Redirect::to(url), "Successfully added new admin")
-        },
-        Err(_) => {
-            Flash::error(Redirect::to(url), "Failed to add new admin")
-        }
+        Ok(_) => Flash::success(Redirect::to(url), "Successfully added new admin"),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to add new admin"),
     }
 }
 
@@ -574,12 +570,8 @@ pub fn delete_admin_post(delete_admin_form: Form<DeleteAdminForm>) -> Flash<Redi
     let result = config_manager::delete_ssb_admin_id(&delete_admin_form.ssb_id);
     let url = uri!(configure_admin);
     match result {
-        Ok(_) => {
-            Flash::success(Redirect::to(url), "Successfully removed admin id")
-        },
-        Err(_) => {
-            Flash::error(Redirect::to(url), "Failed to remove admin id")
-        }
+        Ok(_) => Flash::success(Redirect::to(url), "Successfully removed admin id"),
+        Err(_) => Flash::error(Redirect::to(url), "Failed to remove admin id"),
     }
 }
 

@@ -45,7 +45,7 @@ use std::{env, thread};
 use log::{debug, error, info};
 
 use rocket::{catchers, routes};
-use rocket_contrib::templates::{Template};
+use rocket_contrib::templates::Template;
 
 use crate::json_api::*;
 use crate::routes::*;
@@ -128,8 +128,6 @@ fn rocket() -> rocket::Rocket {
         .register(catchers![not_found, internal_error])
         .attach(Template::fairing())
 }
-
-
 
 // launch the rocket server
 pub fn run() -> Result<(), BoxError> {
