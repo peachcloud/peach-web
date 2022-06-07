@@ -1,3 +1,7 @@
+⚠️ This repo is no longer active and has been archived. The active repo can be found at https://git.coopcloud.tech/PeachCloud/peach-workspace/src/branch/main/peach-web ⚠️
+
+-----
+
 # peach-web
 
 [![Build Status](https://travis-ci.com/peachcloud/peach-web.svg?branch=master)](https://travis-ci.com/peachcloud/peach-web) ![Generic badge](https://img.shields.io/badge/version-0.4.6-<COLOR>.svg)
